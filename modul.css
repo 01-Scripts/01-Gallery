@@ -1,0 +1,83 @@
+/* 
+	01-Gallery V2 - Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
+	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+	
+	Modul:		01gallery
+	Dateiinfo: 	Modulspezifische CSS-Datei
+*/
+
+.bigger {
+	font-size:13pt;
+	font-weight:bold;
+}
+
+
+
+
+
+
+
+
+
+/* CSS-Gallery by dnevnikeklektika.com
+-	http://web.archive.org/web/20070410114605/http://dnevnikeklektika.com/en/css-gallery-layout-en
+-	http://dnevnikeklektika.com/en/css-gallery-layout-en
+*/
+.cssgallery,
+.cssgallerystream{
+	margin:0; padding:0;
+	overflow:hidden; 						/* Clears the floats */
+	width:100%; 							/* IE and older Opera fix for clearing, they need a dimension */
+	list-style:none;
+}
+
+.cssgallery li{
+	float:left;
+	display:inline; 						/* For IE so it doesn't double the 1% left margin */
+	width:15.0%;							/* 23,8% == 4/row		15,0 = 6/row */
+	margin:0 0 10px 1%; padding:10px 0;
+	height:83px; 							/* Height of img (75) + 2 times 3px padding + 2 times 1px border = 83px */
+	position:relative; 						/* This is the key */
+}
+
+.cssgallerystream li{
+	float:left;
+	display:inline; 						/* For IE so it doesn't double the 1% left margin */
+	width:85px;								/* 23,8% == 4/row		15,0 = 6/row */
+	margin:0 0 10px 1%; padding:10px 0;
+	height:83px; 							/* Height of img (75) + 2 times 3px padding + 2 times 1px border = 83px */
+	position:relative; 						/* This is the key */
+}
+
+.cssgallery a,
+.cssgallery img,
+.cssgallerystream a,
+.cssgallerystream img{
+	display:block;
+	margin:0 auto;
+}
+
+a img{ border:none; } 						/* A small fix */
+
+.cssgallery a:link,
+.cssgallery a:visited,
+.cssgallery a:focus,
+.cssgallery a:hover,
+.cssgallery a:active,
+.cssgallerystream a:link,
+.cssgallerystream a:visited,
+.cssgallerystream a:focus,
+.cssgallerystream a:hover,
+.cssgallerystream a:active{
+	padding:3px;
+	background:#eee;
+	width:75px; height:75px;
+	border:1px solid #eeefef; 				/* We blend the border with the bg, as if it isn't there */
+	position:absolute; top:50%; left:50%; 	/* position it so that image's top left corner is in the center of the list item */
+	margin:-41px 0 0 -41px; 				/* Pull the image into position with negative margins (margins value is half of the width of the image) */
+}
+.cssgallery a:hover,
+.cssgallerystream a:hover{
+	border-color:#F8A000;
+}

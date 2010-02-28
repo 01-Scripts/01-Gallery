@@ -1,0 +1,17 @@
+<?php if($comment_sites > 1 && $settings['comments_perpage'] > 0): ?>
+<table align="center" class="table_page page_text">
+    <tr>
+        <td align="left" width="33%" valign="top">
+        <?php if($c_sz > 1): ?><a href="<?PHP echo $c_szl1; ?>">&laquo; 1</a><?php endif; ?>
+		<?php if($c_sz > 0): ?><a href="<?PHP echo $c_szl2; ?>">&laquo; Zur Seite <?php echo $c_sz; ?></a><?php endif; ?>
+        </td>
+        <td align="center" width="33%" valign="top">
+            <b><?PHP echo $comment_current; ?>/<?PHP echo $comment_sites; ?></b>
+        </td>
+        <td align="right" width="33%" valign="top">
+        <?php if($comment_current < $comment_sites): ?><a href="<?PHP echo $c_svl1; ?>">Zur Seite <?php echo $c_sv; ?> &raquo;</a><?php endif; ?>
+		<?php if($c_sv < $comment_sites): ?><a href="<?PHP echo $c_svl2; ?>"><?php echo $comment_sites; ?> &raquo;</a><?php endif; ?>
+        </td>
+    </tr>
+</table>
+<?php endif; ?>

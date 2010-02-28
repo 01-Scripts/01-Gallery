@@ -1,0 +1,68 @@
+<!-- JavaScript für BB-Code-Funktion -->
+<script src="<?PHP echo $tempdir; ?>javas.js" type="text/javascript"></script>
+<?php if ($settings['use_lightbox'] == 1 && $picid > 0 || $settings['use_lightbox'] == 2 && $galid > 0): ?>
+<script src="<?PHP echo $subfolder; ?>01acp/system/js/mootools-core.js" type="text/javascript"></script>
+<script src="<?PHP echo $subfolder; ?>01acp/system/js/mootools-more.js" type="text/javascript"></script>
+<script src="<?PHP echo $tempdir; ?>slimbox.js" type="text/javascript"></script>
+
+<style type="text/css">
+/* Die übrigen CSS-Defitionen werden im 01ACP->Einstellungen->Bildergalerie vorgenommen!
+Dieser Abschnitt ist nur für korrekte Pfadangaben an dieser Stelle nötig */
+
+.lbLoading {
+	background: #fff url(<?php echo $imagepf; ?>loading.gif) no-repeat center;
+}
+
+#lbPrevLink:hover {
+	background: transparent url(<?php echo $imagepf; ?>prevlabel.gif) no-repeat 0 15%;
+}
+
+#lbNextLink:hover {
+	background: transparent url(<?php echo $imagepf; ?>nextlabel.gif) no-repeat 100% 15%;
+}
+
+#lbCloseLink {
+	background: transparent url(<?php echo $imagepf; ?>closelabel.gif) no-repeat center;
+}
+</style>
+
+<?php if ($settings['use_lightbox'] >= 1 && $galid > 0): ?>
+<script type="text/javascript">
+Slimbox.scanPage = function() {
+	$$(document.links).filter(function(el) {
+		return el.rel && el.rel.test(/^lightbox/i);
+	}).slimbox({
+		/* Put custom options here */
+		loop: true,
+<?php if ($settings['use_lightbox'] == 1 && $galid > 0 && $picid > 0): ?>
+		name_galid: "<?php echo $names['galid']; ?>",
+		name_picfilename: "<?php echo $names['picfilename']; ?>",
+		link_url: "<?php echo $filename."?"; ?>",		// KEINE VERÄNDERUNG vornehmen!!!
+		changeLocation:true,				// Beim Schließen der Lightbox springt das Hauptfenster zur Detailansicht des zuletzt in der Lightbox geöffneten Bildes
+<?php endif; ?>
+		initialWidth: 800,					// Anfangs-Breite für die Lightbox
+		initialHeight: 600,					// Anfangs-Höhe für die Lightbox
+		overlayOpacity: 0.7,				// Transparenz des Hintergrund-Overlays (1 = 100%, 0=0%)
+		overlayFadeDuration: 200,			// Dauer des Abdunklungs-Vorgangs (ms)
+		imageFadeDuration: 0,				// Dauer des Bild-Fadein-Effekts (ms)
+		resizeDuration: 0,					// Dauer des Resize-Vorgangs (ms)
+		captionAnimationDuration: 0,		// Dauer bis der Subtitle eingeblendet wird (ms)
+		counterText: "Bild <strong>{x}</strong> von <strong>{y}</strong> (Navigieren Sie mit den Pfeiltasten)",
+		previousKeys: [37, 80, 33, 75],
+		nextKeys: [39, 78, 76],
+		closeKeys: [27, 8, 19, 69, 46, 35, 36]
+
+		}, null, function(el) {
+		return (this == el) || ((this.rel.length > 8) && (this.rel == el.rel));
+	});
+};
+window.addEvent("domready", Slimbox.scanPage);
+</script>
+<?php endif; ?>
+
+<?php endif; ?>
+<?php echo $echo_css; ?>
+
+<div id="_01gallery" class="box_out">
+
+<a name="01jump2top"></a>

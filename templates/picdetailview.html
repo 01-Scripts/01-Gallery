@@ -1,0 +1,30 @@
+<div class="picdetailview">
+	<a href="<?php echo $galverz.$pic['filename']; ?>" rel="lightbox-gal<?php echo $galid; ?>set" title="<?php echo $pic['title']; ?> - <?php echo $pic['text']; ?>">
+		<img src="<?PHP echo $galverz.$pic['filename']; ?>" alt="<?php echo $pic['title']; ?> - <?php echo $pic['text']; ?>" class="picdetailimg" />
+	</a>
+	<h3 class="picdetailh3"><?php echo $pic['title']; ?></h3>
+	<p><?php echo $pic['text']; ?></p>
+</div>
+
+<table border="0" align="center" width="100%">
+	<tr>
+		<td width="33%" align="center">
+		<?php if (($picid_nr-1) > 0): ?>
+			<a href="<?php echo $system_link_gal."&amp;".$names['picid']."=".$pics[($picid_nr-1)]['id']; ?>">&laquo; Vorheriges Bild</a>
+		<?php endif; ?>
+		</td>
+		<td width="33%" align="center">
+			<b>Bild <?php echo $picid_nr; ?></b> von <?php echo $pics_gesamt; ?><br />
+			<a href="<?php echo $system_link_gal; ?>">&raquo; Zur&uuml;ck zur &Uuml;bersicht &laquo;</a>
+		</td>
+		<td width="33%" align="cener">
+		<?php if (($picid_nr) < $pics_gesamt): ?>
+			<a href="<?php echo $system_link_gal."&amp;".$names['picid']."=".$pics[($picid_nr+1)]['id']; ?>">N&auml;chstes Bild &raquo;</a>
+		<?php endif; ?>
+		</td>
+	</tr>
+</table>
+
+<div class="picstream">
+	<?php echo $picstream; ?>
+</div>

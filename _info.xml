@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+
+<modul>
+	<name>01gallery</name>
+	<titel>01-Gallery</titel>
+	<beschreibung>Dynamische Bildergalerie mit beliebig vielen Bilderalben und Bildern anlegen und verwalten.</beschreibung>
+	<icon>images/gallery.gif</icon>
+	<version>2.0.0.1</version>
+	<need01acpv>1.1.0.0</need01acpv>
+	<datum>28.07.2009</datum>
+	<includeinfo><![CDATA[
+Verwenden Sie folgenden PHP-Code um die 01-Gallery in Ihre Seite zu integrieren:<br />
+<code>
+&lt;?PHP<br />
+$subfolder		= "01scripts/"; // Unterverzeichnis<br />
+$modul			= "01gallery"; // Modul- und Verzeichnisname (ID-Name), ggf. &#228;ndern<br />
+<br />
+// ->>An dieser Stelle k&#246;nnen weitere, optionale Parameter eingef&#252;gt werden<<-<br />
+<br />
+include($subfolder."01module/".$modul."/01gallery.php");<br />
+?&gt;<br />
+<br />
+Optionale Parameter sind:<br />
+$flag_nocss     = FALSE; // Setzen Sie $flag_nocss = TRUE; wenn kein CSS eingebunden werden soll<br />
+$flag_breadcrumps = TRUE; // Setzen Sie $flag_breadcrumps = FALSE; wenn keine Albentitel angezeigt werden sollen<br />
+$galid     		= 1; // Geben Sie hier die ID der Galerie an, die direkt angezeigt werden soll.<br />
+</code>
+	]]></includeinfo>
+	
+	<updates>
+		<v2000_v2001>
+			<startv>2.0.0.0</startv>
+			<zielv>2.0.0.1</zielv>
+			<action>2000_zu_2001</action>
+		</v2000_v2001>
+	</updates>
+
+</modul>

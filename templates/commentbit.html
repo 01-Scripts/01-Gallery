@@ -1,0 +1,18 @@
+
+<a name="01comment<?PHP echo $comment_id; ?>"></a>
+
+<div class="commentbitbox comment_text">
+  <b style="margin-right:20px;"><?PHP echo $nr; ?></b>
+  
+  <?PHP echo $comment; ?>
+  
+  <p align="left"><i>
+  Kommentar von <?PHP echo $autorenname; ?> am <?PHP echo $datum; ?>
+<?php if (!empty($url)): ?>
+  (<a href="<?PHP echo $url; ?>" target="_blank">WWW</a>)
+<?php endif; ?>
+  </i></p>
+
+</div>
+
+<br />

@@ -1,0 +1,110 @@
+<a name="01jumpcomments_add"></a>
+
+<?php if (isset($message) && $message >= 1): ?>
+<p align="center" class="page_text"><b class="highlight">
+	<?php if (isset($message) && $message == 1): ?>
+	Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt und wird so schnell wie m&ouml;glich freigeschaltet.<br />
+	Bitte klicken Sie <a href="<?PHP echo $system_link_pic; ?>&amp;<?php echo $names['cpage']; ?>=<?PHP echo $jumpto_csite; ?>#<?PHP echo $jumpto; ?>">hier</a>.
+	<?php elseif (isset($message) && $message == 2): ?>
+	Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt.<br />
+	Bitte klicken Sie <a href="<?PHP echo $system_link_pic; ?>&amp;<?php echo $names['cpage']; ?>=<?PHP echo $jumpto_csite; ?>#<?PHP echo $jumpto; ?>">hier</a>.
+	<?php elseif (isset($message) && $message == 3): ?>
+	Sie haben vor kurzem bereits einen Kommentar abgegeben. Bitte klicken Sie <a href="<?PHP echo $system_link; ?>#01jumpcomments_add">hier</a>
+	<?php elseif (isset($message) && $message == 4): ?>
+	Sie haben nicht alle ben&ouml;tigten Felder (Name, Kommentar, Spamschutz) ausgef&uuml;llt!
+	<?php endif; ?>
+</b></p>
+<?php endif; ?>
+
+<form action="<?PHP echo $system_link_form; ?>" method="post" name="post">
+<table align="center" class="page_text commentaddbox">
+
+	<tr>
+		<td colspan="2"><h2>Kommentar hinzuf&uuml;gen</h2></td>
+	</tr>
+
+    <tr>
+        <td width="340"><input type="text" name="autor" size="50" class="input_field" value="<?php if(isset($_POST['autor'])) echo stripslashes($_POST['autor']); ?>" /></td>
+		<td><b>Name*</b></td>
+    </tr>
+
+    <tr>
+        <td><input type="text" name="email" size="50" class="input_field" value="<?php if(isset($_POST['email'])) echo stripslashes($_POST['email']); ?>" /></td>
+		<td><b>E-Mail</b></td>
+    </tr>
+
+    <tr>
+        <td><input type="text" name="url" size="50" class="input_field" value="<?php if(isset($_POST['url']) && $_POST['url'] != "http://" && !empty($_POST['url'])) echo stripslashes($_POST['url']); else echo "http://"; ?>" /></td>
+		<td><b>Homepage</b></td>
+    </tr>
+<?php if($settings['comments_bbc'] == 1): ?>
+    <tr>
+        <td colspan="2">
+            <input type="button" value="B" style="font-weight: bold;" onclick="bbcinsert('[B]', '[/B]')" class="input_button" />
+            <input type="button" value="I" style="font-style: italic;" onclick="bbcinsert('[I]', '[/I]')" class="input_button" />
+            <input type="button" value="U" style="font-style: underline;" onclick="bbcinsert('[U]', '[/U]')" class="input_button" />
+            <input type="button" value="Center" onclick="bbcinsert('[CENTER]', '[/CENTER]')" class="input_button" />
+            <input type="button" value="Zitat" onclick="bbcinsert('[QUOTE]', '[/QUOTE]')" class="input_button" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="button" value="Bild" onclick="bbcinsert('[IMG]', '[/IMG]')" class="input_button" />
+            <input type="button" value="URL" onclick="bbcinsert('[URL=http://]', '[/URL]')" class="input_button" />
+            <input type="button" value="@" onclick="bbcinsert('[EMAIL=@]', '[/EMAIL]')" class="input_button" />
+        </td>
+    </tr>
+<?php endif; ?>
+<?php if($settings['comments_smilies'] == 1): ?>
+    <tr>
+        <td colspan="2">
+            <a href="#textarea" onclick="javascript:bbcinsert(' :eek: ', '');"><img src="<?PHP echo $smiliedir; ?>1.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :D ', '');"><img src="<?PHP echo $smiliedir; ?>2.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :p ', '');"><img src="<?PHP echo $smiliedir; ?>3.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :?: ', '');"><img src="<?PHP echo $smiliedir; ?>4.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' 8) ', '');"><img src="<?PHP echo $smiliedir; ?>5.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :( ', '');"><img src="<?PHP echo $smiliedir; ?>6.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :x: ', '');"><img src="<?PHP echo $smiliedir; ?>7.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :O_o: ', '');"><img src="<?PHP echo $smiliedir; ?>8.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :o ', '');"><img src="<?PHP echo $smiliedir; ?>9.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :lol: ', '');"><img src="<?PHP echo $smiliedir; ?>10.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :x( ', '');"><img src="<?PHP echo $smiliedir; ?>11.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :no: ', '');"><img src="<?PHP echo $smiliedir; ?>12.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :-: ', '');"><img src="<?PHP echo $smiliedir; ?>13.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :rolleyes: ', '');"><img src="<?PHP echo $smiliedir; ?>14.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' ;( ', '');"><img src="<?PHP echo $smiliedir; ?>15.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :) ', '');"><img src="<?PHP echo $smiliedir; ?>16.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' ;)D ', '');"><img src="<?PHP echo $smiliedir; ?>17.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' X-X ', '');"><img src="<?PHP echo $smiliedir; ?>18.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' ;) ', '');"><img src="<?PHP echo $smiliedir; ?>19.gif" alt="Smilie" border="0" /></a>
+            <a href="#textarea" onclick="javascript:bbcinsert(' :yes: ', '');"><img src="<?PHP echo $smiliedir; ?>20.gif" alt="Smilie" border="0" /></a>
+        </td>
+    </tr>
+<?php endif; ?>
+    <tr>
+        <td colspan="2">
+            <textarea name="comment" rows="8" cols="60"><?php if(isset($message) && $message > 2) echo stripslashes($_POST['comment']); ?></textarea>
+<?php if ($settings['comments_smilies'] == 1 || $settings['comments_bbc'] == 1): ?>
+            <br /><input type="checkbox" name="deaktiv_bbc" value="1" /> Smilies &amp; BB-Code <b>de</b>aktivieren?
+<?php endif; ?>
+        </td>
+    </tr>
+<?php if ($settings['spamschutz'] == 1): ?>
+    <tr>
+        <td><?php echo create_Captcha(); ?> <input type="text" name="antispam" size="10" class="input_field" /> <b>Spamschutz*</b></td>
+		<td>
+            <input type="hidden" name="send_comment" value="1" />
+			<input type="hidden" name="modul_comment" value="<?PHP echo $modul; ?>" />
+            <input type="hidden" name="uid" value="<?PHP echo $uid; ?>" />
+            <input type="submit" value=" Kommentar absenden " class="input" />
+		</td>
+    </tr>
+<?php else: ?>
+    <tr>
+		<td colspan="2">
+            <input type="hidden" name="send_comment" value="1" />
+			<input type="hidden" name="modul_comment" value="<?PHP echo $modul; ?>" />
+            <input type="hidden" name="uid" value="<?PHP echo $uid; ?>" />
+            <input type="submit" value=" Kommentar absenden " class="input" />
+		</td>
+    </tr>
+<?php endif; ?>
+</table>
+</form>
