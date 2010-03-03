@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2010 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -376,7 +376,13 @@ else
 	
 	// GALERIE-AUFLISTUNG
 	
-	// Order by
+	// undefined index...
+	if(!isset($_GET['orderby']))	$_GET['orderby'] = "";
+	if(!isset($_GET['site']))		$_GET['site'] = "";
+	if(!isset($_GET['parentids']))	$_GET['parentids'] = "";
+	if(!isset($_GET['sort']))		$_GET['sort'] = "";
+	
+	// Order by 
 	if((!isset($_GET['orderby']) || isset($_GET['orderby']) && empty($_GET['orderby'])) && (!isset($_GET['sort']) || isset($_GET['sort']) && empty($_GET['sort'])))
 		$sortorder = "DESC";
 	elseif(isset($_GET['sort']) && $_GET['sort'] == "desc") $sortorder = "DESC";
@@ -545,5 +551,5 @@ else
 
 	}
 	
-// 01-Gallery V2 Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
+// 01-Gallery V2 Copyright 2006-2010 by Michael Lorer - 01-Scripts.de
 ?>

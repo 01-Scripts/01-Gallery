@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2010 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Upload und Import von Bildern in Galerien
-	#fv.2001#
+	#fv.2002#
 */
 
 if($userdata['uploadpics'] >= 1){
@@ -175,7 +175,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "upload_pic" && isset($_GET[
 
 <?PHP
 // Fehler- und Erfolgsmeldungen vom Upload ausgeben
-if($count_error > 0){
+if(isset($count_error) && $count_error > 0){
 	echo "<p class=\"meldung_error\"><b>Beim Upload von ".($count_erfolg+$count_error)." Bildern traten ".$count_error." Fehlermeldungen auf:</b><br />";
 	foreach($sammel_errors as $error){
 		echo "&bull; ".$error['message']." <i>(Bild: ".$error['orgname'].")</i><br />";
@@ -183,7 +183,7 @@ if($count_error > 0){
 	echo "</p>";
 	}
 
-if($count_erfolg > 0){
+if(isset($count_erfolg) && $count_erfolg > 0){
 	echo "<p class=\"meldung_erfolg\"><b>Es wurden ".$count_erfolg." Bilder erfolgreich in die Galerie
 		<i>".stripslashes($row['galeriename'])."</i> hochgeladen!</b><br />
 		Sie k&ouml;nnen jetzt weitere Bilder hochladen.<br />
@@ -221,7 +221,7 @@ if($count_erfolg > 0){
 	Die Statusbalken geben Ihnen Auskunft &uuml;ber den Fortschritt.
 </p>
 
-<?php if(!eregi("MSIE 6.0",$_SERVER['HTTP_USER_AGENT'])){ ?>
+<?php if(!strchr($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0")){ ?>
 <form action="_ajaxloader.php?SID=<?php echo htmlspecialchars(session_id()); ?>&amp;modul=<?php echo $modul; ?>&amp;ajaxaction=fancyupload&amp;galid=<?PHP echo $_GET['galid']; ?>" method="post" enctype="multipart/form-data" id="fancy-form">
 
 <div id="fancy-status" class="hide">
@@ -370,5 +370,5 @@ if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 }
 else $flag_loginerror = true;
 
-// 01-Gallery V2 Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
+// 01-Gallery V2 Copyright 2006-2010 by Michael Lorer - 01-Scripts.de
 ?>

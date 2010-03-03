@@ -1,13 +1,13 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2010 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01article
 	Dateiinfo: 	Modulspezifische Grundeinstellungen, Variablendefinitionen etc.
 				Wird automatisch am Anfang jeden Modulaufrufs automatisch includiert.
-	#fv.2000#
+	#fv.2002#
 */
 
 // Modul-Spezifische MySQL-Tabellen
@@ -18,7 +18,7 @@ $addJSFile 	= "";			// Zusätzliche modulspezifische JS-Datei (im Modulverzeichni
 $addCSSFile = "modul.css";			// Zusätzliche modulspezifische CSS-Datei (im Modulverzeichnis!)
 $mootools_use = array("moo_core","moo_more","moo_remooz","moo_slideh","moo_request","moo_sortable");
 	
-if(isset($_REQUEST['loadpage']) && $_REQUEST['loadpage'] == "upload" && !eregi("MSIE 6.0",$_SERVER['HTTP_USER_AGENT']))
+if(isset($_REQUEST['loadpage']) && $_REQUEST['loadpage'] == "upload" && !strchr($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0"))
 	$mootools_use[] = "moo_fancyup";
 
 // Welche PHP-Seiten sollen abhängig von $_REQUEST['loadpage'] includiert werden?
@@ -65,5 +65,5 @@ $import_max_count	= 10;			// Maximalanzahl an Bildern, die in einem Schritt impo
 $supported_pictypes = array("jpg","jpeg","png","gif");		// Unterstützte Dateitypen
 
 
-// 01-Gallery V2 Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
+// 01-Gallery V2 Copyright 2006-2010 by Michael Lorer - 01-Scripts.de
 ?>

@@ -6,7 +6,7 @@
 	
 	Modul:		01article
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.2001#
+	#fv.2010#
 */
 
 /* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
@@ -501,7 +501,7 @@ else
 	return false;
 	
 
-$split = split('[.]', strtolower($sourcefilename));
+$split = explode('.', strtolower($sourcefilename));
 $filename = $split[0];
 if(isset($split[1])) $fileType = $split[1];
 else $fileType = "";
@@ -620,7 +620,9 @@ if(!function_exists("_01gallery_getThumb")){
 function _01gallery_getThumb($path,$sourcefilename,$suffix="_tb",$smallstream=false){
 global $settings,$picuploaddir,$smallstreampicsize;
 
-$split = split('[.]',$sourcefilename);
+
+
+$split = explode('.',$sourcefilename);
 $filename = $split[0];
 if(isset($split[1])) $endung = $split[1];
 else $endung = "";
@@ -708,7 +710,10 @@ function _01gallery_echoGalList($fgalid=0){
 global $filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid;
 
 // Auflistung Untereinander
-include($tempdir."gallist_u_top.html");
+if($settings['gals_listtype'] == 2)
+	include($tempdir."gallist2_u_top.html");
+else
+	include($tempdir."gallist_u_top.html");
 
 $query = "SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
 makepages($query,$sites,$names['galpage'],$settings['gals_per_page']);
@@ -738,10 +743,16 @@ while($gal = mysql_fetch_assoc($list)){
 	if(!empty($gal['password']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['password'].$salt),$pwcookie))) $gal['beschreibung'] = "<p class=\"gal_password\">Zum Betrachten dieses Bilderalbums ben&ouml;tigen Sie ein Passwort.</p>";
 	else $gal['beschreibung'] = stripslashes($gal['beschreibung']);
 	
-	include($tempdir."gallist_u_bit.html");
+	if($settings['gals_listtype'] == 2)
+		include($tempdir."gallist2_u_bit.html");
+	else
+		include($tempdir."gallist_u_bit.html");
 	}
 
-include($tempdir."gallist_u_bottom.html");
+if($settings['gals_listtype'] == 2)
+	include($tempdir."gallist2_u_bottom.html");
+else
+	include($tempdir."gallist_u_bottom.html");
 
 echo echopages($sites,"",$names['galpage'],$names['galid']."=".$galid,"galpagestable");
 }
