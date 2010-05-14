@@ -300,7 +300,7 @@ function _01gallery_makeFilename($filename="",$param=""){
 global $instnr,$oldfilename_length;
 
 if(!empty($filename)){
-	$split = split('[.]',$filename);
+	$split = explode('.',$filename,2);
 	$filename = $split[0];
 
 	$array_entfernen= array('ä','Ä','ö','Ö','ü','Ü','ß','?','\'','`','´','.','#','\\','/','&',' ','\"','§','\$','=','(',')');
