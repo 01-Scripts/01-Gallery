@@ -395,7 +395,7 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 				$newname = _01gallery_makeFilename($_FILES[$filefieldname]['name'],$filefieldname);
 				$new_filename = $newname.".".$endung;
 				if(move_uploaded_file($_FILES[$filefieldname]['tmp_name'],$modulpath.$galdir.$dir."/".$new_filename)){
-	                $return = array("status"	=> true,
+					$return = array("status"	=> true,
 									"message"	=> "Datei wurde erfolgreich in die Galerie hochgeladen.",
 									"filename"	=> $new_filename,
 									"orgname"	=> $_FILES[$filefieldname]['name'],
@@ -510,15 +510,6 @@ if($fileType == "jpeg") $fileType = "jpg";
 // Überprüfen ob Quelldatei überhaupt exisiert
 if(file_exists($path.$sourcefilename)){
 
-	// Vorhandenes Thumbnail überschreiben oder nicht?
-	if(!$replace && file_exists($path.$filename.$suffix.".".$fileType))
-		return $path.$filename.$suffix.".".$fileType;
-	elseif($replace && file_exists($path.$filename.$suffix.".".$fileType)){
-		@clearstatcache();  
-		@chmod($path.$filename.$suffix.".".$fileType, 0777);
-		@unlink($path.$filename.$suffix.".".$fileType);
-		}
-
 	if($fileType == "jpg" || $fileType == "png"){
 		list($source_width, $source_height) = getimagesize($sourcefile);
 		$source_height_org = $source_height;
@@ -578,6 +569,16 @@ if(file_exists($path.$sourcefilename)){
 
 		// Create a jpeg out of the modified picture
 		imagecopyresampled($echofile_id, $sourcefile_id, 0, 0, $c1['x'], $c1['y'], $picwidth, $picheight, $source_width, $source_height);
+		
+		// Vorhandenes Thumbnail überschreiben oder nicht?
+		if(!$replace && file_exists($path.$filename.$suffix.".".$fileType))
+			return $path.$filename.$suffix.".".$fileType;
+		elseif($replace && file_exists($path.$filename.$suffix.".".$fileType)){
+			@clearstatcache();
+			@chmod($path.$filename.$suffix.".".$fileType, 0777);
+			@unlink($path.$filename.$suffix.".".$fileType);
+			}		
+		
 		switch($fileType){
 		  case('png'):
 			imagepng($echofile_id,$path.$filename.$suffix.".".$fileType);
