@@ -39,7 +39,6 @@ if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($
 				if($info){
 					$return['width'] = $info[0];
 					$return['height'] = $info[1];
-					//$return['mime'] = $info['mime'];
 					}
 				}
 			else{
@@ -49,18 +48,16 @@ if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($
 	
 			_01gallery_countPics($_GET['galid']);
 			
-			if (isset($_REQUEST['response']) && $_REQUEST['response'] == 'xml'){
+			if(isset($_REQUEST['response']) && $_REQUEST['response'] == 'xml'){
 				// header('Content-type: text/xml');
-			
-				echo '<response>';
+				echo "<response>";
 				foreach ($return as $key => $value){
 					echo "<$key><![CDATA[$value]]></$key>";
-				}
-				echo '</response>';
+					}
+				echo "</response>";
 				}
 			else{
-				// header('Content-type: application/json');
-		
+				// header('Content-type: application/json');		
 				echo json_encode($return);
 				}
 			}
