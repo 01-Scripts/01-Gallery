@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2010 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2011 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Upload und Import von Bildern in Galerien
-	#fv.2002#
+	#fv.202#
 */
 
 if($userdata['uploadpics'] >= 1){
@@ -222,7 +222,7 @@ if(isset($count_erfolg) && $count_erfolg > 0){
 </p>
 
 <?php if(!strchr($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0")){ ?>
-<form action="_ajaxloader.php?SID=<?php echo htmlspecialchars(session_id()); ?>&amp;modul=<?php echo $modul; ?>&amp;ajaxaction=fancyupload&amp;galid=<?PHP echo $_GET['galid']; ?>" method="post" enctype="multipart/form-data" id="fancy-form">
+<form action="_ajaxloader.php?SID=<?php echo htmlspecialchars(session_id()); ?>&amp;modul=<?php echo $modul; ?>&amp;ajaxaction=fancyupload&amp;galid=<?PHP echo $_GET['galid']; ?><?php if($flag_sessionbugfix){ echo "&amp;sessiondata=".urlencode(session_encode()); } ?>" method="post" enctype="multipart/form-data" id="fancy-form">
 
 <div id="fancy-status" class="hide">
 <p>
@@ -370,5 +370,4 @@ if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 }
 else $flag_loginerror = true;
 
-// 01-Gallery V2 Copyright 2006-2010 by Michael Lorer - 01-Scripts.de
 ?>
