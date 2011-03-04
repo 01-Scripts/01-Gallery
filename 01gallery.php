@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2011 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01gallery
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.2001#
+	#fv.202#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -59,7 +59,13 @@ if(!isset($_REQUEST[$names['picid']]))	$_REQUEST[$names['picid']]	= "";
 if(!isset($_REQUEST[$names['picpage']]))$_REQUEST[$names['picpage']]= "";
 if(!isset($_REQUEST[$names['action']])) $_REQUEST[$names['action']]	= "";
 
-if(!isset($galid) || empty($galid)) $galid	=	$_REQUEST[$names['galid']];
+if(isset($galid) && !empty($galid)){
+    $gals_allids = "";
+    $gals_allids = _01gallery_getGallerysRek($galid,0,-1,"echoSubIDs").$galid;
+    $gals_allids = explode("|",$gals_allids);
+    array_splice($gals_allids,0,1);
+    }
+if(!isset($galid) || empty($galid) || (isset($gals_allids) && is_array($gals_allids) && !empty($_REQUEST[$names['galid']]) && in_array($_REQUEST[$names['galid']],$gals_allids))) $galid = $_REQUEST[$names['galid']];
 $galpage=	$_REQUEST[$names['galpage']];
 if(!isset($picid) || empty($picid) || isset($_REQUEST[$names['picid']]) && !empty($_REQUEST[$names['picid']]) && is_numeric($_REQUEST[$names['picid']]) && $_REQUEST[$names['picid']] > 0)
 	$picid	=	$_REQUEST[$names['picid']];

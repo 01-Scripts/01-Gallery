@@ -222,6 +222,8 @@ if(!function_exists("_01gallery_getGallerysRek")){
 function _01gallery_getGallerysRek($parentid,$deep=0,$maxdeep=-1,$callfunction="",$givedeeperparam="",$excludebranch=""){
 global $mysql_tables;
 
+$return_ids = "";
+
 // Abbruch, falls $deep = 0 erreicht wurde
 if($maxdeep == 0) return true;
 
@@ -232,13 +234,21 @@ else
 
 $list = mysql_query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($parentid)."'".$exclude." ORDER BY sortid DESC");
 while($row = mysql_fetch_assoc($list)){
-	if(!empty($callfunction) && function_exists($callfunction)) call_user_func($callfunction,$row,$deep,$givedeeperparam);
-	
-	// Rekursion
-	_01gallery_getGallerysRek($row['id'],($deep+1),($maxdeep-1),$callfunction,$givedeeperparam,$excludebranch);
-	}
+	if(!empty($callfunction) && function_exists($callfunction) && $callfunction != "echoSubIDs") call_user_func($callfunction,$row,$deep,$givedeeperparam);
 
-return true;
+    // Rekursion
+    if($callfunction == "echoSubIDs")
+        $return_ids .= _01gallery_getGallerysRek($row['id'],($deep+1),($maxdeep-1),$callfunction,$givedeeperparam,$excludebranch)."|".$row['id'];
+    else
+        _01gallery_getGallerysRek($row['id'],($deep+1),($maxdeep-1),$callfunction,$givedeeperparam,$excludebranch);
+	}
+	
+if($callfunction == "echoSubIDs" && !empty($return_ids))
+    return $return_ids."|";
+elseif($callfunction == "echoSubIDs")
+    return "";
+else
+    return true;
 
 }
 }
