@@ -27,6 +27,7 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 		// Vorhandene Bildnamen in Array einlesen
 		$pictures = array();
 		$x = 0;
+		$new_sortid = 0;
 		$list = mysql_query("SELECT sortorder,filename FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($_GET['galid'])."' ORDER BY sortorder DESC");
 		while($row = mysql_fetch_assoc($list)){
 			if($x == 0) $new_sortid = ($row['sortorder']+1);
@@ -356,12 +357,6 @@ if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 	else
 		$flag_loginerror = true;
 	}
-
-
-
-
-
-
 
 
 

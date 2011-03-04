@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2010 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2011 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bildergalerie ACP-Startseite = Galerien-Übersicht & Galerien anlegen
-	#fv.2002#
+	#fv.202#
 */
 
 
@@ -14,6 +14,7 @@
 if(isset($_POST['do']) && $_POST['do'] == "add_gal" &&
    isset($_POST['galeriename']) && !empty($_POST['galeriename']) && $userdata['newgal'] == 1){
     // Höchste momentane Sortorder bestimmen:
+	$new_sortid = 0;
 	$list = mysql_query("SELECT sortid FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($_POST['subof'])."' ORDER BY sortid DESC LIMIT 1");
 	while($row = mysql_fetch_array($list)){
 		$new_sortid = ($row['sortid']+1);
@@ -32,7 +33,7 @@ if(isset($_POST['do']) && $_POST['do'] == "add_gal" &&
 				'".mysql_real_escape_string($_POST['password'])."',
 				'".mysql_real_escape_string($_POST['galeriename'])."',
 				'".mysql_real_escape_string(stripslashes($_POST['textfeld']))."', 
-				'', 
+				'0', 
 				'0', 
 				'".$userdata['id']."',
 				'".$comments."',
@@ -551,5 +552,4 @@ else
 
 	}
 	
-// 01-Gallery V2 Copyright 2006-2010 by Michael Lorer - 01-Scripts.de
 ?>
