@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Artikelsystem V3 - Copyright 2006-2008 by Michael Lorer - 01-Scripts.de
+	01-Artikelsystem V3 - Copyright 2006-2011 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01article
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.2010#
+	#fv.202#
 */
 
 /* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
@@ -36,6 +36,31 @@ mysql_query("UPDATE ".$mysql_tables['pics']." SET uid='0' WHERE uid='".mysql_rea
 return TRUE;
 }
 }
+
+// Funktion wird zentral aufgerufen, wenn das Modul gelöscht werden soll
+/*
+RETURN: TRUE
+*/
+if(!function_exists("_01gallery_DeleteModul")){
+function _01gallery_DeleteModul(){
+global $mysql_tables,$modul;
+
+$modul = mysql_real_escape_string($modul);
+
+// MySQL-Tabellen löschen
+mysql_query("DROP TABLE `".$mysql_tables['gallery']."`");
+mysql_query("DROP TABLE `".$mysql_tables['pics']."`");
+
+// Rechte entfernen
+mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_editgal`");
+mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_newgal`");
+mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_uploadpics`");
+
+
+return TRUE;
+}
+}
+
 
 
 
@@ -820,5 +845,4 @@ return $errorid;
 }
 }
 
-// 01-Gallery V2 Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
 ?>
