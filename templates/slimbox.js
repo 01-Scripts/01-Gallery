@@ -426,7 +426,7 @@ var Slimbox = (function() {
 		
 		if (options.changeLocation && clicked == 1){
 			var urlarr = {};
-			parse_str(substr(this.search, 1), urlarr);
+			parse_str(substr(this.document.URL, 1), urlarr);
 			document.location = options.link_url+options.name_galid+'='+urlarr[options.name_galid]+'&'+options.name_picfilename+'='+basename(activeURL);
 			}
 		return false;

@@ -687,7 +687,7 @@ if($endung == "gif" && file_exists($path.$sourcefilename)){
 		return "<img src=\"".$path.$sourcefilename."\" alt=\"Bild-Thumbnail (gif)\" width=\"".$w."\" />";
 	}
 else{
-	if(file_exists($path_intern.$filename.$suffix.".".$endung))
+	if(file_exists($path.$filename.$suffix.".".$endung))
 		return "<img src=\"".$path.$filename.$suffix.".".$endung."\" alt=\"Bild-Thumbnail\" />";
 	else{
 		$img = _01gallery_makeThumbs($path,$sourcefilename,false,$suffix,$w,$tb_type);

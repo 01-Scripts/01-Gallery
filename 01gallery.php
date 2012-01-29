@@ -73,7 +73,7 @@ $picpage=	$_REQUEST[$names['picpage']];
 
 $filename = $_SERVER['PHP_SELF'];
 $system_link_gal = $filename."?".$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage;
-$system_link_pic = $system_link_gal."&amp;".$names['picpage']."=".$picpage."&amp;".$names['picid']."=".$_REQUEST[$names['picid']];
+$system_link_pic = $system_link_gal."&amp;".$names['picpage']."=".$picpage;
 
 // Cookie auslesen
 if(isset($_COOKIE["c_".$modul.'_galpwcookie']) && !empty($_COOKIE["c_".$modul.'_galpwcookie']))
