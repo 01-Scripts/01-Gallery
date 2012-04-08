@@ -22,7 +22,7 @@ START TRANSACTION;
 INSERT INTO 01prefix_settings (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
 ('#modul_idname#', 1, 1, 1, 'gallerysettings', 'Einstellungen', NULL, '', '', NULL, NULL, NULL, 0, 0),
 ('#modul_idname#', 0, 1, 6, 'galpic_size', 'Maximale Dateigr&ouml;&szlig;e (Galeriebilder)', '', 'text', '5', 'KB', '1024', '2000', 0, 0),
-('#modul_idname#', 0, 1, 7, 'thumbnail_type','Thumbnails','&Auml;nderung wirkt sich nur auf Thumbnails neu hochgeladener Bilder aus.<br />Alte Thumbnails deshalb ggf. l&ouml;schen (Men&uuml;punkt Bilderalben)','Dynamische Gr&ouml;&szlig;e (Seitenverh&auml;ltnis beibehalten)|Feste Gr&ouml;&szlig;e (Bilder werden zugeschnitten)','dyn|fix','','fix','fix','0','0'),
+('#modul_idname#', 0, 1, 7, 'thumbnail_type','Thumbnails','<a href=\"javascript:modulpopup(''01gallery'',''recreate_thumbnails'','''','''','''',510,450);\">Thumbnails neu generieren</a>','Dynamische Gr&ouml;&szlig;e (Seitenverh&auml;ltnis beibehalten)|Feste Gr&ouml;&szlig;e (Bilder werden zugeschnitten)','dyn|fix','','fix','fix','0','0'),
 ('#modul_idname#', 0, 1, 8, 'thumbwidth', 'Max. Kantenl&auml;nge f&uuml;r dynam. Thumbnails', 'Maximale Kantenl&auml;nge in Pixeln (ohne Einheit) angeben.', 'text', '5', 'Pixel', '120', '120', 0, 0),
 ('#modul_idname#', 0, 1, 9, 'fix_tb_size','Feste Thumbnail-Gr&ouml;&szlig;e','Breite und H&ouml;he in Pixeln ohne Einheit angeben.','text','10','Pixel (Breite x H&ouml;he)','x','100x75',0,0),
 ('#modul_idname#', 1, 2, 2, 'csssettings', 'CSS-Einstellungen', '', '', '', '', '', '', 0, 0),

@@ -1,13 +1,13 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2010 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
-	Modul:		01article
+	Modul:		01gallery
 	Dateiinfo: 	Modulspezifische Grundeinstellungen, Variablendefinitionen etc.
 				Wird automatisch am Anfang jeden Modulaufrufs automatisch includiert.
-	#fv.2002#
+	#fv.210#
 */
 
 // Modul-Spezifische MySQL-Tabellen
@@ -35,6 +35,7 @@ $galdir		= "galerien/";			// Verzeichnis mit Bildergalerien
 // Weitere Variablen
 define('ACP_PER_PAGE2', 20);		// Einträge pro Seite im ACP
 $max_uploads		= 10;			// Anzahl an Datei-Upload-Feldern
+$gen_thumbs_max     = 50;           // Max. Anzahl an Thumbnails, die gleichzeitig generiert werden dürfen
 $oldfilename_length = 10;			// Länge des Anteils des original Dateinamens nach dem Upload
 $anz_streampics		= 2;			// Anzahl Bilder im Thumbnail-Stream unterhalb der Detailansicht (Jeweils $anz_streampics vor und nach dem aktuellen Bild) -> Gesamtzahl = $anz_streampics*2+1
 $smallstreampicsize = 40;			// Max. Kantenlänge (px) der Bilder für den kleinen Bilderstream ($flag_smallstream)
@@ -64,6 +65,4 @@ define('ACP_GAL_TB_WIDTH', 75); 	// Max. Kantenlänge von Bildern im Galerie-ACP
 $import_max_count	= 10;			// Maximalanzahl an Bildern, die in einem Schritt importiert werden.
 $supported_pictypes = array("jpg","jpeg","png","gif");		// Unterstützte Dateitypen
 
-
-// 01-Gallery V2 Copyright 2006-2010 by Michael Lorer - 01-Scripts.de
 ?>
