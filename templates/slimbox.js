@@ -4,266 +4,10 @@
 	MIT-style license.
 */
 
-function basename(path, suffix) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Ash Searle (http://hexmen.com/blog/)
-    // +   improved by: Lincoln Ramsay
-    // +   improved by: djmix
-    // *     example 1: basename('/www/site/home.htm', '.htm');
-    // *     returns 1: 'home'
- 
-    var b = path.replace(/^.*[\/\\]/g, '');
-    
-    if (typeof(suffix) == 'string' && b.substr(b.length-suffix.length) == suffix) {
-        b = b.substr(0, b.length-suffix.length);
-    }
-    
-    return b;
-}
-
-function urldecode( str ) {
-    // Decodes URL-encoded string  
-    // 
-    // version: 905.412
-    // discuss at: http://phpjs.org/functions/urldecode
-    // +   original by: Philip Peterson
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +      input by: AJ
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Brett Zamir (http://brettz9.blogspot.com)
-    // +      input by: travc
-    // +      input by: Brett Zamir (http://brettz9.blogspot.com)
-    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Lars Fischer
-    // %          note 1: info on what encoding functions to use from: http://xkr.us/articles/javascript/encode-compare/
-    // *     example 1: urldecode('Kevin+van+Zonneveld%21');
-    // *     returns 1: 'Kevin van Zonneveld!'
-    // *     example 2: urldecode('http%3A%2F%2Fkevin.vanzonneveld.net%2F');
-    // *     returns 2: 'http://kevin.vanzonneveld.net/'
-    // *     example 3: urldecode('http%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3Dphp.js%26ie%3Dutf-8%26oe%3Dutf-8%26aq%3Dt%26rls%3Dcom.ubuntu%3Aen-US%3Aunofficial%26client%3Dfirefox-a');
-    // *     returns 3: 'http://www.google.nl/search?q=php.js&ie=utf-8&oe=utf-8&aq=t&rls=com.ubuntu:en-US:unofficial&client=firefox-a'
-    
-    var histogram = {}, ret = str.toString(), unicodeStr='', hexEscStr='';
-    
-    var replacer = function(search, replace, str) {
-        var tmp_arr = [];
-        tmp_arr = str.split(search);
-        return tmp_arr.join(replace);
-    };
-    
-    // The histogram is identical to the one in urlencode.
-    histogram["'"]   = '%27';
-    histogram['(']   = '%28';
-    histogram[')']   = '%29';
-    histogram['*']   = '%2A';
-    histogram['~']   = '%7E';
-    histogram['!']   = '%21';
-    histogram['%20'] = '+';
-    histogram['\u00DC'] = '%DC';
-    histogram['\u00FC'] = '%FC';
-    histogram['\u00C4'] = '%D4';
-    histogram['\u00E4'] = '%E4';
-    histogram['\u00D6'] = '%D6';
-    histogram['\u00F6'] = '%F6';
-    histogram['\u00DF'] = '%DF'; 
-    histogram['\u20AC'] = '%80';
-    histogram['\u0081'] = '%81';
-    histogram['\u201A'] = '%82';
-    histogram['\u0192'] = '%83';
-    histogram['\u201E'] = '%84';
-    histogram['\u2026'] = '%85';
-    histogram['\u2020'] = '%86';
-    histogram['\u2021'] = '%87';
-    histogram['\u02C6'] = '%88';
-    histogram['\u2030'] = '%89';
-    histogram['\u0160'] = '%8A';
-    histogram['\u2039'] = '%8B';
-    histogram['\u0152'] = '%8C';
-    histogram['\u008D'] = '%8D';
-    histogram['\u017D'] = '%8E';
-    histogram['\u008F'] = '%8F';
-    histogram['\u0090'] = '%90';
-    histogram['\u2018'] = '%91';
-    histogram['\u2019'] = '%92';
-    histogram['\u201C'] = '%93';
-    histogram['\u201D'] = '%94';
-    histogram['\u2022'] = '%95';
-    histogram['\u2013'] = '%96';
-    histogram['\u2014'] = '%97';
-    histogram['\u02DC'] = '%98';
-    histogram['\u2122'] = '%99';
-    histogram['\u0161'] = '%9A';
-    histogram['\u203A'] = '%9B';
-    histogram['\u0153'] = '%9C';
-    histogram['\u009D'] = '%9D';
-    histogram['\u017E'] = '%9E';
-    histogram['\u0178'] = '%9F';
-
-    for (unicodeStr in histogram) {
-        hexEscStr = histogram[unicodeStr]; // Switch order when decoding
-        ret = replacer(hexEscStr, unicodeStr, ret); // Custom replace. No regexing
-    }
-    
-    // End with decodeURIComponent, which most resembles PHP's encoding functions
-    ret = decodeURIComponent(ret);
-
-    return ret;
-}
-
-function parse_str(str, array){
-    // Parses GET/POST/COOKIE data and sets global variables  
-    // 
-    // version: 905.412
-    // discuss at: http://phpjs.org/functions/parse_str
-    // +   original by: Cagri Ekin
-    // +   improved by: Michael White (http://getsprink.com)
-    // +    tweaked by: Jack
-    // +   bugfixed by: Onno Marsman
-    // +   reimplemented by: stag019
-    // +   bugfixed by: Brett Zamir (http://brettz9.blogspot.com)
-    // +   bugfixed by: stag019
-	// -    depends on: urldecode
-    // %        note 1: When no argument is specified, will put variables in global scope.
-    // *     example 1: var arr = {};
-    // *     example 1: parse_str('first=foo&second=bar', arr);
-    // *     results 1: arr == { first: 'foo', second: 'bar' }
-    // *     example 2: var arr = {};
-    // *     example 2: parse_str('str_a=Jack+and+Jill+didn%27t+see+the+well.', arr);
-    // *     results 2: arr == { str_a: "Jack and Jill didn't see the well." }
-	var glue1 = '=', glue2 = '&', array2 = String(str).split(glue2),
-	i, j, chr, tmp, key, value, bracket, keys, evalStr,
-	fixStr = function(str)
-	{
-		return urldecode(str).replace(/([\\"'])/g, '\\$1').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
-	};
-
-	if(!array)
-	{
-		array = window;
-	}
-
-	for(i = 0; i < array2.length; i++)
-	{
-		tmp = array2[i].split(glue1);
-		if(tmp.length < 2)
-		{
-			tmp = [tmp, ''];
-		}
-		key   = fixStr(tmp[0]);
-		value = fixStr(tmp[1]);
-		while(key.charAt(0) === ' ')
-		{
-			key = key.substr(1);
-		}
-        if(key.indexOf('\0') !== -1)
-        {
-            key = key.substr(0, key.indexOf('\0'));
-        }
-		if(key && key.charAt(0) !== '[')
-		{
-			keys    = [];
-			bracket = 0;
-			for(j = 0; j < key.length; j++)
-			{
-				if(key.charAt(j) === '[' && !bracket)
-				{
-					bracket = j + 1;
-				}
-				else if(key.charAt(j) === ']')
-				{
-					if(bracket)
-					{
-						if(!keys.length)
-						{
-							keys.push(key.substr(0, bracket - 1));
-						}
-						keys.push(key.substr(bracket, j - bracket));
-						bracket = 0;
-						if(key.charAt(j + 1) !== '[')
-						{
-							break;
-						}
-					}
-				}
-			}
-			if(!keys.length)
-			{
-				keys = [key];
-			}
-			for(j = 0; j < keys[0].length; j++)
-			{
-				chr = keys[0].charAt(j);
-				if(chr === ' ' || chr === '.' || chr === '[')
-				{
-					keys[0] = keys[0].substr(0, j) + '_' + keys[0].substr(j + 1);
-				}
-				if(chr === '[')
-				{
-					break;
-				}
-			}
-			evalStr = 'array';
-			for(j = 0; j < keys.length; j++)
-			{
-				key = keys[j];
-				if((key !== '' && key !== ' ') || j === 0)
-				{
-					key = "'" + key + "'";
-				}
-				else
-				{
-					key = eval(evalStr + '.push([]);') - 1;
-				}
-				evalStr += '[' + key + ']';
-				if(j !== keys.length - 1 && eval('typeof ' + evalStr) === 'undefined')
-				{
-					eval(evalStr + ' = [];');
-				}
-			}
-			evalStr += " = '" + value + "';\n";
-			eval(evalStr);
-		}
-	}
-}
-
-function substr( f_string, f_start, f_length ) {
-    // Returns part of a string  
-    // 
-    // version: 810.1317
-    // discuss at: http://phpjs.org/functions/substr
-    // +     original by: Martijn Wieringa
-    // +     bugfixed by: T.Wild
-    // +      tweaked by: Onno Marsman
-    // *       example 1: substr('abcdef', 0, -1);
-    // *       returns 1: 'abcde'
-    // *       example 2: substr(2, 0, -6);
-    // *       returns 2: ''
-    f_string += '';
-
-    if(f_start < 0) {
-        f_start += f_string.length;
-    }
-
-    if(f_length == undefined) {
-        f_length = f_string.length;
-    } else if(f_length < 0){
-        f_length += f_string.length;
-    } else {
-        f_length += f_start;
-    }
-
-    if(f_length < f_start) {
-        f_length = f_start;
-    }
-
-    return f_string.substring(f_start, f_length);
-}
-
 var Slimbox = (function() {
 
 	// Global variables, accessible to Slimbox only
-	var win = window, ie6 = Browser.Engine.trident4, options, images, activeImage = -1, activeURL, prevImage, nextImage, compatibleOverlay, middle, centerWidth, centerHeight, clicked = 0,
+	var win = window, ie6 = Browser.Engine.trident4, options, images, activeImage = -1, activeURL, prevImage, nextImage, compatibleOverlay, middle, centerWidth, centerHeight,
 
 	// Preload images
 	preload = {}, preloadPrev = new Image(), preloadNext = new Image(),
@@ -339,12 +83,10 @@ var Slimbox = (function() {
 	}
 
 	function previous() {
-		clicked = 1;
 		return changeImage(prevImage);
 	}
 
 	function next() {
-		clicked = 1;
 		return changeImage(nextImage);
 	}
 
@@ -423,12 +165,7 @@ var Slimbox = (function() {
 			center.style.display = "none";
 			fxOverlay.cancel().chain(setup).start(0);
 		}
-		
-		if (options.changeLocation && clicked == 1){
-			var urlarr = {};
-			parse_str(substr(this.document.URL, 1), urlarr);
-			document.location = options.link_url+options.name_galid+'='+urlarr[options.name_galid]+'&'+options.name_picfilename+'='+basename(activeURL);
-			}
+
 		return false;
 	}
 
@@ -491,11 +228,7 @@ var Slimbox = (function() {
 				counterText: "Image {x} of {y}",	// Translate or change as you wish, or set it to false to disable counter text for image groups
 				closeKeys: [27, 88, 67],		// Array of keycodes to close Slimbox, default: Esc (27), 'x' (88), 'c' (67)
 				previousKeys: [37, 80],			// Array of keycodes to navigate to the previous image, default: Left arrow (37), 'p' (80)
-				nextKeys: [39, 78],			// Array of keycodes to navigate to the next image, default: Right arrow (39), 'n' (78)
-				name_galid: "galid",
-				name_picfilename: "picfilename",
-				link_url: "",
-				changeLocation: false
+				nextKeys: [39, 78]			// Array of keycodes to navigate to the next image, default: Right arrow (39), 'n' (78)
 			}, _options || {});
 
 			// Setup effects
