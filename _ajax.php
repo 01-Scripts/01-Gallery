@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests
-	#fv.2001#
+	#fv.210#
 */
 
 // Fancy-Upload (Bilder hochladen)
@@ -213,7 +213,6 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
         @unlink($modulpath.$galdir.$dir."/".$split[0]."_tb.".$split[1]);
         @unlink($modulpath.$galdir.$dir."/".$split[0]."_acptb.".$split[1]);
         
-        print_r($statrow);;
         mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($_REQUEST['id'])."'");
         
         _01gallery_countPics($statrow['galid']);
@@ -228,5 +227,4 @@ else
 	echo "<script type=\"text/javascript\"> Stop_Loading_standard(); Failed_delfade(); </script>";
 	
 	
-// 01-Gallery V2 Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
 ?>
