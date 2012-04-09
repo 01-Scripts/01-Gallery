@@ -500,6 +500,7 @@ return $return;
   $replace				true/false	true: vorhandenes Thumbnail wird ggf. ersetzt
   $suffix				Suffix für das generierte Thumbnail (Standard: "_tb")
   $resize				Max. Kantenlänge, auf die das Bild gerisized werden soll
+  $tb_type              Thumbnail-Art dyn|fix (dynamisch oder fest)
 
 RETURN: path+filename(inkl. Suffix)+Endung des generierten Thumbnails / false
   */
@@ -649,6 +650,7 @@ else
 /*$path						Pfad zum entsprechenden Galerieordner
   $sourcefilename			Dateiname (des normalen Bildes)
   $suffix					Gewünschtes Thumbnail-Suffix (Standard = "_tb")
+  $smallstream              Thumbnails für die Ansicht im Smallstream generieren?
 
 RETURN: fertigen HTML <img>-Tag
   */
@@ -855,6 +857,41 @@ if($flag_breadcrumps)
 	echo "<h2 class=\"breadcrumps\"><a href=\"".$filename."#\">".$text_bilderlaben."</a> &raquo; ".$crumps."</h2>";
 
 return $errorid;	
+}
+}
+
+
+
+
+
+
+
+
+
+// Überprüfen ob für das Bild beim Upload ein Resize vorgenommen werden soll/muss
+/*$source_properties		Array(0=width,1=height) des Ausgangsbildes
+  $max_properties			Array(0=width,1=height) mit den maximalen Größenangaben
+
+RETURN: max. Kantenlänge für Resize ODER 0
+  */
+if(!function_exists("_01gallery_checkResize")){
+function _01gallery_checkResize($source_properties, $max_properties){
+global $settings;
+
+// Check Parameter:
+if($settings['resize_pics_on_upload'] == 0 || !isset($source_properties) || !is_array($source_properties) || !isset($max_properties) || !is_array($source_properties)) return 0;
+if(!is_numeric($source_properties['0']) || !is_numeric($source_properties['1']) || !is_numeric($max_properties['0']) || !is_numeric($max_properties['1'])) return 0;
+
+if($source_properties['0'] > $max_properties['0'] || $source_properties['1'] > $max_properties['1']){
+    // Längere Seite = width
+    if($source_properties['0'] >= $source_properties['1']){
+        return $max_properties['0'];
+        }
+    else return $max_properties['1'];
+    }
+
+return 0;
+
 }
 }
 

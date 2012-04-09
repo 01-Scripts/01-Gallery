@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2011 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Upload und Import von Bildern in Galerien
-	#fv.202#
+	#fv.210#
 */
 
 if($userdata['uploadpics'] >= 1){
@@ -32,14 +32,15 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 		while($row = mysql_fetch_assoc($list)){
 			if($x == 0) $new_sortid = ($row['sortorder']+1);
 			$pictures[]	= stripslashes($row['filename']);
-			$split = split('[.]', stripslashes($row['filename']));
+			$split = explode('.', stripslashes($row['filename']));
+            $pictures[]	= stripslashes($split[0]."_big.".$split[1]);
 			$pictures[]	= stripslashes($split[0]."_tb.".$split[1]);
 			$pictures[]	= stripslashes($split[0]."_acptb.".$split[1]);
 			$x = 1;
 			}
 		
 		// Verzeichnisinhalt auflisten und alle Dateien, die nicht in $pictures enthalen sind umbennnen und aufnehmen
-		$verz = opendir($modulpath.$galdir._01gallery_getGalDir($_GET['galid'],$statrow['password']));
+		$verz = opendir($modulpath.$galdir.$dir);
 
 		$cup = 0;
 		$imported = "";
@@ -57,6 +58,18 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 					if(rename($modulpath.$galdir.$dir."/".$file,$modulpath.$galdir.$dir."/".$newname)){
 						$imported .= $file."<br />\n";
 						$imported_files[] = $newname;
+						$split = explode('.', strtolower($newname));
+						
+						// Image-Resize?
+                        $info = @getimagesize($modulpath.$galdir.$dir."/".$newname);
+                        $resize_value = _01gallery_checkResize($info,explode("x",str_replace(" ","",strtolower($settings['resize_maxpicsize']))));
+                        if($resize_value > 0){
+                            // Filename als zu Filename_big umbenennen
+                            copy($modulpath.$galdir.$dir."/".$newname,$modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1]);
+        
+                            _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$newname,true,"",$resize_value,"dyn");
+                            $pictures[]	= stripslashes($split[0]."_big.".$split[1]);
+                            }
 						
 						// ggf. eigenen Bildtitel berücksichtigen
 						if(isset($_GET['bildtitle']) && $_GET['bildtitle'] == "own" && isset($_GET['owntitle']) && !empty($_GET['owntitle']))
@@ -84,7 +97,6 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 						
 						// Soeben umbenannte und generierte Bilder in den Array einfügen, damit die Bilder nicht auch gleich importiert werden
 						$pictures[]	= stripslashes($newname);
-						$split = split('[.]', stripslashes($newname));
 						$pictures[]	= stripslashes($split[0]."_tb.".$split[1]);
 						$pictures[]	= stripslashes($split[0]."_acptb.".$split[1]);
 						}
