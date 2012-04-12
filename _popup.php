@@ -47,7 +47,7 @@ if(isset($_GET['action']) && $_GET['action'] == "do_recreate_thumbnails" && isse
         $list = mysql_query($query);
         $num_pics = mysql_num_rows($list);
         while($row = mysql_fetch_assoc($list)){
-            _01gallery_getThumb($modulpath.$galdir.$dir."/",$row['filename'],"_tb",FALSE,TRUE);
+            _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$row['filename'],TRUE);
             }
             
         if($num_pics == $gen_thumbs_max){

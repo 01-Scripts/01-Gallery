@@ -514,8 +514,8 @@ return $return;
   $sourcefilename		Dateiname des Bildes (mit Endung aber ohne Suffixe)
   $replace				true/false	true: vorhandenes Thumbnail wird ggf. ersetzt
   $suffix				Suffix für das generierte Thumbnail (Standard: "_tb")
-  $resize				Max. Kantenlänge, auf die das Bild gerisized werden soll
-  $rez_type             Resize-Art dyn|fix (dynamisch oder fest)
+  $resize				Größenangabe (B x H), auf die das Bild verkleinert werden soll (Standard: $settings['tb_size'])
+  $rez_type             Resize-Art dyn|fix (dynamisch oder fest) (Standard: $settings['thumbnail_type'])
 
 RETURN: path+filename(inkl. Suffix)+Endung des generierten Thumbnails / false
   */
@@ -646,7 +646,7 @@ else
 RETURN: fertigen HTML <img>-Tag
   */
 if(!function_exists("_01gallery_getThumb")){
-function _01gallery_getThumb($path,$sourcefilename,$suffix="_tb",$smallstream=FALSE,$recreate=FALSE){
+function _01gallery_getThumb($path,$sourcefilename,$suffix="_tb",$smallstream=false){
 global $settings,$picuploaddir,$smallstreampicsize;
 
 
@@ -680,13 +680,10 @@ if($endung == "gif" && file_exists($path.$sourcefilename)){
 		return "<img src=\"".$path.$sourcefilename."\" alt=\"Bild-Thumbnail (gif)\" width=\"".$w."\" />";
 	}
 else{
-	if($recreate && file_exists($path.$filename.$suffix.".".$endung))
-	   @unlink($path.$filename.$suffix.".".$endung);    
-        
-    if(file_exists($path.$filename.$suffix.".".$endung))
+	if(file_exists($path.$filename.$suffix.".".$endung))
 		return "<img src=\"".$path.$filename.$suffix.".".$endung."\" alt=\"Bild-Thumbnail\" />";
 	else{
-		$img = _01gallery_makeThumbs($path,$sourcefilename,FALSE,$suffix,$w,$tb_type);
+		$img = _01gallery_makeThumbs($path,$sourcefilename,false,$suffix,$w,$tb_type);
 		if(isset($img) && !empty($img))
 			return "<img src=\"".$img."\" alt=\"Bild-Thumbnail\"".$style." />";
 		else
