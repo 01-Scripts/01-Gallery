@@ -50,7 +50,6 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 			if($file != "." && $file != ".."){
 				// Überprüfen ob Bild schon in DB ist und ob die Dateiendung zulässig ist
 				if(!in_array($file,$pictures) && in_array(getEndung($file),$supported_pictypes)){
-				// Endlosschleife, die durch die Erzeugung von Thumbnails entstand, beheben (Thumbnails nicht importieren)
 					@clearstatcache();
 					@chmod($modulpath.$galdir.$dir."/".$file, 0777);
 					
@@ -58,16 +57,15 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 					if(rename($modulpath.$galdir.$dir."/".$file,$modulpath.$galdir.$dir."/".$newname)){
 						$imported .= $file."<br />\n";
 						$imported_files[] = $newname;
-						$split = explode('.', strtolower($newname));
+						$split = explode(".", strtolower($newname));
 						
 						// Image-Resize?
                         $info = @getimagesize($modulpath.$galdir.$dir."/".$newname);
-                        $resize_value = _01gallery_checkResize($info,explode("x",str_replace(" ","",strtolower($settings['resize_maxpicsize']))));
-                        if($resize_value > 0){
+                        if(_01gallery_checkResize($info)){
                             // Filename als zu Filename_big umbenennen
                             copy($modulpath.$galdir.$dir."/".$newname,$modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1]);
         
-                            _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$newname,true,"",$resize_value,"dyn");
+                            _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$newname,true,"",$settings['resize_maxpicsize'],"dyn");
                             $pictures[]	= stripslashes($split[0]."_big.".$split[1]);
                             }
 						
@@ -92,7 +90,7 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 						$cup++;
 						$new_sortid++;
 						
-						_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$newname,true,"_tb",$settings['thumbwidth']);
+						_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$newname);  // Standard-Thumbnail _tb
 						_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$newname,false,"_acptb",ACP_GAL_TB_WIDTH,"dyn");
 						
 						// Soeben umbenannte und generierte Bilder in den Array einfügen, damit die Bilder nicht auch gleich importiert werden
@@ -163,7 +161,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "upload_pic" && isset($_GET[
 			if(isset($_FILES['file_'.$x]['name']) && !empty($_FILES['file_'.$x]['name'])){
 				$upload_info = _01gallery_upload_2Gallery($_GET['galid'],"file_".$x,$_POST['title_'.$x],$_POST['beschreibung_'.$x]);
 				
-				if($upload_info['status']){
+				if($upload_info['status'] == 1){
 					$count_erfolg++;
 					$uploaded_pics[] = $upload_info['filename'];
 					}
@@ -191,7 +189,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "upload_pic" && isset($_GET[
 if(isset($count_error) && $count_error > 0){
 	echo "<p class=\"meldung_error\"><b>Beim Upload von ".($count_erfolg+$count_error)." Bildern traten ".$count_error." Fehlermeldungen auf:</b><br />";
 	foreach($sammel_errors as $error){
-		echo "&bull; ".$error['message']." <i>(Bild: ".$error['orgname'].")</i><br />";
+		echo "&bull; ".$error['error']." <i>(Bild: ".$error['name'].")</i><br />";
 		}
 	echo "</p>";
 	}
@@ -206,21 +204,10 @@ if(isset($count_erfolg) && $count_erfolg > 0){
 
 	echo "<ul class=\"cssgallery\">";
 	foreach($uploaded_pics as $pic){
-		$img = false;
-
-		// Thumbnails generieren:
-		_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$pic,true,"_tb",$settings['thumbwidth']);
-		$img = _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$pic,true,"_acptb",ACP_GAL_TB_WIDTH,"dyn");		// ACP-Thumbnail
-		if($img && !empty($img) && file_exists($img))
-			echo "<li><a href=\"".$modulpath.$galdir.$dir."/".$pic."\" class=\"lightbox\"><img src=\"".$img."\" alt=\"hochgeladenes Bild\" /></a></li>\n";
-		elseif(getEndung($pic) == "gif" && isset($pic) && file_exists($modulpath.$galdir.$dir."/".$pic)){
-			echo "<li><a href=\"".$modulpath.$galdir.$dir."/".$pic."\" class=\"lightbox\"><img src=\"".$modulpath.$galdir.$dir."/".$pic."\" width=\"".ACP_GAL_TB_WIDTH."\" alt=\"hochgeladenes Bild\" /></a></li>\n";
-			}
+		echo "<li><a href=\"".$modulpath.$galdir.$dir."/".$pic."\" class=\"lightbox\">"._01gallery_getThumb($modulpath.$galdir.$dir."/",$pic,"_acptb")."</a></li>\n";
 		}
 	echo "</ul>\n<br />";
 	}
-
-// Thumbnails der hochgeladenen Bilder ausgeben
 ?>
 
 <div id="upload1" style="display:block;">

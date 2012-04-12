@@ -17,10 +17,10 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "recreate_thumbnails"){
 <p>Thumbnails mit folgenden Einstellungen neu generieren:<br />
 <b>Art der Thumbnails:</b>
     <?php if($settings['thumbnail_type'] == "dyn")
-        echo "Dynamische Gr&ouml;&szlig;e (Seitenverh&auml;ltnis beibehalten)<br /><b>Max. Kantenlänge für dynam. Thumbnails:</b> ".$settings['thumbwidth']." Pixel";
+        echo "Dynamische Gr&ouml;&szlig;e (Seitenverh&auml;ltnis beibehalten)";
     else
-        echo "Feste Gr&ouml;&szlig;e (Bilder werden zugeschnitten)<br /><b>Thumbnail-Größe:</b> ".$settings['fix_tb_size']." Pixel (Breite x Höhe)"; ?>
-
+        echo "Feste Gr&ouml;&szlig;e (Bilder werden zugeschnitten)"; ?>
+    <br /><b>Thumbnail-Größe:</b> <?php echo $settings['tb_size']; ?> Pixel
 </p>
 <p class="meldung_hinweis">Abh&auml;ngig von der Anzahl an Bilderalben kann der folgende Prozess einige Zeit in Anspruch nehmen.</p>
 <p><b>Klicken Sie auf Start um nun alle existierenden Thumbnails neu zu generieren:</b></p>

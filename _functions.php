@@ -399,16 +399,17 @@ else return 0;
   $title			ggf. Bildtitel, der in der DB gespeichert werden soll
   $beschreibung		ggf. Beschreibungstext, der in der DB gespeichert werden soll
 
-RETURN: Array("status","message","filename","orgname","size","imgid");
+RETURN: Array("status","message","error","filename","name","size","imgid"[,"width","height"]);
   */
 if(!function_exists("_01gallery_upload_2Gallery")){
 function _01gallery_upload_2Gallery($galid,$filefieldname,$title="",$beschreibung=""){
 global $mysql_tables,$_FILES,$settings,$supported_pictypes,$galdir,$modulpath,$userdata;
 
-$return = array("status"	=> false,
-				"message"	=> "Beim Hochladen der Datei trat ein unvorhergesehener Fehler auf.",
+$return = array("status"	=> 0,
+				"message"	=> "",
+				"error"     => "Beim Hochladen der Datei trat ein unvorhergesehener Fehler auf.",
 				"filename"	=> "",
-				"orgname"	=> "",
+				"name"      => "",
 				"size"		=> 0,
 				"imgid"		=> 0);
 
@@ -430,15 +431,29 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 				$newname = _01gallery_makeFilename($_FILES[$filefieldname]['name'],$filefieldname);
 				$new_filename = $newname.".".$endung;
 				if(move_uploaded_file($_FILES[$filefieldname]['tmp_name'],$modulpath.$galdir.$dir."/".$new_filename)){
-					$return = array("status"	=> true,
-									"message"	=> "Datei wurde erfolgreich in die Galerie hochgeladen.",
-									"filename"	=> $new_filename,
-									"orgname"	=> $_FILES[$filefieldname]['name'],
-									"size"		=> $_FILES[$filefieldname]['size']);
+					$info = @getimagesize($modulpath.$galdir.$dir."/".$new_filename);
+                    $return = array("status"    => 1,
+									"message"   => "Datei wurde erfolgreich in die Galerie hochgeladen.",
+									"filename"  => $new_filename,
+									"name"      => $_FILES[$filefieldname]['name'],
+									"size"		=> $_FILES[$filefieldname]['size'],
+                                    "width"     => $info[0],
+                                    "height"    => $info[1]);
 
 	                //Chmod-Rechte für Dateien ggf setzen (644):
 	                @clearstatcache();
 	                @chmod($modulpath.$galdir.$dir."/".$new_filename, 0777);
+	                
+    				// Image-Resize?
+                    if(_01gallery_checkResize($info)){
+                        // Filename als zu Filename_big umbenennen
+                        copy($modulpath.$galdir.$dir."/".$new_filename,$modulpath.$galdir.$dir."/".$newname."_big.".$endung);
+    
+                        _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$new_filename,true,"",$settings['resize_maxpicsize'],"dyn");
+                        }
+    
+                    _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$new_filename);   // Standard-Thumbnail _tb
+    				_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$new_filename,false,"_acptb",ACP_GAL_TB_WIDTH,"dyn");		// ACP-Thumbnail
 					
 	                // Sortorder des neuen Bildes ermitteln
 					$list = mysql_query("SELECT sortorder FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC LIMIT 1");
@@ -472,15 +487,15 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 					$return['imgid'] = mysql_insert_id();
 	                }
 				else{
-					$fupload['msg'] = "Ein unbekannter Fehler ist aufgetreten oder es wurde keine Datei hochgeladen.";
+					$return['error'] = "Ein unbekannter Fehler ist aufgetreten oder es wurde keine Datei hochgeladen.";
 					}
 				}
-			else $return['message'] = "Fehler beim Upload: Die gew&auml;hlte Datei ist zu gro&szlig;.<br />Maximale Dateigr&ouml;&szlig;e: ".$settings['galpic_size']."KB";
+			else $return['error'] = "Fehler beim Upload: Die gew&auml;hlte Datei ist zu gro&szlig;.<br />Maximale Dateigr&ouml;&szlig;e: ".$settings['galpic_size']."KB";
 			}
-		else $return['message'] = "Fehler beim Upload: Die Dateiendung <i>".getEndung($_FILES[$filefieldname]['name'])."</i> wird nicht unterst&uuml;tzt.<br />Bitte nutzen Sie eine der unterst&uuml;tzten Dateiendungen: ".implode(",",$supported_pictypes)."";
+		else $return['error'] = "Fehler beim Upload: Die Dateiendung <i>".getEndung($_FILES[$filefieldname]['name'])."</i> wird nicht unterst&uuml;tzt.<br />Bitte nutzen Sie eine der unterst&uuml;tzten Dateiendungen: ".implode(",",$supported_pictypes)."";
 		}
 	}
-else $return['message'] = "Fehler beim Upload: Keine Galerie gew&auml;hlt.";
+else $return['error'] = "Fehler beim Upload: Keine Galerie gew&auml;hlt.";
 
 return $return;
 }
@@ -500,42 +515,27 @@ return $return;
   $replace				true/false	true: vorhandenes Thumbnail wird ggf. ersetzt
   $suffix				Suffix für das generierte Thumbnail (Standard: "_tb")
   $resize				Max. Kantenlänge, auf die das Bild gerisized werden soll
-  $tb_type              Thumbnail-Art dyn|fix (dynamisch oder fest)
+  $rez_type             Resize-Art dyn|fix (dynamisch oder fest)
 
 RETURN: path+filename(inkl. Suffix)+Endung des generierten Thumbnails / false
   */
 if(!function_exists("_01gallery_makeThumbs")){
-function _01gallery_makeThumbs($path,$sourcefilename,$replace=false,$suffix="_tb",$resize="",$tb_type=""){
+function _01gallery_makeThumbs($path,$sourcefilename,$replace=false,$suffix="_tb",$resize="",$rez_type=""){
 global $settings;
 
-if(empty($tb_type) || ($tb_type != "fix" && $tb_type != "dyn")) $tb_type = $settings['thumbnail_type'];
+if(empty($rez_type) || ($rez_type != "fix" && $rez_type != "dyn")) $rez_type = $settings['thumbnail_type'];
 
 $sourcefile = $path.$sourcefilename;
 
-// Dynamische Thumbnail-Größe (Seitenverhältnis beibehalten)
-// oder Feste Thumbnail-Größe (Ausschnitt bilden)
-if($tb_type == "fix" && (!empty($settings['fix_tb_size']) && (strchr($settings['fix_tb_size'],"x") || strchr($settings['fix_tb_size'],"X")) || !empty($resize) && (strchr($resize,"x") || strchr($resize,"X")))){
-	$rez_type = "fix";
+if(empty($resize))
+    $rez_size = _01gallery_ParseWxH($settings['tb_size']);
+elseif(stripos($resize,"x"))
+    $rez_size = _01gallery_ParseWxH($resize); 
+elseif(is_numeric($resize)){
+    $rez_size[0] = $rez_size[1] = $rez_size['width'] = $rez_size['height'] = $resize;
+    }
 
-	if(!empty($resize) && (strchr($resize,"x") || strchr($resize,"X"))) $temp_string = $resize;
-	elseif(!empty($settings['fix_tb_size']) && (strchr($settings['fix_tb_size'],"x") || strchr($settings['fix_tb_size'],"X"))) $temp_string = $settings['fix_tb_size'];
-	else return false;
-	
-	$rez_size = explode("x",strtolower($temp_string));
-	$picwidth = trim($rez_size[0]);
-	$picheight = trim($rez_size[1]);
-	
-	if(!is_numeric($picwidth) || !is_numeric($picheight))
-		return false;
-	}
-elseif($tb_type == "dyn" && (isset($settings['thumbwidth']) && !empty($settings['thumbwidth']) && is_numeric($settings['thumbwidth']) || isset($resize) && !empty($resize) && is_numeric($resize))){
-	$rez_type = "dyn";
-
-	if((empty($resize) || !is_numeric($resize)) && !empty($settings['thumbwidth']) && is_numeric($settings['thumbwidth'])) $resize = $settings['thumbwidth'];
-	}
-else
-	return false;
-	
+if(!$rez_size) return false;	
 
 $split = explode('.', strtolower($sourcefilename));
 $filename = $split[0];
@@ -549,42 +549,37 @@ if(file_exists($path.$sourcefilename)){
 	if($fileType == "jpg" || $fileType == "png"){
 		list($source_width, $source_height) = getimagesize($sourcefile);
 		$source_height_org = $source_height;
-		$source_width_org = $source_width;
-
-		if($source_width >= $source_height) $bigside = $source_width;
-		else $bigside = $source_height;
+		$source_width_org  = $source_width;
+		$c1 = array("x"=>0, "y"=>0);
 
 		// Resize images
-		if($rez_type == "dyn"){
-			if($bigside > $resize){
-				$k = $bigside/$resize;
-				$picwidth = $source_width/$k;
-				$picheight = $source_height/$k;
-				}
-			else{
-				$picwidth = $source_width;
-				$picheight = $source_height;
-				}
-			$c1 = array("x"=>0, "y"=>0);
-			}
-		elseif($rez_type == "fix"){
-			if($source_width <= $source_height){
-				$k = $source_width/$picwidth;
-				$source_height = $k*$picheight;
-				$c1['x'] = 0;
+        switch($rez_type){
+          case "dyn":
+			if($source_width > $rez_size['width'] && ($source_width/$rez_size['width']) >= ($source_height/$rez_size['height']))
+                $k = $source_width/$rez_size['width'];
+			elseif($source_height > $rez_size['height'] && ($source_width/$rez_size['width']) < ($source_height/$rez_size['height']))
+                $k = $source_height/$rez_size['height'];
+			else
+		        $k = 1;
+			
+			$rez_size['width']  = $source_width/$k;
+			$rez_size['height'] = $source_height/$k;
+          break;
+          case "fix":
+            if(($source_width/$rez_size['width']) <= ($source_height/$rez_size['height'])){
+				$k = $source_width/$rez_size['width'];
+				$source_height = $k*$rez_size['height'];
 				$c1['y'] = ($source_height_org-$source_height)/2;
 				}
 			else{
-				$k = $source_height/$picheight;
-				$source_width = $k*$picwidth;
+				$k = $source_height/$rez_size['height'];
+				$source_width = $k*$rez_size['width'];
 				$c1['x'] = ($source_width_org-$source_width)/2;
-				$c1['y'] = 0;
 				}
-			//$c1 = array("x"=>($source_width-$picwidth)/2, "y"=>($source_height-$picheight)/2);
-			}
-			
+          break;
+        }
 
-		$echofile_id = imagecreatetruecolor($picwidth, $picheight);
+		$echofile_id = imagecreatetruecolor($rez_size['width'], $rez_size['height']);
 
 		switch($fileType){
 		  case('png'):
@@ -599,20 +594,16 @@ if(file_exists($path.$sourcefilename)){
 			$sourcefile_id = imagecreatefromjpeg($sourcefile);
 		  }
 
-		// Get the sizes of pic
-		//$sourcefile_width = imageSX($sourcefile_id);
-		//$sourcefile_height = imageSY($sourcefile_id);
-
 		// Create a jpeg out of the modified picture
-		imagecopyresampled($echofile_id, $sourcefile_id, 0, 0, $c1['x'], $c1['y'], $picwidth, $picheight, $source_width, $source_height);
+		imagecopyresampled($echofile_id, $sourcefile_id, 0, 0, $c1['x'], $c1['y'], $rez_size['width'], $rez_size['height'], $source_width, $source_height);
 		
 		// Vorhandenes Thumbnail überschreiben oder nicht?
 		if(!$replace && file_exists($path.$filename.$suffix.".".$fileType))
 			return $path.$filename.$suffix.".".$fileType;
 		elseif($replace && file_exists($path.$filename.$suffix.".".$fileType)){
-			@clearstatcache();
-			@chmod($path.$filename.$suffix.".".$fileType, 0777);
-			@unlink($path.$filename.$suffix.".".$fileType);
+			clearstatcache();
+			chmod($path.$filename.$suffix.".".$fileType, 0777);
+			unlink($path.$filename.$suffix.".".$fileType);
 			}		
 		
 		switch($fileType){
@@ -670,7 +661,7 @@ if($smallstream){
 	$tb_type = $settings['thumbnail_type'];
 	}
 elseif($suffix == "_tb"){
-	$w = $settings['thumbwidth'];
+	$w = $settings['tb_size'];
 	$tb_type = $settings['thumbnail_type'];
 	}
 else{
@@ -872,25 +863,56 @@ return $errorid;
 /*$source_properties		Array(0=width,1=height) des Ausgangsbildes
   $max_properties			Array(0=width,1=height) mit den maximalen Größenangaben
 
-RETURN: max. Kantenlänge für Resize ODER 0
+RETURN: TRUE / FALSE
   */
 if(!function_exists("_01gallery_checkResize")){
-function _01gallery_checkResize($source_properties, $max_properties){
+function _01gallery_checkResize($source_properties, $max_properties=""){
 global $settings;
 
+if(empty($max_properties)) $max_properties = _01gallery_ParseWxH($settings['resize_maxpicsize']);
+
 // Check Parameter:
-if($settings['resize_pics_on_upload'] == 0 || !isset($source_properties) || !is_array($source_properties) || !isset($max_properties) || !is_array($source_properties)) return 0;
-if(!is_numeric($source_properties['0']) || !is_numeric($source_properties['1']) || !is_numeric($max_properties['0']) || !is_numeric($max_properties['1'])) return 0;
+if($settings['resize_pics_on_upload'] == 0 || !isset($source_properties) || !is_array($source_properties) || !isset($max_properties) || !is_array($source_properties)) return false;
+if(!is_numeric($source_properties['0']) || !is_numeric($source_properties['1']) || !is_numeric($max_properties['0']) || !is_numeric($max_properties['1'])) return false;
 
 if($source_properties['0'] > $max_properties['0'] || $source_properties['1'] > $max_properties['1']){
-    // Längere Seite = width
-    if($source_properties['0'] >= $source_properties['1']){
-        return $max_properties['0'];
-        }
-    else return $max_properties['1'];
+    return true;
     }
 
-return 0;
+return false;
+
+}
+}
+
+
+
+
+
+
+
+
+
+// Extrahiert Breite und Höhe aus einer mit x getrennten Größenangabe
+/*$string       String, der eine mit x (oder X) getrennte Größenangabe enthält
+
+RETURN: Array mit Index 0,1,width,height
+  */
+if(!function_exists("_01gallery_ParseWxH")){
+function _01gallery_ParseWxH($string){
+
+if(!stripos($string,"x")) return false;
+
+$rez_size = explode("x",strtolower($string));
+
+if(!is_numeric($rez_size[0]) || !is_numeric($rez_size[1]))
+	return false;
+
+$rez_size[0] = trim($rez_size[0]);
+$rez_size[1] = trim($rez_size[1]);
+$rez_size['width'] =  $rez_size[0];
+$rez_size['height'] = $rez_size[1];
+
+return $rez_size;
 
 }
 }

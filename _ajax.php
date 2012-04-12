@@ -25,41 +25,13 @@ if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($
 	if($userdata['uploadpics'] == 2 || $userdata['uploadpics'] == 1 && $row['uid'] == $userdata['id']){
 		$error = false;
 	
-		if (!isset($_FILES['Filedata']) || !is_uploaded_file($_FILES['Filedata']['tmp_name'])){
+		if(!isset($_FILES['Filedata']) || !is_uploaded_file($_FILES['Filedata']['tmp_name']))
 			$error = 'Invalid Upload';
-			}
 		else{
 			// Our processing, we get a hash value from the file
 			$return['hash'] = md5_file($_FILES['Filedata']['tmp_name']);
 
-			$info = @getimagesize($_FILES['Filedata']['tmp_name']);
-			$upload_info = _01gallery_upload_2Gallery($_GET['galid'],"Filedata","","");
-	
-			if($upload_info['status']){
-				// Image-Resize?
-                $resize_value = _01gallery_checkResize($info,explode("x",str_replace(" ","",strtolower($settings['resize_maxpicsize']))));
-                if($resize_value > 0){
-                    $split = explode('.', strtolower($upload_info['filename']));
-                    // Filename als zu Filename_big umbenennen
-                    copy($modulpath.$galdir.$dir."/".$upload_info['filename'],$modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1]);
-                    
-                    _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$upload_info['filename'],true,"",$resize_value,"dyn");
-                    }
-                
-                _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$upload_info['filename'],true,"_tb",$settings['thumbwidth']);
-				_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$upload_info['filename'],true,"_acptb",ACP_GAL_TB_WIDTH,"dyn");		// ACP-Thumbnail
-				
-				$return = array('status' => '1',
-								'name' => $_FILES['Filedata']['name']);
-				if($info){
-					$return['width'] = $info[0];
-					$return['height'] = $info[1];
-					}
-				}
-			else{
-				$return = array('status' => '0',
-								'error' => $upload_info['message']);
-				}
+			$return = _01gallery_upload_2Gallery($_GET['galid'],"Filedata","","");
 	
 			_01gallery_countPics($_GET['galid']);
 			

@@ -101,16 +101,21 @@ elseif(isset($settings['csscode']) && !empty($settings['csscode']) && !$flag_noc
 </style>";
 else $echo_css = "";
 
+if(stripos($settings['tb_size'],"x")){
+    $thumb = _01gallery_ParseWxH($settings['tb_size']);
+    }
+elseif(is_numeric($settings['tb_size']))
+    $thumb['width'] = $settings['tb_size'];
 
 	$echo_css .= "\n<style type=\"text/css\">
 .cssgallery li{
 	width:".$settings['pics_per_line'].";
-	height:".($settings['thumbwidth']+25)."px;
+	height:".($thumb['width']+25)."px;
 }
 
 .cssgallery li.stream{
-	width:".($settings['thumbwidth']+10)."px;
-	height:".($settings['thumbwidth']+25)."px;
+	width:".($thumb['width']+10)."px;
+	height:".($thumb['width']+25)."px;
 }
 
 .cssgallery li.smallstream{
@@ -123,10 +128,10 @@ else $echo_css = "";
 .cssgallery a:focus,
 .cssgallery a:hover,
 .cssgallery a:active{
-	width:".$settings['thumbwidth']."px;
-	height:".$settings['thumbwidth']."px;
+	width:".$thumb['width']."px;
+	height:".$thumb['width']."px;
 	position:absolute; top:50%; left:50%; 	/* NICHT VERÄNDERN!!! - position it so that image's top left corner is in the center of the list item */
-	margin:-".round($settings['thumbwidth']/2)."px 0 0 -".round($settings['thumbwidth']/2)."px; 				/* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
+	margin:-".round($thumb['width']/2)."px 0 0 -".round($thumb['width']/2)."px; 				/* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
 }
 
 .cssgallery li.smallstream a:link,
