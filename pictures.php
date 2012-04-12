@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bilder einer Galerie auflisten, bearbeiten und sortieren
-	#fv.2001#
+	#fv.210#
 */
 
 
@@ -52,12 +52,6 @@ if(isset($_GET['action']) && $_GET['action'] == "sort_pics" &&
         </script>
         
         <h3>Individuelle Sortierung</h3>
-
-		<p class="meldung_hinweis">
-			Klicken und ziehen Sie die Bilder in die gew&uuml;nschte Reihenfolge. Klicken Sie anschlie&szlig;end auf <i>Speichern</i>.<br />
-			<b>F&uuml;r Internet Explorer 6:</b> Halten Sie die Maustaste gedr&uuml;ckt und ziehen Sie das Bild kurz. Lassen Sie dann die Maustaste los.<br />
-			Sie k&ouml;nnen nun das Bild an die gew&uuml;nschte Position bewegen. Klicken Sie 1x um das Bild dort zu platzieren.
-		</p>
 		
 		<form id="savesortform" action="_ajaxloader.php?modul=<?PHP echo $modul; ?>&ajaxaction=savesortorder&id=<?PHP echo $_GET['galid']; ?>" method="post">
         <input type="hidden" value="" name="sortdatafield" id="sortdatafield" />
@@ -204,11 +198,4 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 
 
 
-
-
-
-
-
-
-// 01-Gallery V2 Copyright 2006-2009 by Michael Lorer - 01-Scripts.de
 ?>
