@@ -118,12 +118,12 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 
         <table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
 	    <tr>
-			<td class="tra" width="100" colspan="2"><b>Coverbild</b><!--Thumbnail--></td>
-	        <td class="tra" width="110"><b>Datum</b></td>
+			<td class="tra" style="width:100px;" colspan="2"><b>Coverbild</b><!--Thumbnail--></td>
+	        <td class="tra" style="width:110px;"><b>Datum</b></td>
 			<td class="tra"><b>Bildtitel / Beschreibung</b></td>
 			<td class="tra"><b>original Dateiname / aktueller Dateiname</b></td>
 			<td class="tra"><b>Benutzer</b></td>
-			<td class="tra" width="25" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
+			<td class="tra" style="width:25px;" align="center"><!--Löschen--><img src="images/icons/icon_trash.gif" alt="M&uuml;lleimer" title="Datei l&ouml;schen" /></td>
 	    </tr>
 <?PHP
 		$sites = 0;
@@ -141,6 +141,11 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			// Coverbild?
 			if($row['id'] == $statrow['galpic']) $checked = " checked=\"checked\"";
 			else $checked = "";
+			
+			// Bigpicture?
+			$split = explode(".",stripslashes($row['filename']));
+            if(file_exists($modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1])) $big_link = "<a href=\"".$modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1]."\" title=\"Unkomprimierte Original-Datei\" target=\"_blank\">".stripslashes($row['orgname'])."</a>";
+            else $big_link = stripslashes($row['orgname']);
 			
 			echo "
 		<tr id=\"id".$row['id']."\">
@@ -174,7 +179,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
         	});
             </script>
             </td>
-			<td class=\"".$class."\">".stripslashes($row['orgname'])."<br />".stripslashes($row['filename'])."</td>
+			<td class=\"".$class."\">".$big_link."<br />".stripslashes($row['filename'])."</td>
 			<td class=\"".$class."\">".$artuserdata[$row['uid']]['username']."</td>
 			<td class=\"".$class."\" align=\"center\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Eintrag l&ouml;schen\" class=\"fx_opener\" style=\"border:0; float:left;\" align=\"left\" /><div class=\"fx_content tr_red\" style=\"width:60px; display:none;\"><a href=\"#foo\" onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=delpic&id=".$row['id']."');\">Ja</a> - <a href=\"#foo\">Nein</a></div></td>
 		</tr>			

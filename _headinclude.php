@@ -34,6 +34,7 @@ $galdir		= "galerien/";			// Verzeichnis mit Bildergalerien
 
 // Weitere Variablen
 define('ACP_PER_PAGE2', 20);		// Einträge pro Seite im ACP
+$allow_big_download = true;         // Download von unverkleinerten Originaldateien erlauben?
 $max_uploads		= 10;			// Anzahl an Datei-Upload-Feldern
 $gen_thumbs_max     = 50;           // Max. Anzahl an Thumbnails, die gleichzeitig generiert werden dürfen
 $oldfilename_length = 10;			// Länge des Anteils des original Dateinamens nach dem Upload

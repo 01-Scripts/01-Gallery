@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Gallery V2 - Copyright 2003-2011 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01gallery
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.202#
+	#fv.210#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -195,8 +195,17 @@ if(is_numeric($picid) && $picid > 0){
 	    $picnr = 1;
     	$list = mysql_query("SELECT id,sortorder,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC");
 		while($row = mysql_fetch_assoc($list)){
+			// Download von unverkleinerten Originaldateien?
+			$lightbox_title = htmlentities(stripslashes($row['title']));
+            if($allow_big_download){
+                $split = explode(".",$row['filename']);
+                if(file_exists($galverz.$split[0]."_big.".$split[1]))
+                    $lightbox_title = "&lt;a href='".$galverz.$split[0]."_big.".$split[1]."' title='Unkomprimierte Original-Datei herunterladen' target='_blank'&gt;".$lightbox_title."&lt;/a&gt;";
+                }
+
 			if($row['id'] == $picid){
 				$pic['title']	= htmlentities(stripslashes($row['title']));
+				$pic['lb_title']= $lightbox_title;
 				$pic['text']	= htmlentities(stripslashes($row['text']));
 				$pic['filename']= $row['filename'];
 				$pic['sortorder']=$row['sortorder'];
@@ -206,11 +215,11 @@ if(is_numeric($picid) && $picid > 0){
 				}
 			$pics[$picnr]['filename']= $row['filename'];
 			$pics[$picnr]['id']		 = $row['id'];
-				
-			if(!$lightbox_second && $settings['use_lightbox'] >= 1)
-				$lightbox_arels1 .= "<a href=\"".$galverz.$row['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".stripslashes($row['title'])." - ".stripslashes($row['text'])."\"></a>";
+                
+            if(!$lightbox_second && $settings['use_lightbox'] >= 1)
+				$lightbox_arels1 .= "<a href=\"".$galverz.$row['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
 			elseif($settings['use_lightbox'] >= 1 && $row['id'] != $picid)
-				$lightbox_arels2 .= "<a href=\"".$galverz.$row['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".stripslashes($row['title'])." - ".stripslashes($row['text'])."\"></a>";
+				$lightbox_arels2 .= "<a href=\"".$galverz.$row['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
 				
 			$picnr++;
 			}
@@ -244,7 +253,8 @@ if(is_numeric($picid) && $picid > 0){
 			
 			$picstream .= "</ul>\n\n";
 			
-			echo $lightbox_arels1;
+			// Detailansicht des Einzelbildes einbinden
+            echo $lightbox_arels1;
 			include($tempdir."picdetailview.html");
 			echo $lightbox_arels2;
 			
@@ -427,8 +437,17 @@ elseif(is_numeric($galid) && $galid > 0){
 			echo "\n\n<ul class=\"cssgallery\">\n";
 		    $list = mysql_query($query);
 			while($pics = mysql_fetch_assoc($list)){
-				if($settings['use_lightbox'] == 2)
-					echo "<li".$class."><a href=\"".$galverz.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
+				if($settings['use_lightbox'] == 2){
+					// Download von unverkleinerten Originaldateien?
+        			$lightbox_title = htmlentities(stripslashes($pics['title']));
+                    if($allow_big_download){
+                        $split = explode(".",$pics['filename']);
+                        if(file_exists($galverz.$split[0]."_big.".$split[1]))
+                            $lightbox_title = "&lt;a href='".$galverz.$split[0]."_big.".$split[1]."' title='Unkomprimierte Original-Datei herunterladen' target='_blank'&gt;".$lightbox_title."&lt;/a&gt;";
+                        }
+                        
+                    echo "<li".$class."><a href=\"".$galverz.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".strip_tags(stripslashes($pics['text']))."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
+					}
 				else
 					echo "<li".$class."><a href=\"".addParameter2Link($system_link_pic,$names['picid']."=".$pics['id'])."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
 				}
@@ -465,12 +484,7 @@ else{
 
 
 
-
-
-
-
 // Main_bottom einfügen
 include($tempdir."main_bottom.html");
 
-// 01-Gallery V2 Copyright 2003-2008 by Michael Lorer - 01-Scripts.de
 ?>
