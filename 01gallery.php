@@ -50,6 +50,7 @@ $tempdir	= $moduldir.$modulvz.$tempdir;			// Template-Verzeichnis
 $galdir		= $moduldir.$modulvz.$galdir;			// Bilderalben-Verzeichnis
 $sites		= 0;
 $sites2		= 0;
+$c_sz       = 0;
 $errormsg	= "";
 
 // Notice: Undefined index: ... beheben
@@ -58,6 +59,8 @@ if(!isset($_REQUEST[$names['galpage']]))$_REQUEST[$names['galpage']]= "";
 if(!isset($_REQUEST[$names['picid']]))	$_REQUEST[$names['picid']]	= "";
 if(!isset($_REQUEST[$names['picpage']]))$_REQUEST[$names['picpage']]= "";
 if(!isset($_REQUEST[$names['action']])) $_REQUEST[$names['action']]	= "";
+if(!isset($_POST['deaktiv_bbc']))		$_POST['deaktiv_bbc']		= 0;
+else $_POST['deaktiv_bbc']				= strip_tags($_POST['deaktiv_bbc']);
 
 if(isset($galid) && !empty($galid)){
     $gals_allids = "";
