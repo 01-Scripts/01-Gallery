@@ -15,6 +15,9 @@
 	#fv.210#
 */
 
+// Security: Only allow calls from _ajaxloader.php!
+if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
+
 // Fancy-Upload (Bilder hochladen)
 if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid'])){
 	$list = mysql_query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
@@ -66,68 +69,74 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savesortord
     isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id']) &&
     isset($_REQUEST['sortdatafield']) && !empty($_REQUEST['sortdatafield'])){
 
-	$sortarray = explode(",",$_REQUEST['sortdatafield']);
-	$sortstartid = count($sortarray);
-	$sortstartid++;
+	if(_01gallery_checkUserright($_REQUEST['id'])){
 	
-	if($sortstartid > 1){
-		foreach($sortarray as $picid){
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder='".$sortstartid."' WHERE id = '".mysql_real_escape_string($picid)."' AND galid = '".mysql_real_escape_string($_REQUEST['id'])."'");
-			$sortstartid--;
-			}
-		echo "
+		$sortarray = explode(",",$_REQUEST['sortdatafield']);
+		$sortstartid = count($sortarray);
+		$sortstartid++;
+		
+		if($sortstartid > 1){
+			foreach($sortarray as $picid){
+				mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder='".$sortstartid."' WHERE id = '".mysql_real_escape_string($picid)."' AND galid = '".mysql_real_escape_string($_REQUEST['id'])."'");
+				$sortstartid--;
+				}
+			echo "
 <script type=\"text/javascript\">
 Stop_Loading_standard();
 Success_standard();
 </script>";
-		}
-	else
-		echo "
+			}
+		else
+			echo "
 <script type=\"text/javascript\">
 Stop_Loading_standard();
 Failed_delfade();
 </script>";
+		}
 	}
 // Auto-Bilder-Sortierung speichern
 elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "saveautosortorder" &&
     isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id']) &&
     isset($_REQUEST['sortorder']) && !empty($_REQUEST['sortorder'])){
 
-	/* Sortierung gerade "umgedreht", da die Ausgabe von 99->0 erfolgt. Es muss also beim "hochzählen" mit dem letzten Bild begonnen werden
-	Deshalb alle Query-Befehle vom DESC-Argument her grad umgekehrt... */
-	switch($_REQUEST['sortorder']){
-	  case "az":
-	  default:
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY orgname DESC");
-	  break;
-	  case "za":
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY orgname");
-	  break;
-	  case "taz":
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY title DESC");
-	  break;
-	  case "tza":
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY title");
-	  break;
-	  case "timeup":
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY timestamp");
-	  break;
-	  case "timedown":
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY timestamp DESC");
-	  break;
-	  }
-	echo "
+	if(_01gallery_checkUserright($_REQUEST['id'])){
+
+		/* Sortierung gerade "umgedreht", da die Ausgabe von 99->0 erfolgt. Es muss also beim "hochzählen" mit dem letzten Bild begonnen werden
+		Deshalb alle Query-Befehle vom DESC-Argument her grad umgekehrt... */
+		switch($_REQUEST['sortorder']){
+		  case "az":
+		  default:
+			mysql_query("SET @pos=0");
+			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY orgname DESC");
+		  break;
+		  case "za":
+			mysql_query("SET @pos=0");
+			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY orgname");
+		  break;
+		  case "taz":
+			mysql_query("SET @pos=0");
+			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY title DESC");
+		  break;
+		  case "tza":
+			mysql_query("SET @pos=0");
+			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY title");
+		  break;
+		  case "timeup":
+			mysql_query("SET @pos=0");
+			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY timestamp");
+		  break;
+		  case "timedown":
+			mysql_query("SET @pos=0");
+			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY timestamp DESC");
+		  break;
+		  }
+		echo "
 <script type=\"text/javascript\">
 location.reload(true);
 Stop_Loading_standard();
 Success_standard();
 </script>";
+		}
 	}
 // Fehler abfangen, falls Sortierung gespeichert werden soll; Speicherfeld aber leer ist
 elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savesortorder" &&
@@ -143,32 +152,35 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "setnewcover
     isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id']) &&
     isset($_REQUEST['galid']) && !empty($_REQUEST['galid']) && is_numeric($_REQUEST['galid'])){
 	
-	mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic='".mysql_real_escape_string($_REQUEST['id'])."' WHERE id = '".mysql_real_escape_string($_REQUEST['galid'])."'");
+	if(_01gallery_checkUserright($_REQUEST['id'])){
+		mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic='".mysql_real_escape_string($_REQUEST['id'])."' WHERE id = '".mysql_real_escape_string($_REQUEST['galid'])."'");
 
-	echo "
+		echo "
 <script type=\"text/javascript\">
 Success_standard();
 </script>";
+		}
 	}
 // Bilddaten (Titel und Beschreibung) speichern
 elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savepicdata" &&
     isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 
-	if(isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
-        $title = "title = '".mysql_real_escape_string(utf8_decode($_REQUEST['title']))."' ";
-        $echotitle = htmlentities(utf8_decode(stripslashes($_REQUEST['title'])));
-        }
-	else{ $title = "title = '' "; $echotitle = ""; }
+	if(_01gallery_checkUserright($_REQUEST['id'])){
+		if(isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
+	        $title = "title = '".mysql_real_escape_string(utf8_decode($_REQUEST['title']))."' ";
+	        $echotitle = htmlentities(utf8_decode(stripslashes($_REQUEST['title'])));
+	        }
+		else{ $title = "title = '' "; $echotitle = ""; }
+		
+		if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
+	        $beschreibung = "text = '".mysql_real_escape_string(utf8_decode($_REQUEST['beschreibung']))."' ";
+	        $echobeschreibung = "<br />".substr(htmlentities(utf8_decode(stripslashes($_REQUEST['beschreibung']))),0,100);
+	        }
+		else{ $beschreibung = "text = '' "; $echobeschreibung = ""; }
+	    
+	    mysql_query("UPDATE ".$mysql_tables['pics']." SET ".$title.", ".$beschreibung." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."'");
 	
-	if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
-        $beschreibung = "text = '".mysql_real_escape_string(utf8_decode($_REQUEST['beschreibung']))."' ";
-        $echobeschreibung = "<br />".substr(htmlentities(utf8_decode(stripslashes($_REQUEST['beschreibung']))),0,100);
-        }
-	else{ $beschreibung = "text = '' "; $echobeschreibung = ""; }
-    
-    mysql_query("UPDATE ".$mysql_tables['pics']." SET ".$title.", ".$beschreibung." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."'");
-
-    echo "
+	    echo "
 <script type=\"text/javascript\">
 Stop_Loading_standard();
 Success_standard();
@@ -176,7 +188,8 @@ hide_unhide('hide_show_".$_REQUEST['id']."');
 hide_unhide('hide_edit_".$_REQUEST['id']."');
 </script>";
 
-    echo "<b>".$echotitle."</b>".$echobeschreibung."";
+    	echo "<b>".$echotitle."</b>".$echobeschreibung."";
+    	}
 
 	}
 // Einzelnes Bild aus einer Galerie löschen
