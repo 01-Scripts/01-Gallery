@@ -37,6 +37,9 @@ Slimbox.scanPage = function() {
 <?php if ($settings['use_lightbox'] == 1 && $galid > 0 && $picid > 0): ?>
 		name_galid: "<?php echo $names['galid']; ?>",
 		name_picfilename: "<?php echo $names['picfilename']; ?>",
+		name_picid: "<?php echo $names['picid']; ?>",
+		name_picpage: "<?php echo $names['picpage']; ?>",
+		name_galpage: "<?php echo $names['galpage']; ?>",
 		link_url: "<?php echo $filename."?"; ?>",		// KEINE VERÄNDERUNG vornehmen!!!
 		changeLocation:true,				// Beim Schließen der Lightbox springt das Hauptfenster zur Detailansicht des zuletzt in der Lightbox geöffneten Bildes
 <?php endif; ?>

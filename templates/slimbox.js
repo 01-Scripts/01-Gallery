@@ -260,6 +260,37 @@ function substr( f_string, f_start, f_length ) {
     return f_string.substring(f_start, f_length);
 }
 
+function strstr (haystack, needle, bool) {
+    // Finds first occurrence of a string within another  
+    // 
+    // version: 1109.2015
+    // discuss at: http://phpjs.org/functions/strstr
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Onno Marsman
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // *     example 1: strstr('Kevin van Zonneveld', 'van');
+    // *     returns 1: 'van Zonneveld'
+    // *     example 2: strstr('Kevin van Zonneveld', 'van', true);
+    // *     returns 2: 'Kevin '
+    // *     example 3: strstr('name@example.com', '@');
+    // *     returns 3: '@example.com'
+    // *     example 4: strstr('name@example.com', '@', true);
+    // *     returns 4: 'name'
+    var pos = 0;
+ 
+    haystack += '';
+    pos = haystack.indexOf(needle);
+    if (pos == -1) {
+        return false;
+    } else {
+        if (bool) {
+            return haystack.substr(0, pos);
+        } else {
+            return haystack.slice(pos);
+        }
+    }
+}
+
 var Slimbox = (function() {
 
 	// Global variables, accessible to Slimbox only
@@ -426,8 +457,8 @@ var Slimbox = (function() {
 		
 		if (options.changeLocation && clicked == 1){
 			var urlarr = {};
-			parse_str(substr(this.document.URL, 1), urlarr);
-			document.location = options.link_url+options.name_galid+'='+urlarr[options.name_galid]+'&'+options.name_picfilename+'='+basename(activeURL);
+			parse_str(substr(strstr(this.href, '?'), 1), urlarr);
+			document.location = options.link_url+options.name_galid+'='+urlarr[options.name_galid]+'&'+options.name_galpage+'='+urlarr[options.name_galpage]+'&'+options.name_picpage+'='+urlarr[options.name_picpage]+'&'+options.name_picid+'='+substr(strstr(activeURL, '?'), 1);
 			}
 		return false;
 	}

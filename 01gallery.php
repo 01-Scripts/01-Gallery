@@ -220,9 +220,9 @@ if(is_numeric($picid) && $picid > 0){
 			$pics[$picnr]['id']		 = $row['id'];
                 
             if(!$lightbox_second && $settings['use_lightbox'] >= 1)
-				$lightbox_arels1 .= "<a href=\"".$galverz.$row['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
+				$lightbox_arels1 .= "<a href=\"".$galverz.$row['filename']."?".$row['id']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
 			elseif($settings['use_lightbox'] >= 1 && $row['id'] != $picid)
-				$lightbox_arels2 .= "<a href=\"".$galverz.$row['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
+				$lightbox_arels2 .= "<a href=\"".$galverz.$row['filename']."?".$row['id']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
 				
 			$picnr++;
 			}
