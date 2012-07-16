@@ -458,7 +458,9 @@ var Slimbox = (function() {
 		if (options.changeLocation && clicked == 1){
 			var urlarr = {};
 			parse_str(substr(strstr(this.href, '?'), 1), urlarr);
-			document.location = options.link_url+options.name_galid+'='+urlarr[options.name_galid]+'&'+options.name_galpage+'='+urlarr[options.name_galpage]+'&'+options.name_picpage+'='+urlarr[options.name_picpage]+'&'+options.name_picid+'='+substr(strstr(activeURL, '?'), 1);
+			document.location = options.link_url+options.name_galid+'='+urlarr[options.name_galid]+'&'+options.name_picid+'='+substr(strstr(activeURL, '?'), 1);
+			if(undefined != urlarr[options.name_galpage]){ document.location = document.location+'&'+options.name_galpage+'='+urlarr[options.name_galpage]; }
+			if(undefined != urlarr[options.name_picpage]){ document.location = document.location+'&'+options.name_picpage+'='+urlarr[options.name_picpage]; }
 			}
 		return false;
 	}
