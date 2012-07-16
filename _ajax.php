@@ -205,11 +205,11 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
 	    $galstatrow = mysql_fetch_assoc($list);
 	    
         $dir = _01gallery_getGalDir($statrow['galid'],stripslashes($galstatrow['password']));
-        $split = split('[.]', $statrow['filename']);
+        $split = pathinfo($statrow['filename']);
         
         @unlink($modulpath.$galdir.$dir."/".$statrow['filename']);
-        @unlink($modulpath.$galdir.$dir."/".$split[0]."_tb.".$split[1]);
-        @unlink($modulpath.$galdir.$dir."/".$split[0]."_acptb.".$split[1]);
+        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_tb.".$split['extension']);
+	    @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
         
         mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($_REQUEST['id'])."'");
         
@@ -221,6 +221,10 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
         echo "<script type=\"text/javascript\"> Failed_delfade(); </script>";
         }
     }
+elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "test"){
+	echo $_REQUEST['id'];
+	echo "<script type=\"text/javascript\"> Stop_Loading_standard(); </script>";
+	}
 else
 	echo "<script type=\"text/javascript\"> Stop_Loading_standard(); Failed_delfade(); </script>";
 

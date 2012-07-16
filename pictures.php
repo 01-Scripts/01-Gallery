@@ -103,21 +103,37 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
 	$artuserdata = getUserdatafields_Queryless("username");
 	
-	// Formular abgesende? --> Speichern
-	if(isset($_POST['send']) && $_POST['send'] == 1){
-        if(isset($_POST['cover']) && !empty($_POST['cover']) && is_numeric($_POST['cover'])){
-            mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic='".mysql_real_escape_string($_POST['cover'])."' WHERE id = '".mysql_real_escape_string($_GET['galid'])."'");
-            $statrow['galpic'] = $_POST['cover'];
-            }
-
-	    }
+	// Selektierte Bilder löschen
+	if(isset($_POST['picdelids']) && !empty($_POST['picdelids']) &&
+	   isset($_POST['delselected']) && $_POST['delselected'] == 1){
+		$cup = 0;
+		$list = mysql_query("SELECT id,filename FROM ".$mysql_tables['pics']." WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['picdelids'])).")");
+		while($drow = mysql_fetch_assoc($list)){
+			
+			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($statrow['password']));
+	        $split = pathinfo($drow['filename']);
+	
+	        @unlink($modulpath.$galdir.$dir."/".$drow['filename']);
+	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_tb.".$split['extension']);
+	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
+	
+	        mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($drow['id'])."'");
+	
+			$cup++;
+			}
+		
+		_01gallery_countPics($_GET['galid']);
+		echo "<p class=\"meldung_erfolg\">Es wurden ".$cup." Bilder gel&ouml;scht</p>";
+		}
 ?>
 		<h2><?PHP echo stripslashes($statrow['galeriename']); ?> &raquo; Bilder bearbeiten</h2>
 
         <?PHP echo  _01gallery_echoActionButtons_Gal(); ?>
 
-        <table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
+        <form action="<?php echo addParameter2Link($filename,"action=show_pics&galid=".$_GET['galid']); ?>" method="post">
+		<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
 	    <tr>
+			<td class="tra" style="width:25px;"><input type="checkbox" name="select" id="selector" onclick="SelectAll('selector','input.dcb');" /><!--Löschung--></td>
 			<td class="tra" style="width:100px;" colspan="2"><b>Coverbild</b><!--Thumbnail--></td>
 	        <td class="tra" style="width:110px;"><b>Datum</b></td>
 			<td class="tra"><b>Bildtitel / Beschreibung</b></td>
@@ -149,35 +165,24 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			
 			echo "
 		<tr id=\"id".$row['id']."\">
-			<td class=\"".$class."\" align=\"center\"><input type=\"radio\" name=\"cover\" value=\"".$row['id']."\"".$checked." onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=setnewcover&id=".$row['id']."&galid=".$_GET['galid']."');\" />
+			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"picdelids[]\" value=\"".$row['id']."\" class=\"dcb\" /></td>
+			<td class=\"".$class."\" align=\"center\"><input type=\"radio\" name=\"cover\" value=\"".$row['id']."\"".$checked." onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=setnewcover&id=".$row['id']."&galid=".$_GET['galid']."');\" /></td>
             <td class=\"".$class."\" align=\"center\"><a href=\"".$modulpath.$galdir.$dir."/".stripslashes($row['filename'])."\" class=\"lightbox\">"._01gallery_getThumb($modulpath.$galdir.$dir."/",stripslashes($row['filename']),"_acptb")."</a></td>
 			<td class=\"".$class."\">".date("d.m.Y - G:i",$row['timestamp'])."</td>
 			<td class=\"".$class."\">
             <div style=\"float:right;\">
                 <a href=\"javascript:hide_unhide('hide_show_".$row['id']."'); hide_unhide('hide_edit_".$row['id']."');\"><img src=\"images/icons/icon_edit.gif\" alt=\"Bearbeiten - Stift\" title=\"Bild bearbeiten\" /></a>
             </div>
-			<form id=\"editform_".$row['id']."\" action=\"_ajaxloader.php?modul=".$modul."&ajaxaction=savepicdata&id=".$row['id']."\" method=\"post\">
+
             <div id=\"hide_show_".$row['id']."\" style=\"display:block;\">
                 <b>".stripslashes($row['title'])."</b>".$text."
             </div>
 			<div id=\"hide_edit_".$row['id']."\" style=\"display:none;\">
-                <input type=\"text\" size=\"26\" name=\"title\" value=\"".stripslashes($row['title'])."\" /><br />
-                <textarea name=\"beschreibung\" cols=\"25\" rows=\"3\" class=\"input_textarea\" style=\"font-size: 11px;\">".stripslashes($row['text'])."</textarea><br />
-                <input type=\"reset\" value=\"Zur&uuml;cksetzen\" class=\"input\" /> <input type=\"submit\" value=\"Speichern\" class=\"input\" />
+                <input type=\"text\" size=\"26\" name=\"title_".$row['id']."\" id=\"title_".$row['id']."\" value=\"".stripslashes($row['title'])."\" /><br />
+                <textarea name=\"beschreibung_".$row['id']."\" id=\"beschreibung_".$row['id']."\" cols=\"25\" rows=\"3\" class=\"input_textarea\" style=\"font-size: 11px;\">".stripslashes($row['text'])."</textarea><br />
+                <input type=\"reset\" value=\"Zur&uuml;cksetzen\" class=\"input\" /> <input type=\"submit\" value=\"Speichern\" class=\"input\" onclick=\"SendPicFormData('".$row['id']."','modul=".$modul."&ajaxaction=savepicdata&id=".$row['id']."&title='+document.id('title_".$row['id']."').get('value')+'&beschreibung='+document.id('beschreibung_".$row['id']."').get('value'));\" />
             </div>
-            </form>
 
-            <script type=\"text/javascript\">
-            $('editform_".$row['id']."').addEvent('submit', function(e) {
-        		e.stop();
-        		
-                this.set('send', {onComplete: function(response) {
-        			$('hide_show_".$row['id']."').set('html', response);
-        		}, evalScripts: true});
-        		Start_Loading_standard();
-        		this.send();
-        	});
-            </script>
             </td>
 			<td class=\"".$class."\">".$big_link."<br />".stripslashes($row['filename'])."</td>
 			<td class=\"".$class."\">".$artuserdata[$row['uid']]['username']."</td>
@@ -185,22 +190,22 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 		</tr>			
 			";
 			}
-		echo "</table>";
+		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
+		echo "
+		<tr>
+			<td class=\"".$class."\" colspan=\"8\">
+				<input type=\"checkbox\" name=\"delselected\" value=\"1\" />
+				<input type=\"submit\" value=\"Ausgew&auml;hlte Bilder l&ouml;schen\" class=\"input\" />
+				Es erfolgt <b>keine</b> weitere Abfrage!
+			</td>
+		</tr>";
+		 
+		echo "</table>\n</form>";
 		
 		echo echopages($sites,"80%","site","action=show_pics&amp;galid=".$_GET['galid']);	
 		}
 	else $flag_loginerror = true;
 	
 	}
-//elseif...
-
-
-
-
-
-
-
-
-
 
 ?>
