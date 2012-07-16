@@ -69,14 +69,14 @@ if(isset($galid) && !empty($galid)){
     array_splice($gals_allids,0,1);
     }
 if(!isset($galid) || empty($galid) || (isset($gals_allids) && is_array($gals_allids) && !empty($_REQUEST[$names['galid']]) && in_array($_REQUEST[$names['galid']],$gals_allids))) $galid = $_REQUEST[$names['galid']];
-$galpage=	$_REQUEST[$names['galpage']];
+	$galpage=	$_REQUEST[$names['galpage']];
 if(!isset($picid) || empty($picid) || isset($_REQUEST[$names['picid']]) && !empty($_REQUEST[$names['picid']]) && is_numeric($_REQUEST[$names['picid']]) && $_REQUEST[$names['picid']] > 0)
 	$picid	=	$_REQUEST[$names['picid']];
 $picpage=	$_REQUEST[$names['picpage']];
 
 $filename = $_SERVER['PHP_SELF'];
-$system_link_gal = $filename."?".$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage;
-$system_link_pic = $system_link_gal."&amp;".$names['picpage']."=".$picpage;
+$system_link_gal = parse_cleanerlinks($filename."?".$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage);
+$system_link_pic = parse_cleanerlinks($system_link_gal."&amp;".$names['picpage']."=".$picpage);
 
 // Cookie auslesen
 if(isset($_COOKIE["c_".$modul.'_galpwcookie']) && !empty($_COOKIE["c_".$modul.'_galpwcookie']))
@@ -161,7 +161,7 @@ include($tempdir."main_top.html");
 // Display: Detailansicht (einzelnes Bild)
 if(is_numeric($picid) && $picid > 0){
 	
-	$system_link_form = $system_link_pic."&amp;".$names['picid']."=".$picid;
+	$system_link_form = parse_cleanerlinks($system_link_pic."&amp;".$names['picid']."=".$picid);
 	
 	// Keine $galid vorhanden? (Aus picid holen)
 	if(!isset($galid) || isset($galid) && (empty($galid) || $galid == 0 || !is_numeric($galid))){
@@ -436,51 +436,51 @@ elseif(is_numeric($galid) && $galid > 0){
 			if($settings['pics_per_line'] == "auto") $class = " class=\"stream\"";
 			else $class = "";
 			
-			if($settings['use_lightbox'] != 2)
-			    echo "\n\n<ul class=\"cssgallery\">\n";
-
+			if(!isset($_GET[$names['picpage']]) || isset($_GET[$names['picpage']]) && !is_numeric($_GET[$names['picpage']]))
+				$_GET[$names['picpage']] = 1;
+			
 			$c = 0; $endul = 0;
 			$list = mysql_query($query);
 			while($pics = mysql_fetch_assoc($list)){
-				if($settings['use_lightbox'] == 2){
-					if(!isset($_GET[$names['picpage']]) || isset($_GET[$names['picpage']]) && !is_numeric($_GET[$names['picpage']]))
-					    $_GET[$names['picpage']] = 1;
-
-					if($c < ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page'])){
-						echo "<a href=\"".$galverz_html.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\"></a>\n";
-						}
-					elseif($c >= ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page']) && $c < ($_GET[$names['picpage']]*$settings['thumbs_per_page'])){
-						if($c == ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page']))
-						    echo "\n\n<ul class=\"cssgallery\">\n";
-
-						// Download von unverkleinerten Originaldateien?
-	        			$lightbox_title = htmlentities(stripslashes($pics['title']));
-	                    if($allow_big_download){
-	                        $split = explode(".",$pics['filename']);
-	                        if(file_exists($galverz.$split[0]."_big.".$split[1]))
-	                            $lightbox_title = "&lt;a href='".$galverz.$split[0]."_big.".$split[1]."' title='Unkomprimierte Original-Datei herunterladen' target='_blank'&gt;".$lightbox_title."&lt;/a&gt;";
-	                        }
-	
-	                    echo "<li".$class."><a href=\"".$galverz.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".strip_tags(stripslashes($pics['text']))."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
-						}
-					else{
-						if($endul == 0){
-						    echo "</ul>\n\n";
-						    $endul = 1;
-						    }
-
-						echo "<a href=\"".$galverz_html.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\" title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\"></a>\n";
-						}
-
-					$c++;
-					}
+				if($c == ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page']))
+					echo "\n\n<ul class=\"cssgallery\">\n";
+					
+				// Lightbox statt Detailseite
+				if($settings['use_lightbox'] == 2)
+				    $href = "href=\"".$galverz.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\"";
 				else
-					echo "<li".$class."><a href=\"".addParameter2Link($system_link_pic,$names['picid']."=".$pics['id'])."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
+					$href = "href=\"".addParameter2Link($system_link_pic,$names['picid']."=".$pics['id'])."\"";
+				
+
+				if($c < ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page'])){
+					echo "<a ".$href." title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\"></a>\n";
+					}
+				elseif($c >= ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page']) && $c < ($_GET[$names['picpage']]*$settings['thumbs_per_page'])){
+					// Download von unverkleinerten Originaldateien?
+        			$lightbox_title = htmlentities(stripslashes($pics['title']));
+                    if($allow_big_download && $settings['use_lightbox'] == 2){
+                        $split = explode(".",$pics['filename']);
+                        if(file_exists($galverz.$split[0]."_big.".$split[1]))
+                            $lightbox_title = "&lt;a href='".$galverz.$split[0]."_big.".$split[1]."' title='Unkomprimierte Original-Datei herunterladen' target='_blank'&gt;".$lightbox_title."&lt;/a&gt;";
+                        }
+
+                    echo "<li".$class."><a ".$href." title=\"".$lightbox_title." - ".strip_tags(stripslashes($pics['text']))."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
+					}
+				else{
+					if($endul == 0){
+					    echo "</ul>\n\n";
+					    $endul = 1;
+					    }
+
+					echo "<a ".$href." title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\"></a>\n";
+					}
+
+				$c++;
 				}
 			if($endul == 0 && $settings['use_lightbox'] == 2 || $settings['use_lightbox'] != 2){
-			    echo "</ul>\n\n";
-			    $endul = 1;
-			    }
+				echo "</ul>\n\n";
+				$endul = 1;
+				}
 
 			makepages($query,$sites2,$names['picpage'],$settings['thumbs_per_page']);
 			echo echopages($sites2,"",$names['picpage'],$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage,"picpagestable");
