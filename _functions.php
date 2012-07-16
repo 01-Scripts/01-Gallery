@@ -736,7 +736,7 @@ RETURN: true/false (Ausgabe erfolgt per echo)
   */
 if(!function_exists("_01gallery_echoGalList")){
 function _01gallery_echoGalList($fgalid=0){
-global $filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid;
+global $filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid,$picuploaddir;
 
 // Auflistung Untereinander
 if($settings['gals_listtype'] == 2)
@@ -760,9 +760,8 @@ while($gal = mysql_fetch_assoc($list)){
 		$gal['pic'] = _01gallery_getThumb($galdir._01gallery_getGalDir($gal['id'],$gal['password'])."/",$gpic['filename'],"_tb");
 		}
 	else{
-		$galpiclist = mysql_query("SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($gal['id'])."' ORDER BY sortorder DESC LIMIT 1");
-		$gpic = mysql_fetch_assoc($galpiclist);
-		$gal['pic'] = _01gallery_getThumb($galdir._01gallery_getGalDir($gal['id'],$gal['password'])."/",$gpic['filename'],"_tb");
+		$gal['pic'] = _01gallery_collectThumbnail($gal['id']);
+		if(empty($gal['pic'])) $gal['pic'] = "<img src=\"".$picuploaddir.FILE_NO_THUMBS."\" alt=\"Keine Thumbnails vorhanden\" />";
 		}
 
 
@@ -910,6 +909,60 @@ $rez_size['width'] =  $rez_size[0];
 $rez_size['height'] = $rez_size[1];
 
 return $rez_size;
+
+}
+}
+
+
+
+
+
+
+
+
+
+// Sucht das passende Thumbnail für die Galerie (auch aus beliebig vielen Sub-Galerien)
+/*$galid       Galerie-ID, bei der mit der Thubnail-Suche begonnen werden soll
+
+RETURN: Pic-Filename
+  */
+if(!function_exists("_01gallery_collectThumbnail")){
+function _01gallery_collectThumbnail($galid){
+global $mysql_tables,$galdir;
+
+if(isset($galid) && is_numeric($galid) && !empty($galid)){
+	$gallist = mysql_query("SELECT password,galpic FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."' LIMIT 1");
+	$gal = mysql_fetch_assoc($gallist);
+	
+	if(isset($gal['galpic']) && is_numeric($gal['galpic']) && $gal['galpic'] > 0)
+	    $query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE id = '".mysql_real_escape_string($gal['galpic'])."' LIMIT 1";
+	else
+		$query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC LIMIT 1";  
+
+	$galpiclist = mysql_query($query);
+	if(mysql_num_rows($galpiclist) == 1){
+		$gpic = mysql_fetch_assoc($galpiclist);
+	
+		return _01gallery_getThumb($galdir._01gallery_getGalDir($galid,$gal['password'])."/",$gpic['filename'],"_tb");
+		}
+	else{
+		// Alle Subgaleries der Reihe nach durchgehen
+		// IN allen Subgalerien wird wiederum alle Tiefen durchgegangen, bis auf ein Bild gestoßen wird
+		$subgals = mysql_query("SELECT id FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($galid)."' ORDER BY sortid DESC");
+		if(mysql_num_rows($subgals) >= 1){
+			while($row = mysql_fetch_assoc($subgals)){
+				$thumb = _01gallery_collectThumbnail($row['id']);
+				
+				if(!empty($thumb)) return $thumb;
+				}
+			}
+		
+		
+		return "";
+		}
+
+	}
+else return "";
 
 }
 }
