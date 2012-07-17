@@ -44,16 +44,17 @@ if(isset($_GET['action']) && $_GET['action'] == "do_recreate_thumbnails" && isse
         $dir = _01gallery_getGalDir($gal['id'],$gal['password']);
 	   
         $query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".$gal['id']."' ORDER BY id LIMIT ".mysql_real_escape_string($_GET['sublimit']).",".mysql_real_escape_string($_GET['sublimit']+$gen_thumbs_max)."";
-        $list = mysql_query($query);
+		$list = mysql_query($query);
         $num_pics = mysql_num_rows($list);
         while($row = mysql_fetch_assoc($list)){
-            _01gallery_makeThumbs($modulpath.$galdir.$dir."/",$row['filename'],TRUE);
+			_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$row['filename'],TRUE);
             }
             
         if($num_pics == $gen_thumbs_max){
             $_GET['sublimit'] = $_GET['sublimit']+$gen_thumbs_max;
             $_GET['limit']--;
             }
+        else $_GET['sublimit'] = 0;
 	   
         echo "<p style=\"text-align: center;\"><a href=\"popups.php?modul=".$modul."&amp;action=do_recreate_thumbnails&amp;limit=".$_GET['limit']."&amp;sublimit=".$_GET['sublimit']."\" class=\"small\">Automatische Weiterleitung funktioniert nicht? Weiter...</a></p>";
         echo "<script type=\"text/javascript\">redirect(\"popups.php?modul=".$modul."&action=do_recreate_thumbnails&limit=".$_GET['limit']."&sublimit=".$_GET['sublimit']."\");</script>";
