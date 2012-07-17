@@ -103,11 +103,21 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
 	$artuserdata = getUserdatafields_Queryless("username");
 	
-	// Selektierte Bilder löschen
-	if(isset($_POST['picdelids']) && !empty($_POST['picdelids']) &&
+	if(!isset($_POST['title_all'])) $_POST['title_all'] = "";
+	if(!isset($_POST['beschreibung_all'])) $_POST['beschreibung_all'] = "";
+	
+	// Beschreibung selektierter Bilder bearbeiten:
+	if(isset($_POST['selectids']) && !empty($_POST['selectids']) &&
+	   isset($_POST['massedit']) && $_POST['massedit'] == 1){
+		mysql_query("UPDATE ".$mysql_tables['pics']." SET title = '".mysql_real_escape_string($_POST['title_all'])."', text = '".mysql_real_escape_string($_POST['beschreibung_all'])."' WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
+
+		echo "<p class=\"meldung_erfolg\">Bilder wurden bearbeitet</p>";
+		}	
+	// Selektierte Bilder löschen:
+	elseif(isset($_POST['selectids']) && !empty($_POST['selectids']) &&
 	   isset($_POST['delselected']) && $_POST['delselected'] == 1){
 		$cup = 0;
-		$list = mysql_query("SELECT id,filename FROM ".$mysql_tables['pics']." WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['picdelids'])).")");
+		$list = mysql_query("SELECT id,filename FROM ".$mysql_tables['pics']." WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
 		while($drow = mysql_fetch_assoc($list)){
 			
 			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($statrow['password']));
@@ -134,7 +144,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
         <form action="<?php echo addParameter2Link($filename,"action=show_pics&galid=".$_GET['galid']); ?>" method="post">
 		<table border="0" align="center" width="100%" cellpadding="3" cellspacing="5" class="rundrahmen">
 	    <tr>
-			<td class="tra" style="width:25px;"><input type="checkbox" name="select" id="selector" onclick="SelectAll('selector','input.dcb');" /><!--Löschung--></td>
+			<td class="tra" style="width:25px;" align="center"><input type="checkbox" name="select" id="selector" onclick="SelectAll('selector','input.dcb');" /><!--Löschung--></td>
 			<td class="tra" style="width:100px;" colspan="2"><b>Coverbild</b><!--Thumbnail--></td>
 	        <td class="tra" style="width:110px;"><b>Datum</b></td>
 			<td class="tra"><b>Bildtitel / Beschreibung</b></td>
@@ -166,7 +176,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			
 			echo "
 		<tr id=\"id".$row['id']."\">
-			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"picdelids[]\" value=\"".$row['id']."\" class=\"dcb\" /></td>
+			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"selectids[]\" value=\"".$row['id']."\" class=\"dcb\" /></td>
 			<td class=\"".$class."\" align=\"center\"><input type=\"radio\" name=\"cover\" value=\"".$row['id']."\"".$checked." onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=setnewcover&id=".$row['id']."&galid=".$_GET['galid']."');\" /></td>
             <td class=\"".$class."\" align=\"center\"><a href=\"".$modulpath.$galdir.$dir."/".stripslashes($row['filename'])."\" class=\"lightbox\">"._01gallery_getThumb($modulpath.$galdir.$dir."/",stripslashes($row['filename']),"_acptb")."</a></td>
 			<td class=\"".$class."\">".date("d.m.Y - G:i",$row['timestamp'])."</td>
@@ -179,8 +189,8 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
                 <b>".stripslashes($row['title'])."</b>".$text."
             </div>
 			<div id=\"hide_edit_".$row['id']."\" style=\"display:none;\">
-                <input type=\"text\" size=\"26\" name=\"title_".$row['id']."\" id=\"title_".$row['id']."\" value=\"".stripslashes($row['title'])."\" /><br />
-                <textarea name=\"beschreibung_".$row['id']."\" id=\"beschreibung_".$row['id']."\" cols=\"25\" rows=\"3\" class=\"input_textarea\" style=\"font-size: 11px;\">".stripslashes($row['text'])."</textarea><br />
+                <input type=\"text\" size=\"26\" name=\"title_".$row['id']."\" id=\"title_".$row['id']."\" value=\"".stripslashes($row['title'])."\" class=\"pic_title\" /><br />
+                <textarea name=\"beschreibung_".$row['id']."\" id=\"beschreibung_".$row['id']."\" cols=\"25\" rows=\"3\" class=\"input_textarea pic_descr\">".stripslashes($row['text'])."</textarea><br />
                 <input type=\"reset\" value=\"Zur&uuml;cksetzen\" class=\"input\" /> <input type=\"submit\" value=\"Speichern\" class=\"input\" onclick=\"SendPicFormData('".$row['id']."','modul=".$modul."&ajaxaction=savepicdata&id=".$row['id']."&title='+document.id('title_".$row['id']."').get('value')+'&beschreibung='+document.id('beschreibung_".$row['id']."').get('value'));\" />
             </div>
 
@@ -193,11 +203,30 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			}
 		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 		echo "
-		<tr>
-			<td class=\"".$class."\" colspan=\"8\">
-				<input type=\"checkbox\" name=\"delselected\" value=\"1\" />
-				<input type=\"submit\" value=\"Ausgew&auml;hlte Bilder l&ouml;schen\" class=\"input\" />
+		<tr id=\"massedit_tr\">
+			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"massedit\" value=\"1\" onclick=\"hide_unhide('hide_massedit');hide_unhide_tr('massdel_tr');\" /></td>
+			<td class=\"".$class."\" align=\"center\"><img src=\"images/icons/icon_edit.gif\" alt=\"Bearbeiten - Stift\" title=\"Bitte klicken Sie auf die Checkbox um die gew&auml;hlten Bilder zu bearbeiten\" /></td>
+			<td class=\"".$class."\" colspan=\"6\">
+				<b>Titel &amp; Beschreibung der gew&auml;hlten Bilder &auml;ndern</b><br /> 
+				<div id=\"hide_massedit\" style=\"display:none;\">
+				<b>Titel:</b> <input type=\"text\" size=\"26\" name=\"title_all\" value=\"".$_POST['title_all']."\" style=\"width: 265px;\" /><br />
+                <b>Beschreibung:</b><br /><textarea name=\"beschreibung_all\" cols=\"30\" rows=\"3\" class=\"input_textarea\" style=\"font-size: 11px; width:300px;\">".$_POST['beschreibung_all']."</textarea><br />
+				<br />
+				<input type=\"submit\" value=\"Text f&uuml;r gew&auml;hlte Bilder aktualisieren\" class=\"input\" />
+				</div>
+			</td>
+		</tr>";
+		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
+		echo "
+		<tr id=\"massdel_tr\">
+			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"delselected\" value=\"1\" onclick=\"hide_unhide('hide_massdel');hide_unhide_tr('massedit_tr');\" /></td>
+			<td class=\"".$class."\" align=\"center\"><img src=\"images/icons/icon_trash.gif\" alt=\"M&uuml;lleimer\" title=\"Bitte klicken Sie auf die Checkbox um die gew&auml;hlten Bilder zu l&ouml;schen\" /></td>
+			<td class=\"".$class."\" colspan=\"6\">
+				<b>Gew&auml;hlte Bilder l&ouml;schen</b><br />
+				<div id=\"hide_massdel\" style=\"display:none;\">
+				<input type=\"submit\" value=\"Gew&auml;hlte Bilder l&ouml;schen\" class=\"input\" />
 				Es erfolgt <b>keine</b> weitere Abfrage!
+				</div>
 			</td>
 		</tr>";
 		 

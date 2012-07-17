@@ -12,7 +12,13 @@
 	font-weight:bold;
 }
 
-
+.pic_title,
+.pic_descr {
+	width: 170px;
+}
+.pic_descr {
+	font-size: 11px;
+}
 
 
 
