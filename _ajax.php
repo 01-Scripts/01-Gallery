@@ -213,6 +213,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
 	    @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
         
         mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($_REQUEST['id'])."'");
+        mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic = 0 WHERE galpic='".mysql_real_escape_string($_REQUEST['id'])."' LIMIT 1");
         
         _01gallery_countPics($statrow['galid']);
         

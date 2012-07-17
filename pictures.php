@@ -133,6 +133,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			$cup++;
 			}
 		
+		mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic = 0 WHERE id='".mysql_real_escape_string($_GET['galid'])."' AND galpic IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
 		_01gallery_countPics($_GET['galid']);
 		echo "<p class=\"meldung_erfolg\">Es wurden ".$cup." Bilder gel&ouml;scht</p>";
 		}
