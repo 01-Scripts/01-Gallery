@@ -109,7 +109,23 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	// Beschreibung selektierter Bilder bearbeiten:
 	if(isset($_POST['selectids']) && !empty($_POST['selectids']) &&
 	   isset($_POST['massedit']) && $_POST['massedit'] == 1){
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET title = '".mysql_real_escape_string($_POST['title_all'])."', text = '".mysql_real_escape_string($_POST['beschreibung_all'])."' WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
+		
+		if(!empty($_POST['title_all']))
+	        $title = "title = '".mysql_real_escape_string($_POST['title_all'])."'";
+		else
+			$title = ""; 
+
+		if(!empty($_POST['beschreibung_all']))
+	        $beschreibung = "text = '".mysql_real_escape_string($_POST['beschreibung_all'])."'";
+		else
+			$beschreibung = "";
+			
+		if(!empty($_POST['title_all']) && !empty($_POST['beschreibung_all']))
+		    $seperator = ", ";
+		else
+			$seperator = "";
+
+		mysql_query("UPDATE ".$mysql_tables['pics']." SET ".$title.$seperator.$beschreibung." WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
 
 		echo "<p class=\"meldung_erfolg\">Bilder wurden bearbeitet</p>";
 		}	
@@ -192,7 +208,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			<div id=\"hide_edit_".$row['id']."\" style=\"display:none;\">
                 <input type=\"text\" size=\"26\" name=\"title_".$row['id']."\" id=\"title_".$row['id']."\" value=\"".stripslashes($row['title'])."\" class=\"pic_title\" /><br />
                 <textarea name=\"beschreibung_".$row['id']."\" id=\"beschreibung_".$row['id']."\" cols=\"25\" rows=\"3\" class=\"input_textarea pic_descr\">".stripslashes($row['text'])."</textarea><br />
-                <input type=\"reset\" value=\"Zur&uuml;cksetzen\" class=\"input\" /> <input type=\"submit\" value=\"Speichern\" class=\"input\" onclick=\"SendPicFormData('".$row['id']."','modul=".$modul."&ajaxaction=savepicdata&id=".$row['id']."&title='+document.id('title_".$row['id']."').get('value')+'&beschreibung='+document.id('beschreibung_".$row['id']."').get('value'));\" />
+                <button type=\"button\" class=\"input\" onclick=\"SendPicFormData('".$row['id']."','modul=".$modul."&ajaxaction=savepicdata&id=".$row['id']."&title='+document.id('title_".$row['id']."').get('value')+'&beschreibung='+document.id('beschreibung_".$row['id']."').get('value'));\">Speichern</button>
             </div>
 
             </td>
