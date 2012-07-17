@@ -51,6 +51,7 @@ $names['picpage']	= "picpage";
 $names['picfilename'] = "picfilename";
 $names['action']	= "galdisplay";
 $names['cpage']		= "galcompage";
+$names['logout']	= "dologoutnow";
 
 
 

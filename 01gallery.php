@@ -75,8 +75,12 @@ if(!isset($picid) || empty($picid) || isset($_REQUEST[$names['picid']]) && !empt
 $picpage=	$_REQUEST[$names['picpage']];
 
 $filename = $_SERVER['PHP_SELF'];
-$system_link_gal = parse_cleanerlinks($filename."?".$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage);
-$system_link_pic = parse_cleanerlinks($system_link_gal."&amp;".$names['picpage']."=".$picpage);
+$system_link_gal = parse_cleanerlinks(addParameter2Link($filename,$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage));
+$system_link_pic = parse_cleanerlinks(addParameter2Link($system_link_gal,$names['picpage']."=".$picpage));
+
+// Ausloggen / Cookie löschen
+if(isset($_GET[$names['logout']]) && $_GET[$names['logout']] == "logout")
+	echo set_a_cookie("c_".$modul."_galpwcookie", "",time()-60*60*24);    
 
 // Cookie auslesen
 if(isset($_COOKIE["c_".$modul.'_galpwcookie']) && !empty($_COOKIE["c_".$modul.'_galpwcookie']))
