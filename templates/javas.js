@@ -1,10 +1,12 @@
-/* 
-01-Gallery V2 - Copyright 2003-2009 by Michael Lorer - 01-Scripts.de
-Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
-	
-Modul:		01gallery
-Dateiinfo: 	Frontend-BB-Code-JavaScript-Funktion
+/*! 
+	01-Gallery V2 - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
+	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+		
+	Modul:		01gallery
+	Dateiinfo: 	Frontend-BB-Code-JavaScript-Funktion
+	Unkomprimierte Version der Datei: https://gist.github.com/627847/fd7bc0ee379135780b05fbbe55680fb05681007d#file_javas.js
+	#fv.210#
 */
 
 

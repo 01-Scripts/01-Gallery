@@ -5,6 +5,7 @@
 
 	Modul:		01gallery
 	Dateiinfo:	JavaScript-Funktionen
+	Unkomprimierte Version der Datei: https://gist.github.com/627847/fd7bc0ee379135780b05fbbe55680fb05681007d#file_modul.js
 	#fv.210#
 */
 

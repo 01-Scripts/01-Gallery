@@ -14,7 +14,7 @@
 $mysql_tables['gallery'] 	= "01_".$instnr."_".$module[$modul]['nr']."_galerien";
 $mysql_tables['pics'] 		= "01_".$instnr."_".$module[$modul]['nr']."_pictures";
 
-$addJSFile 	= "javas.js";			// Zusätzliche modulspezifische JS-Datei (im Modulverzeichnis!)
+$addJSFile 	= "modul.js";			// Zusätzliche modulspezifische JS-Datei (im Modulverzeichnis!)
 $addCSSFile = "modul.css";			// Zusätzliche modulspezifische CSS-Datei (im Modulverzeichnis!)
 $mootools_use = array("moo_core","moo_more","moo_remooz","moo_slideh","moo_request","moo_sortable");
 	

@@ -2,6 +2,9 @@
 	Slimbox v1.71 - The ultimate lightweight Lightbox clone
 	(c) 2007-2009 Christophe Beyls <http://www.digitalia.be>
 	MIT-style license.
+	
+	Unkomprimierte Version der Datei: https://gist.github.com/627847/e5a12827a84e03d19e1f69ebcd95e697edb8c47d#file_slimbox.js
+	#fv.210#
 */
 
 function basename(path, suffix) {
