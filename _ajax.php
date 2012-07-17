@@ -208,6 +208,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
         $split = pathinfo($statrow['filename']);
         
         @unlink($modulpath.$galdir.$dir."/".$statrow['filename']);
+        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_big.".$split['extension']);
         @unlink($modulpath.$galdir.$dir."/".$split['filename']."_tb.".$split['extension']);
 	    @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
         

@@ -114,6 +114,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	        $split = pathinfo($drow['filename']);
 	
 	        @unlink($modulpath.$galdir.$dir."/".$drow['filename']);
+	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_big.".$split['extension']);
 	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_tb.".$split['extension']);
 	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
 	
