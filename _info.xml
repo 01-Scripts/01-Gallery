@@ -5,9 +5,9 @@
 	<titel>01-Gallery</titel>
 	<beschreibung>Dynamische Bildergalerie mit beliebig vielen Bilderalben und Bildern anlegen und verwalten.</beschreibung>
 	<icon>images/gallery.gif</icon>
-	<version>2.0.0.1</version>
-	<need01acpv>1.1.0.0</need01acpv>
-	<datum>28.07.2009</datum>
+	<version>2.1.0</version>
+	<need01acpv>1.2.1</need01acpv>
+	<datum>17.07.2012</datum>
 	<includeinfo><![CDATA[
 Verwenden Sie folgenden PHP-Code um die 01-Gallery in Ihre Seite zu integrieren:<br />
 <code>
@@ -28,6 +28,11 @@ $galid     		= 1; // Geben Sie hier die ID der Galerie an, die direkt angezeigt 
 	]]></includeinfo>
 	
 	<updates>
+		<v2001_v210>
+			<startv>2.0.0.1</startv>
+			<zielv>2.1.0</zielv>
+			<action>2001_zu_210</action>
+		</v2001_v210>
 		<v2000_v2001>
 			<startv>2.0.0.0</startv>
 			<zielv>2.0.0.1</zielv>
