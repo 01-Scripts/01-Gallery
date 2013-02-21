@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Artikelsystem V3 - Copyright 2006-2012 by Michael Lorer - 01-Scripts.de
+	01-Artikelsystem V3 - Copyright 2006-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.210#
+	#fv.211#
 */
 
 /* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
@@ -76,11 +76,11 @@ RETURN: String mit dem entsprechenden Text
 */
 if(!function_exists("_01gallery_getCommentParentTitle")){
 function _01gallery_getCommentParentTitle($postid){
-global $mysql_tables;
+global $mysql_tables,$htmlent_flags,$htmlent_encoding_acp;
 
 $list = mysql_query("SELECT galeriename FROM ".$mysql_tables['gallery']." WHERE id='".mysql_real_escape_string($postid)."' LIMIT 1");
 while($row = mysql_fetch_array($list)){
-	return htmlentities(stripslashes($row['galeriename']));
+	return htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
 	}
 }
 }
@@ -270,6 +270,7 @@ RETURN: <option>-Fields
   */
 if(!function_exists("_01gallery_echoGalinfo_select")){
 function _01gallery_echoGalinfo_select($row,$deep,$selected=""){
+global $htmlent_flags,$htmlent_encoding_acp;
 
 $return = "";
 $tab = "";
@@ -280,7 +281,7 @@ for($x=0;$x<($deep*2);$x++){
 if($row['id'] == $selected) $sel = " selected=\"selected\"";
 else $sel ="";
 
-$return .= "<option value=\"".$row['id']."\"".$sel.">".$tab.htmlentities(stripslashes($row['galeriename']))."</option>\n";
+$return .= "<option value=\"".$row['id']."\"".$sel.">".$tab.htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp)."</option>\n";
 
 echo $return;
 
@@ -736,7 +737,7 @@ RETURN: true/false (Ausgabe erfolgt per echo)
   */
 if(!function_exists("_01gallery_echoGalList")){
 function _01gallery_echoGalList($fgalid=0){
-global $filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid,$picuploaddir;
+global $filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid,$picuploaddir,$htmlent_flags,$htmlent_encoding_acp;
 
 // Auflistung Untereinander
 if($settings['gals_listtype'] == 2)
@@ -767,7 +768,7 @@ while($gal = mysql_fetch_assoc($list)){
 
 	$gal['link'] = addParameter2Link($filename,$names['galid']."=".$gal['id']);
 	
-	$gal['galeriename'] = htmlentities(($gal['galeriename']));
+	$gal['galeriename'] = htmlentities(($gal['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
 	if(!empty($gal['password']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['password'].$salt),$pwcookie))) $gal['beschreibung'] = "<p class=\"gal_password\">Zum Betrachten dieses Bilderalbums ben&ouml;tigen Sie ein Passwort.</p>";
 	else $gal['beschreibung'] = stripslashes($gal['beschreibung']);
 	
@@ -801,7 +802,7 @@ RETURN: $errorgalid (ID der Galerie für die als erstes das Passwort fehlt)
   */
 if(!function_exists("_01gallery_echoBreadcrumps")){
 function _01gallery_echoBreadcrumps($aktgalid){
-global $filename,$names,$_REQUEST,$mysql_tables,$flag_breadcrumps,$text_bilderlaben,$pwcookie,$salt;
+global $filename,$names,$_REQUEST,$mysql_tables,$flag_breadcrumps,$text_bilderlaben,$pwcookie,$salt,$htmlent_flags,$htmlent_encoding_acp;
 
 $stop = false;
 $errorid = 0;
@@ -812,7 +813,7 @@ $list = mysql_query("SELECT id,subof,password,galeriename FROM ".$mysql_tables['
 while($row = mysql_fetch_assoc($list)){
 	$gals[$row['id']]['id']			= $row['id'];
 	$gals[$row['id']]['subof']		= $row['subof'];
-	$gals[$row['id']]['name']		= htmlentities(stripslashes($row['galeriename']));
+	$gals[$row['id']]['name']		= htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
 	if(!empty($row['password']))
 		$gals[$row['id']]['password']	= $row['password'];
 	else 

@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2011 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bildergalerie ACP-Startseite = Galerien-Übersicht & Galerien anlegen
-	#fv.202#
+	#fv.211#
 */
 
 
@@ -169,7 +169,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "new_gal" && $userdata['
 									"title"				=> "Bilderalbum bearbeiten",
 									"button"			=> "Bearbeiten",
 									"do"				=> "do_edit",
-									"galname"			=> htmlentities(stripslashes($row['galeriename'])),
+									"galname"			=> htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp),
 									"beschreibung"		=> stripslashes($row['beschreibung']),
 									"password"			=> stripslashes($row['password']),
 									"uid"				=> $row['uid'],
@@ -434,7 +434,7 @@ else
 					$list = mysql_query("SELECT galeriename FROM ".$mysql_tables['gallery']." WHERE id = '".$parentid."' LIMIT 1");
 					while($row = mysql_fetch_assoc($list)){
 						$preparentids .= ",".$parentid;
-						echo " &raquo; <a href=\"".$filename."&amp;subid=".$parentid."&amp;parentids=".$preparentids."&amp;sort=".$_GET['sort']."&amp;orderby=".$_GET['orderby']."\">".htmlentities(stripslashes($row['galeriename']))."</a>";
+						echo " &raquo; <a href=\"".$filename."&amp;subid=".$parentid."&amp;parentids=".$preparentids."&amp;sort=".$_GET['sort']."&amp;orderby=".$_GET['orderby']."\">".htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp)."</a>";
 						}
 					}
 				}
@@ -515,13 +515,13 @@ else
 		<td class=\"".$class."\" align=\"center\">".$showsort."</td>
 		<td class=\"".$class."\" align=\"center\">".$row['id']."</td>
 		<td class=\"".$class."\">".date("d.m.Y - G:i",$row['timestamp'])."</td>
-		<td class=\"".$class."\">".$pwicon."<a href=\"_loader.php?modul=".$modul."&amp;loadpage=showpics&amp;action=show_pics&amp;galid=".$row['id']."\">".htmlentities(stripslashes($row['galeriename']))."</a> (".$row['anzahl_pics'].")".$pwtext.$showsubtext."</td>
+		<td class=\"".$class."\">".$pwicon."<a href=\"_loader.php?modul=".$modul."&amp;loadpage=showpics&amp;action=show_pics&amp;galid=".$row['id']."\">".htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp)."</a> (".$row['anzahl_pics'].")".$pwtext.$showsubtext."</td>
 		<td class=\"".$class."\">".$artuserdata[$row['uid']]['username']."</td>";
 		
 		if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $row['uid'] == $userdata['id'])
 			echo "<td class=\"".$class."\" align=\"center\"><a href=\"_loader.php?modul=".$modul."&amp;loadpage=upload&amp;action=upload_pic&amp;galid=".$row['id']."\"><img src=\"images/icons/icon_upload.gif\" alt=\"Hochladen\" title=\"Bilder hochladen\" /></a></td>
 		<td class=\"".$class."\" align=\"center\"><a href=\"".$filename."&amp;action=edit_gal&amp;galid=".$row['id']."\"><img src=\"images/icons/icon_edit.gif\" alt=\"Bearbeiten - Stift\" title=\"Galerie bearbeiten\" /></a></td>
-		<td class=\"".$class."\" align=\"center\"><a href=\"".$filename."&amp;action=ask_del&amp;galid=".$row['id']."&amp;galeriename=".htmlentities(stripslashes($row['galeriename']))."\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Galerie l&ouml;schen\" /></a></td>
+		<td class=\"".$class."\" align=\"center\"><a href=\"".$filename."&amp;action=ask_del&amp;galid=".$row['id']."&amp;galeriename=".htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp)."\"><img src=\"images/icons/icon_delete.gif\" alt=\"L&ouml;schen - rotes X\" title=\"Galerie l&ouml;schen\" /></a></td>
 	</tr>";		
 		else
 			echo "<td class=\"".$class."\" align=\"center\">-</td>

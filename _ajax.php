@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -12,7 +12,7 @@
 	               - Coverbild speichern
 	               - Bilddaten speichern
 	               - Einzelbild löschen
-	#fv.210#
+	#fv.211#
 */
 
 // Security: Only allow calls from _ajaxloader.php!
@@ -168,13 +168,13 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savepicdata
 	if(_01gallery_checkUserright($_REQUEST['id'])){
 		if(isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
 	        $title = "title = '".mysql_real_escape_string(utf8_decode($_REQUEST['title']))."' ";
-	        $echotitle = htmlentities(utf8_decode(stripslashes($_REQUEST['title'])));
+	        $echotitle = htmlentities(utf8_decode(stripslashes($_REQUEST['title'])),$htmlent_flags,$htmlent_encoding_acp);
 	        }
 		else{ $title = "title = '' "; $echotitle = ""; }
 		
 		if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
 	        $beschreibung = "text = '".mysql_real_escape_string(utf8_decode($_REQUEST['beschreibung']))."' ";
-	        $echobeschreibung = "<br />".substr(htmlentities(utf8_decode(stripslashes($_REQUEST['beschreibung']))),0,100);
+	        $echobeschreibung = "<br />".substr(htmlentities(utf8_decode(stripslashes($_REQUEST['beschreibung'])),$htmlent_flags,$htmlent_encoding_acp),0,100);
 	        }
 		else{ $beschreibung = "text = '' "; $echobeschreibung = ""; }
 	    

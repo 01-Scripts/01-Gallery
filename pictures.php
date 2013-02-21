@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bilder einer Galerie auflisten, bearbeiten und sortieren
-	#fv.210#
+	#fv.211#
 */
 
 
@@ -179,7 +179,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 		while($row = mysql_fetch_assoc($list)){
 			if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 			
-			if(!empty($row['text'])) $text = "<br />".substr(htmlentities(stripslashes($row['text'])),0,100);
+			if(!empty($row['text'])) $text = "<br />".substr(htmlentities(stripslashes($row['text']),$htmlent_flags,$htmlent_encoding_acp),0,100);
 			else $text = "";
 			
 			// Coverbild?

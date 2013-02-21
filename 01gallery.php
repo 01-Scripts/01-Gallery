@@ -203,7 +203,7 @@ if(is_numeric($picid) && $picid > 0){
     	$list = mysql_query("SELECT id,sortorder,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC");
 		while($row = mysql_fetch_assoc($list)){
 			// Download von unverkleinerten Originaldateien?
-			$lightbox_title = htmlentities(stripslashes($row['title']));
+			$lightbox_title = htmlentities(stripslashes($row['title']),$htmlent_flags,$htmlent_encoding_acp);
             if($allow_big_download){
                 $split = explode(".",$row['filename']);
                 if(file_exists($galverz.$split[0]."_big.".$split[1]))
@@ -211,9 +211,9 @@ if(is_numeric($picid) && $picid > 0){
                 }
 
 			if($row['id'] == $picid){
-				$pic['title']	= htmlentities(stripslashes($row['title']));
+				$pic['title']	= htmlentities(stripslashes($row['title']),$htmlent_flags,$htmlent_encoding_acp);
 				$pic['lb_title']= $lightbox_title;
-				$pic['text']	= htmlentities(stripslashes($row['text']));
+				$pic['text']	= htmlentities(stripslashes($row['text']),$htmlent_flags,$htmlent_encoding_acp);
 				$pic['filename']= $row['filename'];
 				$pic['sortorder']=$row['sortorder'];
 				$pic['id']		= $row['id'];
@@ -347,8 +347,7 @@ if(is_numeric($picid) && $picid > 0){
 	                    }
 	                else{ $c_szl1 = ""; $c_szl2 = ""; }
 	
-					if(!isset($_GET[$names['cpage']]) || isset($_GET[$names['cpage']]) && empty($_GET[$names['cpage']]))
-	                    {
+					if(!isset($_GET[$names['cpage']]) || isset($_GET[$names['cpage']]) && empty($_GET[$names['cpage']])){
 	                    $comment_current = 1;
 	                    if($comment_sites > 1) $c_sv = 2;
 	                    }
@@ -377,7 +376,6 @@ if(is_numeric($picid) && $picid > 0){
 	
 	
 	            if($galinfo['comments'] == 1 && $settings['comments'] == 1){
-	                mt_srand((double)microtime()*1000000);
 					$zahl = mt_rand(1, 9999999999999);
 					$uid = md5(time().$_SERVER['REMOTE_ADDR'].$zahl.$galid.$picid);
 					//Template ausgeben
@@ -400,9 +398,9 @@ if(is_numeric($picid) && $picid > 0){
 
 
 
-
-
+//
 // Display: Thumbnail-Ansicht
+//
 elseif(is_numeric($galid) && $galid > 0){
 	
 	$system_link_form = $system_link_gal;
@@ -454,21 +452,23 @@ elseif(is_numeric($galid) && $galid > 0){
 				    $href = "href=\"".$galverz.$pics['filename']."\" rel=\"lightbox-gal".$galid."set\"";
 				else
 					$href = "href=\"".addParameter2Link($system_link_pic,$names['picid']."=".$pics['id'])."\"";
+
+				$echo_text = htmlentities(strip_tags(stripslashes($pics['text'])),$htmlent_flags,$htmlent_encoding_acp);
+				$lightbox_title = htmlentities(stripslashes($pics['title']),$htmlent_flags,$htmlent_encoding_acp);
 				
 
 				if($c < ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page'])){
-					echo "<a ".$href." title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\"></a>\n";
+					echo "<a ".$href." title=\"".$lightbox_title." - ".$echo_text."\"></a>\n";
 					}
 				elseif($c >= ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page']) && $c < ($_GET[$names['picpage']]*$settings['thumbs_per_page'])){
 					// Download von unverkleinerten Originaldateien?
-        			$lightbox_title = htmlentities(stripslashes($pics['title']));
                     if($allow_big_download && $settings['use_lightbox'] == 2){
                         $split = explode(".",$pics['filename']);
                         if(file_exists($galverz.$split[0]."_big.".$split[1]))
                             $lightbox_title = "&lt;a href='".$galverz.$split[0]."_big.".$split[1]."' title='Unkomprimierte Original-Datei herunterladen' target='_blank'&gt;".$lightbox_title."&lt;/a&gt;";
                         }
 
-                    echo "<li".$class."><a ".$href." title=\"".$lightbox_title." - ".strip_tags(stripslashes($pics['text']))."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
+                    echo "<li".$class."><a ".$href." title=\"".$lightbox_title." - ".$echo_text."\">"._01gallery_getThumb($galverz,stripslashes($pics['filename']),"_tb")."</a></li>\n";
 					}
 				else{
 					if($endul == 0){
@@ -476,7 +476,7 @@ elseif(is_numeric($galid) && $galid > 0){
 					    $endul = 1;
 					    }
 
-					echo "<a ".$href." title=\"".strip_tags(stripslashes($pics['title']))." - ".strip_tags(stripslashes($pics['text']))."\"></a>\n";
+					echo "<a ".$href." title=\"".$lightbox_title." - ".$echo_text."\"></a>\n";
 					}
 
 				$c++;
