@@ -103,31 +103,32 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "saveautosor
 
 		/* Sortierung gerade "umgedreht", da die Ausgabe von 99->0 erfolgt. Es muss also beim "hochzählen" mit dem letzten Bild begonnen werden
 		Deshalb alle Query-Befehle vom DESC-Argument her grad umgekehrt... */
+		$query = "UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."'";
 		switch($_REQUEST['sortorder']){
 		  case "az":
 		  default:
 			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY orgname DESC");
+			mysql_query($query." ORDER BY orgname DESC");
 		  break;
 		  case "za":
 			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY orgname");
+			mysql_query($query." ORDER BY orgname");
 		  break;
 		  case "taz":
 			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY title DESC");
+			mysql_query($query." ORDER BY title DESC");
 		  break;
 		  case "tza":
 			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY title");
+			mysql_query($query." ORDER BY title");
 		  break;
 		  case "timeup":
 			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY timestamp");
+			mysql_query($query." ORDER BY timestamp");
 		  break;
 		  case "timedown":
 			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."' ORDER BY timestamp DESC");
+			mysql_query($query." ORDER BY timestamp DESC");
 		  break;
 		  }
 		echo "
@@ -167,14 +168,14 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savepicdata
 
 	if(_01gallery_checkUserright($_REQUEST['id'])){
 		if(isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
-	        $title = "title = '".mysql_real_escape_string(utf8_decode($_REQUEST['title']))."' ";
-	        $echotitle = htmlentities(utf8_decode(stripslashes($_REQUEST['title'])),$htmlent_flags,$htmlent_encoding_acp);
+	        $title = "title = '".mysql_real_escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['title'])))."' ";
+	        $echotitle = strip_tags($_REQUEST['title']);
 	        }
 		else{ $title = "title = '' "; $echotitle = ""; }
 		
 		if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
-	        $beschreibung = "text = '".mysql_real_escape_string(utf8_decode($_REQUEST['beschreibung']))."' ";
-	        $echobeschreibung = "<br />".substr(htmlentities(utf8_decode(stripslashes($_REQUEST['beschreibung'])),$htmlent_flags,$htmlent_encoding_acp),0,100);
+	        $beschreibung = "text = '".mysql_real_escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung'])))."' ";
+	        $echobeschreibung = "<br />".strip_tags($_REQUEST['beschreibung']);
 	        }
 		else{ $beschreibung = "text = '' "; $echobeschreibung = ""; }
 	    
