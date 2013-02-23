@@ -15,8 +15,8 @@ if($userdata['uploadpics'] >= 1){
 // Bilder importieren
 if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid']) &&
    isset($_GET['send']) && !empty($_GET['send'])){
-	$list = mysql_query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
-	$statrow = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$statrow = $list->fetch_assoc();
 	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
 
 	// Zugriffsberechtigung?
@@ -28,8 +28,8 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 		$pictures = array();
 		$x = 0;
 		$new_sortid = 0;
-		$list = mysql_query("SELECT sortorder,filename FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($_GET['galid'])."' ORDER BY sortorder DESC");
-		while($row = mysql_fetch_assoc($list)){
+		$list = $mysqli->query("SELECT sortorder,filename FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC");
+		while($row = $list->fetch_assoc()){
 			if($x == 0) $new_sortid = ($row['sortorder']+1);
 			$pictures[]	= stripslashes($row['filename']);
 			$split = explode('.', stripslashes($row['filename']));
@@ -71,22 +71,22 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 						
 						// ggf. eigenen Bildtitel berücksichtigen
 						if(isset($_GET['bildtitle']) && $_GET['bildtitle'] == "own" && isset($_GET['owntitle']) && !empty($_GET['owntitle']))
-							$title = mysql_real_escape_string($_GET['owntitle']);
+							$title = $mysqli->escape_string($_GET['owntitle']);
 						else
-							$title = mysql_real_escape_string($file);
+							$title = $mysqli->escape_string($file);
 						
 						//Eintragung in Datenbank vornehmen:
                         $sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,timestamp,orgname,filename,title,text,uid) VALUES (
-							'".mysql_real_escape_string($_GET['galid'])."',
+							'".$mysqli->escape_string($_GET['galid'])."',
 							'".$new_sortid."',
 							'".time()."',
-							'".mysql_real_escape_string($file)."',
-							'".mysql_real_escape_string($newname)."',
+							'".$mysqli->escape_string($file)."',
+							'".$mysqli->escape_string($newname)."',
 							'".$title."', 
 							'', 
 							'".$userdata['id']."'
 							)";
-						mysql_query($sql_insert) OR die(mysql_error());
+						$mysqli->query($sql_insert) OR die(mysql_error());
 						$cup++;
 						$new_sortid++;
 						
@@ -129,8 +129,8 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 			_01gallery_countPics($_GET['galid']);
 			
 			// Importierte Bilder sortieren
-			mysql_query("SET @pos=0");
-			mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_GET['galid'])."' ORDER BY orgname DESC");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY orgname DESC");
 			}
 				
 		if(!empty($not_imported))
@@ -146,8 +146,8 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 
 // Neue Bilder hochladen / importieren (Formular)
 elseif(isset($_GET['action']) && $_GET['action'] == "upload_pic" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid'])){
-	$list = mysql_query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
-	$row = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$row = $list->fetch_assoc();
 	$dir = _01gallery_getGalDir($_GET['galid'],$row['password']);
 
 	// Zugriffsberechtigung?
@@ -174,8 +174,8 @@ elseif(isset($_GET['action']) && $_GET['action'] == "upload_pic" && isset($_GET[
 		_01gallery_countPics($_GET['galid']);
 		
 		// Bilder sortieren
-		mysql_query("SET @pos=0");
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_GET['galid'])."' ORDER BY orgname DESC");
+		$mysqli->query("SET @pos=0");
+		$mysqli->query("UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY orgname DESC");
 		}
 ?>
 <h1><?PHP echo stripslashes($row['galeriename']); ?> &raquo; Bilder hochladen</h1>
@@ -356,9 +356,6 @@ if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 	else
 		$flag_loginerror = true;
 	}
-
-
-
 
 
 }

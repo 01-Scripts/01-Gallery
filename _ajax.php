@@ -20,8 +20,8 @@ if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
 
 // Fancy-Upload (Bilder hochladen)
 if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid'])){
-	$list = mysql_query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
-	$row = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$row = $list->fetch_assoc();
 	$dir = _01gallery_getGalDir($_GET['galid'],$row['password']);
 
 	// Zugriffsberechtigung?
@@ -53,8 +53,8 @@ if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($
 	}
 // Anzahl der Bilder in Galerien neu zählen
 elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "countgalpics"){
-	$list = mysql_query("SELECT id FROM ".$mysql_tables['gallery']."");
-	while($row = mysql_fetch_assoc($list)){
+	$list = $mysqli->query("SELECT id FROM ".$mysql_tables['gallery']."");
+	while($row = $list->fetch_assoc()){
 		_01gallery_countPics($row['id']);
 		}
 	
@@ -77,7 +77,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savesortord
 		
 		if($sortstartid > 1){
 			foreach($sortarray as $picid){
-				mysql_query("UPDATE ".$mysql_tables['pics']." SET sortorder='".$sortstartid."' WHERE id = '".mysql_real_escape_string($picid)."' AND galid = '".mysql_real_escape_string($_REQUEST['id'])."'");
+				$mysqli->query("UPDATE ".$mysql_tables['pics']." SET sortorder='".$sortstartid."' WHERE id = '".$mysqli->escape_string($picid)."' AND galid = '".$mysqli->escape_string($_REQUEST['id'])."'");
 				$sortstartid--;
 				}
 			echo "
@@ -103,32 +103,32 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "saveautosor
 
 		/* Sortierung gerade "umgedreht", da die Ausgabe von 99->0 erfolgt. Es muss also beim "hochzählen" mit dem letzten Bild begonnen werden
 		Deshalb alle Query-Befehle vom DESC-Argument her grad umgekehrt... */
-		$query = "UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".mysql_real_escape_string($_REQUEST['id'])."'";
+		$query = "UPDATE ".$mysql_tables['pics']." SET sortorder= ( SELECT @pos := @pos +1 ) WHERE galid = '".$mysqli->escape_string($_REQUEST['id'])."'";
 		switch($_REQUEST['sortorder']){
 		  case "az":
 		  default:
-			mysql_query("SET @pos=0");
-			mysql_query($query." ORDER BY orgname DESC");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query($query." ORDER BY orgname DESC");
 		  break;
 		  case "za":
-			mysql_query("SET @pos=0");
-			mysql_query($query." ORDER BY orgname");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query($query." ORDER BY orgname");
 		  break;
 		  case "taz":
-			mysql_query("SET @pos=0");
-			mysql_query($query." ORDER BY title DESC");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query($query." ORDER BY title DESC");
 		  break;
 		  case "tza":
-			mysql_query("SET @pos=0");
-			mysql_query($query." ORDER BY title");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query($query." ORDER BY title");
 		  break;
 		  case "timeup":
-			mysql_query("SET @pos=0");
-			mysql_query($query." ORDER BY timestamp");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query($query." ORDER BY timestamp");
 		  break;
 		  case "timedown":
-			mysql_query("SET @pos=0");
-			mysql_query($query." ORDER BY timestamp DESC");
+			$mysqli->query("SET @pos=0");
+			$mysqli->query($query." ORDER BY timestamp DESC");
 		  break;
 		  }
 		echo "
@@ -154,7 +154,7 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "setnewcover
     isset($_REQUEST['galid']) && !empty($_REQUEST['galid']) && is_numeric($_REQUEST['galid'])){
 	
 	if(_01gallery_checkUserright($_REQUEST['id'])){
-		mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic='".mysql_real_escape_string($_REQUEST['id'])."' WHERE id = '".mysql_real_escape_string($_REQUEST['galid'])."'");
+		$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET galpic='".$mysqli->escape_string($_REQUEST['id'])."' WHERE id = '".$mysqli->escape_string($_REQUEST['galid'])."'");
 
 		echo "
 <script type=\"text/javascript\">
@@ -168,18 +168,18 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savepicdata
 
 	if(_01gallery_checkUserright($_REQUEST['id'])){
 		if(isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
-	        $title = "title = '".mysql_real_escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['title'])))."' ";
+	        $title = "title = '".$mysqli->escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['title'])))."' ";
 	        $echotitle = strip_tags($_REQUEST['title']);
 	        }
 		else{ $title = "title = '' "; $echotitle = ""; }
 		
 		if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
-	        $beschreibung = "text = '".mysql_real_escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung'])))."' ";
+	        $beschreibung = "text = '".$mysqli->escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung'])))."' ";
 	        $echobeschreibung = "<br />".strip_tags($_REQUEST['beschreibung']);
 	        }
 		else{ $beschreibung = "text = '' "; $echobeschreibung = ""; }
 	    
-	    mysql_query("UPDATE ".$mysql_tables['pics']." SET ".$title.", ".$beschreibung." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."'");
+	    $mysqli->query("UPDATE ".$mysql_tables['pics']." SET ".$title.", ".$beschreibung." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."'");
 	
 	    echo "
 <script type=\"text/javascript\">
@@ -197,13 +197,13 @@ hide_unhide('hide_edit_".$_REQUEST['id']."');
 elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
 	isset($_REQUEST['id']) && !empty($_REQUEST['id']) && is_numeric($_REQUEST['id'])){
 
-    $list = mysql_query("SELECT galid,filename,uid FROM ".$mysql_tables['pics']." WHERE id = '".mysql_real_escape_string($_REQUEST['id'])."' LIMIT 1");
-	$statrow = mysql_fetch_assoc($list);
+    $list = $mysqli->query("SELECT galid,filename,uid FROM ".$mysql_tables['pics']." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
+	$statrow = $list->fetch_assoc();
 	
 	// Berechtigung abfragen
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $statrow['uid'] == $userdata['id']){
-        $list = mysql_query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($statrow['galid'])."' LIMIT 1");
-	    $galstatrow = mysql_fetch_assoc($list);
+        $list = $mysqli->query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($statrow['galid'])."' LIMIT 1");
+	    $galstatrow = $list->fetch_assoc();
 	    
         $dir = _01gallery_getGalDir($statrow['galid'],stripslashes($galstatrow['password']));
         $split = pathinfo($statrow['filename']);
@@ -213,8 +213,8 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
         @unlink($modulpath.$galdir.$dir."/".$split['filename']."_tb.".$split['extension']);
 	    @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
         
-        mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($_REQUEST['id'])."'");
-        mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic = 0 WHERE galpic='".mysql_real_escape_string($_REQUEST['id'])."' LIMIT 1");
+        $mysqli->query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".$mysqli->escape_string($_REQUEST['id'])."'");
+        $mysqli->query("UPDATE ".$mysql_tables['gallery']." SET galpic = 0 WHERE galpic='".$mysqli->escape_string($_REQUEST['id'])."' LIMIT 1");
         
         _01gallery_countPics($statrow['galid']);
         

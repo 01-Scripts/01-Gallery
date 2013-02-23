@@ -15,8 +15,8 @@
 if(isset($_GET['action']) && $_GET['action'] == "sort_pics" &&
     isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid']) && $userdata['editgal'] > 0){
 	// Zugriffsberechtigung und ggf. Passwortänderung überprüfen
-	$list = mysql_query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
-	$statrow = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$statrow = $list->fetch_assoc();
 
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $statrow['uid'] == $userdata['id']){
 	   $dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
@@ -74,8 +74,8 @@ if(isset($_GET['action']) && $_GET['action'] == "sort_pics" &&
 
 <?PHP   
         echo "<ul class=\"cssgallery\" id=\"sortliste\">\n";
-        $list = mysql_query("SELECT id,sortorder,filename FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($_GET['galid'])."' ORDER BY sortorder DESC");
-		while($row = mysql_fetch_assoc($list)){
+        $list = $mysqli->query("SELECT id,sortorder,filename FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC");
+		while($row = $list->fetch_assoc()){
             echo "<li id=\"".$row['id']."\"><a href=\"#foo\">"._01gallery_getThumb($modulpath.$galdir.$dir."/",stripslashes($row['filename']),"_acptb")."</a></li>\n";
             }
         echo "</ul>";
@@ -95,8 +95,8 @@ if(isset($_GET['action']) && $_GET['action'] == "sort_pics" &&
 elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
     isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid']) && $userdata['editgal'] > 0){
 	// Zugriffsberechtigung und ggf. Passwortänderung überprüfen
-	$list = mysql_query("SELECT password,galeriename,galpic,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
-	$statrow = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT password,galeriename,galpic,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$statrow = $list->fetch_assoc();
 	
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $statrow['uid'] == $userdata['id']){
 	
@@ -111,12 +111,12 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	   isset($_POST['massedit']) && $_POST['massedit'] == 1){
 		
 		if(!empty($_POST['title_all']))
-	        $title = "title = '".mysql_real_escape_string($_POST['title_all'])."'";
+	        $title = "title = '".$mysqli->escape_string($_POST['title_all'])."'";
 		else
 			$title = ""; 
 
 		if(!empty($_POST['beschreibung_all']))
-	        $beschreibung = "text = '".mysql_real_escape_string($_POST['beschreibung_all'])."'";
+	        $beschreibung = "text = '".$mysqli->escape_string($_POST['beschreibung_all'])."'";
 		else
 			$beschreibung = "";
 			
@@ -125,7 +125,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 		else
 			$seperator = "";
 
-		mysql_query("UPDATE ".$mysql_tables['pics']." SET ".$title.$seperator.$beschreibung." WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
+		$mysqli->query("UPDATE ".$mysql_tables['pics']." SET ".$title.$seperator.$beschreibung." WHERE id IN (".$mysqli->escape_string(implode(",",$_POST['selectids'])).")");
 
 		echo "<p class=\"meldung_erfolg\">Bilder wurden bearbeitet</p>";
 		}	
@@ -133,8 +133,8 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	elseif(isset($_POST['selectids']) && !empty($_POST['selectids']) &&
 	   isset($_POST['delselected']) && $_POST['delselected'] == 1){
 		$cup = 0;
-		$list = mysql_query("SELECT id,filename FROM ".$mysql_tables['pics']." WHERE id IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
-		while($drow = mysql_fetch_assoc($list)){
+		$list = $mysqli->query("SELECT id,filename FROM ".$mysql_tables['pics']." WHERE id IN (".$mysqli->escape_string(implode(",",$_POST['selectids'])).")");
+		while($drow = $list->fetch_assoc()){
 			
 			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($statrow['password']));
 	        $split = pathinfo($drow['filename']);
@@ -144,12 +144,12 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_tb.".$split['extension']);
 	        @unlink($modulpath.$galdir.$dir."/".$split['filename']."_acptb.".$split['extension']);
 	
-	        mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($drow['id'])."'");
+	        $mysqli->query("DELETE FROM ".$mysql_tables['pics']." WHERE id='".$mysqli->escape_string($drow['id'])."'");
 	
 			$cup++;
 			}
 		
-		mysql_query("UPDATE ".$mysql_tables['gallery']." SET galpic = 0 WHERE id='".mysql_real_escape_string($_GET['galid'])."' AND galpic IN (".mysql_real_escape_string(implode(",",$_POST['selectids'])).")");
+		$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET galpic = 0 WHERE id='".$mysqli->escape_string($_GET['galid'])."' AND galpic IN (".$mysqli->escape_string(implode(",",$_POST['selectids'])).")");
 		_01gallery_countPics($_GET['galid']);
 		echo "<p class=\"meldung_erfolg\">Es wurden ".$cup." Bilder gel&ouml;scht</p>";
 		}
@@ -171,12 +171,12 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	    </tr>
 <?PHP
 		$sites = 0;
-		$query = "SELECT id,sortorder,timestamp,orgname,filename,title,text,uid FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($_GET['galid'])."' ORDER BY sortorder DESC";
+		$query = "SELECT id,sortorder,timestamp,orgname,filename,title,text,uid FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC";
 		$query = makepages($query,$sites,"site",ACP_PER_PAGE2);
 	
 		$count = 0;
-		$list = mysql_query($query);
-		while($row = mysql_fetch_assoc($list)){
+		$list = $mysqli->query($query);
+		while($row = $list->fetch_assoc()){
 			if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 			
 			if(!empty($row['text'])) $text = "<br />".substr(htmlentities(stripslashes($row['text']),$htmlent_flags,$htmlent_encoding_acp),0,100);

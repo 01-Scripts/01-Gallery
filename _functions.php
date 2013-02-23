@@ -28,10 +28,10 @@ RETURN: TRUE/FALSE
 */
 if(!function_exists("_01gallery_DeleteUser")){
 function _01gallery_DeleteUser($userid,$username,$mail){
-global $mysql_tables;
+global $mysqli,$mysql_tables;
 
-mysql_query("UPDATE ".$mysql_tables['gallery']." SET uid='0' WHERE uid='".mysql_real_escape_string($userid)."'");
-mysql_query("UPDATE ".$mysql_tables['pics']." SET uid='0' WHERE uid='".mysql_real_escape_string($userid)."'");
+$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET uid='0' WHERE uid='".$mysqli->escape_string($userid)."'");
+$mysqli->query("UPDATE ".$mysql_tables['pics']." SET uid='0' WHERE uid='".$mysqli->escape_string($userid)."'");
 
 return TRUE;
 }
@@ -43,19 +43,18 @@ RETURN: TRUE
 */
 if(!function_exists("_01gallery_DeleteModul")){
 function _01gallery_DeleteModul(){
-global $mysql_tables,$modul;
+global $mysqli,$mysql_tables,$modul;
 
-$modul = mysql_real_escape_string($modul);
+$modul = $mysqli->escape_string($modul);
 
 // MySQL-Tabellen löschen
-mysql_query("DROP TABLE `".$mysql_tables['gallery']."`");
-mysql_query("DROP TABLE `".$mysql_tables['pics']."`");
+$mysqli->query("DROP TABLE `".$mysql_tables['gallery']."`");
+$mysqli->query("DROP TABLE `".$mysql_tables['pics']."`");
 
 // Rechte entfernen
-mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_editgal`");
-mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_newgal`");
-mysql_query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_uploadpics`");
-
+$mysqli->query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_editgal`");
+$mysqli->query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_newgal`");
+$mysqli->query("ALTER TABLE `".$mysql_tables['user']."` DROP `".$modul."_uploadpics`");
 
 return TRUE;
 }
@@ -76,10 +75,10 @@ RETURN: String mit dem entsprechenden Text
 */
 if(!function_exists("_01gallery_getCommentParentTitle")){
 function _01gallery_getCommentParentTitle($postid){
-global $mysql_tables,$htmlent_flags,$htmlent_encoding_acp;
+global $mysqli,$mysql_tables,$htmlent_flags,$htmlent_encoding_acp;
 
-$list = mysql_query("SELECT galeriename FROM ".$mysql_tables['gallery']." WHERE id='".mysql_real_escape_string($postid)."' LIMIT 1");
-while($row = mysql_fetch_array($list)){
+$list = $mysqli->query("SELECT galeriename FROM ".$mysql_tables['gallery']." WHERE id='".$mysqli->escape_string($postid)."' LIMIT 1");
+while($row = $list->fetch_assoc()){
 	return htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
 	}
 }
@@ -99,10 +98,10 @@ RETURN: String mit dem entsprechenden Text
 */
 if(!function_exists("_01gallery_getCommentChildTitle")){
 function _01gallery_getCommentChildTitle($postid){
-global $mysql_tables;
+global $mysqli,$mysql_tables;
 
-$list = mysql_query("SELECT orgname FROM ".$mysql_tables['pics']." WHERE id='".mysql_real_escape_string($postid)."' LIMIT 1");
-while($row = mysql_fetch_array($list)){
+$list = $mysqli->query("SELECT orgname FROM ".$mysql_tables['pics']." WHERE id='".$mysqli->escape_string($postid)."' LIMIT 1");
+while($row = $list->fetch_assoc()){
 	return stripslashes($row['orgname']);
 	}
 }
@@ -124,13 +123,13 @@ RETURN: Array(
   */
 if(!function_exists("_01gallery_getUserstats")){
 function _01gallery_getUserstats($userid){
-global $mysql_tables,$modul,$module;
+global $mysqli,$mysql_tables,$modul,$module;
 
 if(isset($userid) && is_integer(intval($userid))){
 	$galmenge = 0;
-	list($galmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['gallery']." WHERE hide = '0' AND uid = '".mysql_real_escape_string($userid)."'"));
+	list($galmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['gallery']." WHERE hide = '0' AND uid = '".$mysqli->escape_string($userid)."'")->fetch_array(MYSQLI_NUM);
 	$picmenge = 0;
-	list($picmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['pics']." WHERE uid = '".mysql_real_escape_string($userid)."'"));
+	list($picmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['pics']." WHERE uid = '".$mysqli->escape_string($userid)."'")->fetch_array(MYSQLI_NUM);
 
 	$ustats[] = array("statcat"	=> "Angelegte Bilderalben (".$module[$modul]['instname']."):",
 					  "statvalue"	=> $galmenge);
@@ -140,6 +139,7 @@ if(isset($userid) && is_integer(intval($userid))){
 	}
 else
 	return false;
+
 }
 }
 
@@ -157,10 +157,10 @@ RETURN: true/false
   */
 if(!function_exists("_01gallery_checkUserright")){
 function _01gallery_checkUserright($galid){
-global $mysql_tables,$userdata;
+global $mysqli,$mysql_tables,$userdata;
 
-$list = mysql_query("SELECT uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."'");
-while($row = mysql_fetch_array($list)){
+$list = $mysqli->query("SELECT uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."'");
+while($row = $list->fetch_assoc()){
 	$gal_uid = $row['uid'];
 	}
 
@@ -185,14 +185,12 @@ RETURN: <option>-Fields
   */
 if(!function_exists("_01gallery_getGalleryDropDown")){
 function _01gallery_getGalleryDropDown($selected=0){
-global $mysql_tables;
+global $mysqli,$mysql_tables;
 
-$list = mysql_query("SELECT uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."'");
-while($row = mysql_fetch_array($list)){
+$list = $mysqli->query("SELECT uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."'");
+while($row = $list->fetch_assoc()){
 	$gal_uid = $row['uid'];
 	}
-
-
 
 }
 }
@@ -220,7 +218,7 @@ RETURN: true
   */
 if(!function_exists("_01gallery_getGallerysRek")){
 function _01gallery_getGallerysRek($parentid,$deep=0,$maxdeep=-1,$callfunction="",$givedeeperparam="",$excludebranch=""){
-global $mysql_tables;
+global $mysqli,$mysql_tables;
 
 $return_ids = "";
 
@@ -228,12 +226,12 @@ $return_ids = "";
 if($maxdeep == 0) return true;
 
 if($excludebranch != "" && is_numeric($excludebranch) && $excludebranch > 0)
-	$exclude = " AND id != '".mysql_real_escape_string($excludebranch)."' AND subof != '".mysql_real_escape_string($excludebranch)."'";
+	$exclude = " AND id != '".$mysqli->escape_string($excludebranch)."' AND subof != '".$mysqli->escape_string($excludebranch)."'";
 else
 	$exclude = "";
 
-$list = mysql_query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($parentid)."'".$exclude." ORDER BY sortid DESC");
-while($row = mysql_fetch_assoc($list)){
+$list = $mysqli->query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($parentid)."'".$exclude." ORDER BY sortid DESC");
+while($row = $list->fetch_assoc()){
 	if(!empty($callfunction) && function_exists($callfunction) && $callfunction != "echoSubIDs") call_user_func($callfunction,$row,$deep,$givedeeperparam);
 
     // Rekursion
@@ -348,8 +346,6 @@ if(!empty($filename)){
 	$filename = strtolower($filename);
 	}
 
-mt_srand((double)microtime()*1000000); 
-
 $filename .= substr(md5($instnr.time().microtime().$param.mt_rand(10000,99999999)),0,10);
 
 return $filename;
@@ -371,13 +367,13 @@ RETURN: Anzahl an Bildern bzw. 0 bei Fehler
   */
 if(!function_exists("_01gallery_countPics")){
 function _01gallery_countPics($galid){
-global $mysql_tables;
+global $mysqli,$mysql_tables;
 
 if(isset($galid) && !empty($galid) && is_numeric($galid)){
-	list($picmenge) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."'")); 
-	mysql_query("UPDATE ".$mysql_tables['gallery']." SET 
-							anzahl_pics		= '".mysql_real_escape_string($picmenge)."'
-							WHERE id = '".mysql_real_escape_string($galid)."' LIMIT 1");
+	list($picmenge) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."'")->fetch_array(MYSQLI_NUM); 
+	$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET 
+							anzahl_pics		= '".$mysqli->escape_string($picmenge)."'
+							WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
 
 	return $picmenge;
 	}
@@ -404,7 +400,7 @@ RETURN: Array("status","message","error","filename","name","size","imgid"[,"widt
   */
 if(!function_exists("_01gallery_upload_2Gallery")){
 function _01gallery_upload_2Gallery($galid,$filefieldname,$title="",$beschreibung=""){
-global $mysql_tables,$_FILES,$settings,$supported_pictypes,$galdir,$modulpath,$userdata;
+global $mysqli,$mysql_tables,$_FILES,$settings,$supported_pictypes,$galdir,$modulpath,$userdata;
 
 $return = array("status"	=> 0,
 				"message"	=> "",
@@ -424,8 +420,8 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 		if(in_array($endung,$supported_pictypes)){
 			// Dateigröße überprüfen
 			if(($settings['galpic_size']*1000) > $_FILES[$filefieldname]['size']){
-				$list = mysql_query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."' LIMIT 1");
-				$statrow = mysql_fetch_assoc($list);
+				$list = $mysqli->query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
+				$statrow = $list->fetch_assoc();
 				$dir = _01gallery_getGalDir($galid,$statrow['password']);
 				
 				// Temporäre Datei in richtigen Ordner verschieben
@@ -457,35 +453,35 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
     				_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$new_filename,false,"_acptb",ACP_GAL_TB_WIDTH,"dyn");		// ACP-Thumbnail
 					
 	                // Sortorder des neuen Bildes ermitteln
-					$list = mysql_query("SELECT sortorder FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC LIMIT 1");
-					$row = mysql_fetch_assoc($list);
+					$list = $mysqli->query("SELECT sortorder FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC LIMIT 1");
+					$row = $list->fetch_assoc();
 					$new_sortid = ($row['sortorder']+1);
 					
 					// ggf. eigenen Bildtitel berücksichtigen
 					if(isset($title) && !empty($title))
-						$title = mysql_real_escape_string($title);
+						$title = $mysqli->escape_string($title);
 					else
-						$title = mysql_real_escape_string($_FILES[$filefieldname]['name']);
+						$title = $mysqli->escape_string($_FILES[$filefieldname]['name']);
 						
 					// ggf. eine Beschreibung berücksichtigen
 					if(isset($beschreibung) && !empty($beschreibung))
-						$mysql_beschreibung = mysql_real_escape_string($beschreibung);
+						$mysql_beschreibung = $mysqli->escape_string($beschreibung);
 					else
 						$mysql_beschreibung = "";
 			
 					//Eintragung in Datenbank vornehmen:
 					$sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,timestamp,orgname,filename,title,text,uid) VALUES (
-						'".mysql_real_escape_string($galid)."',
+						'".$mysqli->escape_string($galid)."',
 						'".$new_sortid."',
 						'".time()."',
-						'".mysql_real_escape_string($_FILES[$filefieldname]['name'])."',
-						'".mysql_real_escape_string($new_filename)."',
+						'".$mysqli->escape_string($_FILES[$filefieldname]['name'])."',
+						'".$mysqli->escape_string($new_filename)."',
 						'".$title."', 
 						'".$mysql_beschreibung."', 
 						'".$userdata['id']."'
 						)";
-					mysql_query($sql_insert) OR die(mysql_error());
-					$return['imgid'] = mysql_insert_id();
+					$mysqli->query($sql_insert) OR die($mysqli->error);
+					$return['imgid'] = $mysqli->insert_id;
 	                }
 				else{
 					$return['error'] = "Ein unbekannter Fehler ist aufgetreten oder es wurde keine Datei hochgeladen.";
@@ -737,7 +733,7 @@ RETURN: true/false (Ausgabe erfolgt per echo)
   */
 if(!function_exists("_01gallery_echoGalList")){
 function _01gallery_echoGalList($fgalid=0){
-global $filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid,$picuploaddir,$htmlent_flags,$htmlent_encoding_acp;
+global $mysqli,$filename,$salt,$settings,$tempdir,$mysql_tables,$imagepf,$galdir,$names,$sites,$pwcookie,$galid,$picuploaddir,$htmlent_flags,$htmlent_encoding_acp;
 
 // Auflistung Untereinander
 if($settings['gals_listtype'] == 2)
@@ -745,19 +741,19 @@ if($settings['gals_listtype'] == 2)
 else
 	include($tempdir."gallist_u_top.html");
 
-$query = "SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
+$query = "SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
 makepages($query,$sites,$names['galpage'],$settings['gals_per_page']);
 
-$list = mysql_query($query);
-while($gal = mysql_fetch_assoc($list)){
+$list = $mysqli->query($query);
+while($gal = $list->fetch_assoc()){
 	$anz_subgals = 0;
-	list($anz_subgals) = mysql_fetch_array(mysql_query("SELECT COUNT(*) FROM ".$mysql_tables['gallery']." WHERE subof ='".$gal['id']."'"));
+	list($anz_subgals) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['gallery']." WHERE subof ='".$gal['id']."'")->fetch_array(MYSQLI_NUM);
 	
 	if(!empty($gal['password']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['password'].$salt),$pwcookie)))
 		$gal['pic'] = "<img src=\"".$imagepf."lock.png\" alt=\"Symbol: Schlo&szlig;\" title=\"Diese Galerie ist durch ein Passwort gesch&uuml;tzt\" class=\"noborder\" />";
 	elseif(!empty($gal['galpic'])){
-		$galpiclist = mysql_query("SELECT filename FROM ".$mysql_tables['pics']." WHERE id = '".mysql_real_escape_string($gal['galpic'])."' LIMIT 1");
-		$gpic = mysql_fetch_assoc($galpiclist);
+		$galpiclist = $mysqli->query("SELECT filename FROM ".$mysql_tables['pics']." WHERE id = '".$mysqli->escape_string($gal['galpic'])."' LIMIT 1");
+		$gpic = $galpiclist->fetch_assoc();
 		$gal['pic'] = _01gallery_getThumb($galdir._01gallery_getGalDir($gal['id'],$gal['password'])."/",$gpic['filename'],"_tb");
 		}
 	else{
@@ -802,15 +798,15 @@ RETURN: $errorgalid (ID der Galerie für die als erstes das Passwort fehlt)
   */
 if(!function_exists("_01gallery_echoBreadcrumps")){
 function _01gallery_echoBreadcrumps($aktgalid){
-global $filename,$names,$_REQUEST,$mysql_tables,$flag_breadcrumps,$text_bilderlaben,$pwcookie,$salt,$htmlent_flags,$htmlent_encoding_acp;
+global $mysqli,$filename,$names,$_REQUEST,$mysql_tables,$flag_breadcrumps,$text_bilderlaben,$pwcookie,$salt,$htmlent_flags,$htmlent_encoding_acp;
 
 $stop = false;
 $errorid = 0;
 
 // Alle vorhandenen Galerien in einen Array einlesen
 $gals = array();
-$list = mysql_query("SELECT id,subof,password,galeriename FROM ".$mysql_tables['gallery']."");
-while($row = mysql_fetch_assoc($list)){
+$list = $mysqli->query("SELECT id,subof,password,galeriename FROM ".$mysql_tables['gallery']."");
+while($row = $list->fetch_assoc()){
 	$gals[$row['id']]['id']			= $row['id'];
 	$gals[$row['id']]['subof']		= $row['subof'];
 	$gals[$row['id']]['name']		= htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
@@ -929,29 +925,29 @@ RETURN: Pic-Filename
   */
 if(!function_exists("_01gallery_collectThumbnail")){
 function _01gallery_collectThumbnail($galid){
-global $mysql_tables,$galdir;
+global $mysqli,$mysql_tables,$galdir;
 
 if(isset($galid) && is_numeric($galid) && !empty($galid)){
-	$gallist = mysql_query("SELECT password,galpic FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."' LIMIT 1");
-	$gal = mysql_fetch_assoc($gallist);
+	$gallist = $mysqli->query("SELECT password,galpic FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
+	$gal = $gallist->fetch_assoc();
 	
 	if(isset($gal['galpic']) && is_numeric($gal['galpic']) && $gal['galpic'] > 0)
-	    $query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE id = '".mysql_real_escape_string($gal['galpic'])."' LIMIT 1";
+	    $query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE id = '".$mysqli->escape_string($gal['galpic'])."' LIMIT 1";
 	else
-		$query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC LIMIT 1";  
+		$query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC LIMIT 1";  
 
-	$galpiclist = mysql_query($query);
-	if(mysql_num_rows($galpiclist) == 1){
-		$gpic = mysql_fetch_assoc($galpiclist);
+	$galpiclist = $mysqli->query($query);
+	if($galpiclist->num_rows == 1){
+		$gpic = $galpiclist->fetch_assoc();
 	
 		return _01gallery_getThumb($galdir._01gallery_getGalDir($galid,$gal['password'])."/",$gpic['filename'],"_tb");
 		}
 	else{
 		// Alle Subgaleries der Reihe nach durchgehen
 		// IN allen Subgalerien wird wiederum alle Tiefen durchgegangen, bis auf ein Bild gestoßen wird
-		$subgals = mysql_query("SELECT id FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($galid)."' ORDER BY sortid DESC");
-		if(mysql_num_rows($subgals) >= 1){
-			while($row = mysql_fetch_assoc($subgals)){
+		$subgals = $mysqli->query("SELECT id FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($galid)."' ORDER BY sortid DESC");
+		if($subgals->num_rows >= 1){
+			while($row = $subgals->fetch_assoc()){
 				$thumb = _01gallery_collectThumbnail($row['id']);
 				
 				if(!empty($thumb)) return $thumb;

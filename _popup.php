@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01gallery
 	Dateiinfo: 	Modulspezifische Popup-Fenster
-	#fv.210#
+	#fv.211#
 */
 
 // Alle existierenden Thumbnails neu generieren (Abfrage)
@@ -31,22 +31,22 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "recreate_thumbnails"){
 	}
 // Alle existierenden Thumbnails neu generieren (tun)
 if(isset($_GET['action']) && $_GET['action'] == "do_recreate_thumbnails" && isset($_GET['limit']) && is_numeric($_GET['limit']) && isset($_GET['sublimit']) && is_numeric($_GET['sublimit'])){
-    $result = mysql_query("SELECT id FROM ".$mysql_tables['gallery']."");
-    $num_gals = mysql_num_rows($result);
+    $result = $mysqli->query("SELECT id FROM ".$mysql_tables['gallery']."");
+    $num_gals = $result->num_rows;
     
-    $query = "SELECT id,password FROM ".$mysql_tables['gallery']." ORDER BY id LIMIT ".mysql_real_escape_string($_GET['limit']).",".mysql_real_escape_string($_GET['limit']+1)."";
-    $list = mysql_query($query);
-	$gal = mysql_fetch_array($list);
+    $query = "SELECT id,password FROM ".$mysql_tables['gallery']." ORDER BY id LIMIT ".$mysqli->escape_string($_GET['limit']).",".$mysqli->escape_string($_GET['limit']+1)."";
+    $list = $mysqli->query($query);
+	$gal = $list->fetch_assoc();
 	
 	if(isset($gal['id'])){
         $_GET['limit']++;
         echo "<p style=\"text-align: center;\">Galerie <b>".$_GET['limit']."</b> von ".$num_gals."...<br />Bitte warten...</p>";
         $dir = _01gallery_getGalDir($gal['id'],$gal['password']);
 	   
-        $query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".$gal['id']."' ORDER BY id LIMIT ".mysql_real_escape_string($_GET['sublimit']).",".mysql_real_escape_string($_GET['sublimit']+$gen_thumbs_max)."";
-		$list = mysql_query($query);
-        $num_pics = mysql_num_rows($list);
-        while($row = mysql_fetch_assoc($list)){
+        $query = "SELECT filename FROM ".$mysql_tables['pics']." WHERE galid = '".$gal['id']."' ORDER BY id LIMIT ".$mysqli->escape_string($_GET['sublimit']).",".$mysqli->escape_string($_GET['sublimit']+$gen_thumbs_max)."";
+		$list = $mysqli->query($query);
+        $num_pics = $list->num_rows;
+        while($row = $list->fetch_assoc()){
 			_01gallery_makeThumbs($modulpath.$galdir.$dir."/",$row['filename'],TRUE);
             }
             

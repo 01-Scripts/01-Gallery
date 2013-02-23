@@ -15,8 +15,8 @@ if(isset($_POST['do']) && $_POST['do'] == "add_gal" &&
    isset($_POST['galeriename']) && !empty($_POST['galeriename']) && $userdata['newgal'] == 1){
     // Höchste momentane Sortorder bestimmen:
 	$new_sortid = 0;
-	$list = mysql_query("SELECT sortid FROM ".$mysql_tables['gallery']." WHERE subof = '".mysql_real_escape_string($_POST['subof'])."' ORDER BY sortid DESC LIMIT 1");
-	while($row = mysql_fetch_array($list)){
+	$list = $mysqli->query("SELECT sortid FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($_POST['subof'])."' ORDER BY sortid DESC LIMIT 1");
+	while($row = $list->fetch_assoc()){
 		$new_sortid = ($row['sortid']+1);
 		}
 	
@@ -27,20 +27,20 @@ if(isset($_POST['do']) && $_POST['do'] == "add_gal" &&
 	
     //Eintragung in Datenbank vornehmen:
 	$sql_insert = "INSERT INTO ".$mysql_tables['gallery']." (subof,sortid,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics,uid,comments,hide) VALUES (
-				'".mysql_real_escape_string($_POST['subof'])."',
+				'".$mysqli->escape_string($_POST['subof'])."',
 				'".$new_sortid."',
 				'".time()."',
-				'".mysql_real_escape_string($_POST['password'])."',
-				'".mysql_real_escape_string($_POST['galeriename'])."',
-				'".mysql_real_escape_string(stripslashes($_POST['textfeld']))."', 
+				'".$mysqli->escape_string($_POST['password'])."',
+				'".$mysqli->escape_string($_POST['galeriename'])."',
+				'".$mysqli->escape_string(stripslashes($_POST['textfeld']))."', 
 				'0', 
 				'0', 
 				'".$userdata['id']."',
 				'".$comments."',
-				'".mysql_real_escape_string($_POST['hide'])."'
+				'".$mysqli->escape_string($_POST['hide'])."'
 				)";
-	mysql_query($sql_insert) OR die(mysql_error());
-	$galid = mysql_insert_id();
+	$mysqli->query($sql_insert) OR die($mysqli->error);
+	$galid = $mysqli->insert_id;
 	
 	if(isset($_POST['password']) && !empty($_POST['password']))
 		$newgaldir = _01gallery_getGalDir($galid,$_POST['password']);
@@ -78,8 +78,8 @@ if(isset($_POST['do']) && $_POST['do'] == "do_edit" &&
    isset($_POST['galid']) && !empty($_POST['galid']) && is_numeric($_POST['galid']) && 
    isset($_POST['galeriename']) && !empty($_POST['galeriename']) && $userdata['editgal'] > 0){
 	// Zugriffsberechtigung und ggf. Passwortänderung überprüfen
-	$list = mysql_query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_POST['galid'])."' LIMIT 1");
-	$row = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_POST['galid'])."' LIMIT 1");
+	$row = $list->fetch_assoc();
 	$oldpassword = stripslashes($row['password']);
 	
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $row['uid'] == $userdata['id']){
@@ -88,7 +88,7 @@ if(isset($_POST['do']) && $_POST['do'] == "do_edit" &&
 		if(!isset($_POST['hide']) || isset($_POST['hide']) && empty($_POST['hide'])) $_POST['hide'] = 0;
 		
 		if($userdata['editgal'] == 2 && isset($_POST['owner_uid']) && !empty($_POST['owner_uid']) && is_numeric($_POST['owner_uid']) && $row['uid'] != $_POST['owner_uid']){
-			$new_uid = "uid = '".mysql_real_escape_string($_POST['owner_uid'])."',";
+			$new_uid = "uid = '".$mysqli->escape_string($_POST['owner_uid'])."',";
 			}
 		else $new_uid = "";
 		
@@ -99,7 +99,7 @@ if(isset($_POST['do']) && $_POST['do'] == "do_edit" &&
 			$newgaldir = _01gallery_getGalDir($_POST['galid'],$_POST['password']);
 			$flag_renameok = rename($modulpath.$galdir.$oldgaldir,$modulpath.$galdir.$newgaldir);
 			
-			$changepw = "password = '".mysql_real_escape_string($_POST['password'])."',";
+			$changepw = "password = '".$mysqli->escape_string($_POST['password'])."',";
 			}
 		// Kein Passwort mehr
 		elseif((isset($_POST['password']) && empty($_POST['password']) || !isset($_POST['password'])) && !empty($oldpassword)){
@@ -116,15 +116,15 @@ if(isset($_POST['do']) && $_POST['do'] == "do_edit" &&
 		
 		if($flag_renameok){
 			// Datenbankeintrag aktualisieren
-			mysql_query("UPDATE ".$mysql_tables['gallery']." SET 
-							subof			= '".mysql_real_escape_string($_POST['subof'])."',
+			$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET 
+							subof			= '".$mysqli->escape_string($_POST['subof'])."',
 							".$changepw."
-							galeriename		= '".mysql_real_escape_string($_POST['galeriename'])."',
-							beschreibung	= '".mysql_real_escape_string(stripslashes($_POST['textfeld']))."',
+							galeriename		= '".$mysqli->escape_string($_POST['galeriename'])."',
+							beschreibung	= '".$mysqli->escape_string(stripslashes($_POST['textfeld']))."',
 							".$new_uid."
 							comments		= '".$comments."',
-							hide			= '".mysql_real_escape_string($_POST['hide'])."'
-							WHERE id = '".mysql_real_escape_string($_POST['galid'])."' LIMIT 1");
+							hide			= '".$mysqli->escape_string($_POST['hide'])."'
+							WHERE id = '".$mysqli->escape_string($_POST['galid'])."' LIMIT 1");
 			
 			echo "<p class=\"meldung_erfolg\"><b>Bilderalbum wurde erfolgreich bearbeitet</b><br />
                 <br />
@@ -161,8 +161,8 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "new_gal" && $userdata['
 
 	// Beim Bearbeiten Daten aus DB holen und Zugriffsberechtigung überprüfen
 	if(isset($_GET['action']) && $_GET['action'] == "edit_gal"){
-		$list = mysql_query("SELECT * FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."'");
-		while($row = mysql_fetch_array($list)){
+		$list = $mysqli->query("SELECT * FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."'");
+		while($row = $list->fetch_assoc()){
 			// Zugriffsberechtigt?
 			if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $row['uid'] == $userdata['id']){
 				$form_data = array(	"section"			=> "update",
@@ -303,10 +303,10 @@ else
 <?PHP
 	// Sortieren
 	if(isset($_POST['sort']) && !empty($_POST['sort'])){
-	$list = mysql_query("SELECT id,sortid FROM ".$mysql_tables['gallery']."");
+	$list = $mysqli->query("SELECT id,sortid FROM ".$mysql_tables['gallery']."");
 	while($row = mysql_fetch_array($list)){
 		if(isset($_POST['sortid_'.$row['id']]) && !empty($_POST['sortid_'.$row['id']]) && is_numeric($_POST['sortid_'.$row['id']]))
-			mysql_query("UPDATE ".$mysql_tables['gallery']." SET sortid='".mysql_real_escape_string($_POST['sortid_'.$row['id']])."' WHERE id='".$row['id']."' LIMIT 1");
+			$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET sortid='".$mysqli->escape_string($_POST['sortid_'.$row['id']])."' WHERE id='".$row['id']."' LIMIT 1");
 		}
 	}
 	
@@ -332,8 +332,8 @@ else
 			// Galerie-Verzeichnisinhalte löschen
 			
 			// Passwort holen
-			$list = mysql_query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
-			$row = mysql_fetch_assoc($list);
+			$list = $mysqli->query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+			$row = $list->fetch_assoc();
 			
 			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($row['password']));
 			$verz = opendir($modulpath.$galdir.$dir);
@@ -354,13 +354,13 @@ else
 			delComments($_GET['galid']);
 			
 			// Bildeinträge aus Datenbank löschen
-			mysql_query("DELETE FROM ".$mysql_tables['pics']." WHERE galid='".mysql_real_escape_string($_GET['galid'])."'");
+			$mysqli->query("DELETE FROM ".$mysql_tables['pics']." WHERE galid='".$mysqli->escape_string($_GET['galid'])."'");
 			
 			// Sub-Galerien auf oberste Ebene verschieben
-			mysql_query("UPDATE ".$mysql_tables['gallery']." SET subof='0' WHERE subof='".mysql_real_escape_string($_GET['galid'])."'");
+			$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET subof='0' WHERE subof='".$mysqli->escape_string($_GET['galid'])."'");
 			
 			// Galerie-Eintrag aus Datenbank löschen:
-			mysql_query("DELETE FROM ".$mysql_tables['gallery']." WHERE id='".mysql_real_escape_string($_GET['galid'])."' LIMIT 1");
+			$mysqli->query("DELETE FROM ".$mysql_tables['gallery']." WHERE id='".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 			
 			echo "<p class=\"meldung_erfolg\"><b>Das Album wurde erfolgreich gelöscht!</b></p>";
 			if($flag_error)
@@ -392,7 +392,7 @@ else
 	// Sub-Gal anzeigen?
 	if(!isset($_GET['subid']) || isset($_GET['subid']) && (empty($_GET['subid']) || !is_numeric($_GET['subid']))) $_GET['subid'] = 0;
 	
-	$where = " WHERE subof = '".mysql_real_escape_string($_GET['subid'])."' ";
+	$where = " WHERE subof = '".$mysqli->escape_string($_GET['subid'])."' ";
 
 	switch($_GET['orderby']){
 	  case "position":
@@ -431,8 +431,8 @@ else
 			if(is_array($parentids)){
 				$preparentids = "0";
 				foreach($parentids as $parentid){
-					$list = mysql_query("SELECT galeriename FROM ".$mysql_tables['gallery']." WHERE id = '".$parentid."' LIMIT 1");
-					while($row = mysql_fetch_assoc($list)){
+					$list = $mysqli->query("SELECT galeriename FROM ".$mysql_tables['gallery']." WHERE id = '".$parentid."' LIMIT 1");
+					while($row = $list->fetch_assoc()){
 						$preparentids .= ",".$parentid;
 						echo " &raquo; <a href=\"".$filename."&amp;subid=".$parentid."&amp;parentids=".$preparentids."&amp;sort=".$_GET['sort']."&amp;orderby=".$_GET['orderby']."\">".htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp)."</a>";
 						}
@@ -475,14 +475,14 @@ else
 	// Ausgabe der Datensätze (Liste) aus DB
 	$count = 0;
 	$somethinghidden = false;
-	$list = mysql_query($query);
-	while($row = mysql_fetch_array($list)){
+	$list = $mysqli->query($query);
+	while($row = $list->fetch_assoc()){
 		if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 		
 		// Sub-Galerien vorhanden?
 		$submenge = 0;
-		$countlist = mysql_query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".$row['id']."'");
-		$submenge = mysql_num_rows($countlist);
+		$countlist = $mysqli->query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".$row['id']."'");
+		$submenge = $countlist->num_rows;
 		if($submenge > 0)
 			$showsubtext = "<br /><span class=\"small\"><a href=\"".$filename3."&amp;subid=".$row['id']."&amp;parentids=".$_GET['parentids'].",".$row['id']."\">".$submenge." untergeordnete Alben betrachten &raquo;</a></span>";
 		else $showsubtext = "";

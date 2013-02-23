@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Gallery - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01gallery
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.210#
+	#fv.211#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -90,8 +90,8 @@ else
 	
 // Wenn $_GET['picfilename'] vorhanden, $galid überschreiben
 if(isset($_GET[$names['picfilename']]) && !empty($_GET[$names['picfilename']])){
-	$list = mysql_query("SELECT id FROM ".$mysql_tables['pics']." WHERE filename = '".mysql_real_escape_string($_GET[$names['picfilename']])."' LIMIT 1");
-	$singlepicinfo = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT id FROM ".$mysql_tables['pics']." WHERE filename = '".$mysqli->escape_string($_GET[$names['picfilename']])."' LIMIT 1");
+	$singlepicinfo = $list->fetch_assoc();
 	if(isset($singlepicinfo['id']) && !empty($singlepicinfo['id']) && is_numeric($singlepicinfo['id']) && $singlepicinfo['id'] > 0)
 		$picid = $singlepicinfo['id'];
 	}
@@ -169,14 +169,14 @@ if(is_numeric($picid) && $picid > 0){
 	
 	// Keine $galid vorhanden? (Aus picid holen)
 	if(!isset($galid) || isset($galid) && (empty($galid) || $galid == 0 || !is_numeric($galid))){
-		$list = mysql_query("SELECT galid FROM ".$mysql_tables['pics']." WHERE id = '".mysql_real_escape_string($picid)."' LIMIT 1");
-		$galinfo = mysql_fetch_assoc($list);
+		$list = $mysqli->query("SELECT galid FROM ".$mysql_tables['pics']." WHERE id = '".$mysqli->escape_string($picid)."' LIMIT 1");
+		$galinfo = $list->fetch_assoc();
 		$galid = $galinfo['galid'];
 		}
 
 	// Galerie-Infos aus Datenbank holen
-	$list = mysql_query("SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics,comments FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."' AND hide='0' LIMIT 1");
-	$galinfo = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics,comments FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
+	$galinfo = $list->fetch_assoc();
 	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['password'])."/";
 
 	// Login-Formular abgeschickt?
@@ -200,8 +200,8 @@ if(is_numeric($picid) && $picid > 0){
 	    $lightbox_arels2 = "";
 	    $lightbox_second = false;
 	    $picnr = 1;
-    	$list = mysql_query("SELECT id,sortorder,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC");
-		while($row = mysql_fetch_assoc($list)){
+    	$list = $mysqli->query("SELECT id,sortorder,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC");
+		while($row = $list->fetch_assoc()){
 			// Download von unverkleinerten Originaldateien?
 			$lightbox_title = htmlentities(stripslashes($row['title']),$htmlent_flags,$htmlent_encoding_acp);
             if($allow_big_download){
@@ -281,30 +281,30 @@ if(is_numeric($picid) && $picid > 0){
 	
 	            // KOMMENTARE AUSGEBEN
 	            $nr = 1;
-	            $comment_query = "SELECT * FROM ".$mysql_tables['comments']." WHERE modul='".$modul."' AND postid='".$galid."' AND subpostid='".$picid."' AND frei='1' ORDER BY timestamp ".mysql_real_escape_string($comment_desc)."";
+	            $comment_query = "SELECT * FROM ".$mysql_tables['comments']." WHERE modul='".$modul."' AND postid='".$galid."' AND subpostid='".$picid."' AND frei='1' ORDER BY timestamp ".$mysqli->escape_string($comment_desc)."";
 	
 				// Seiten-Funktion
 	            if($settings['comments_perpage'] > 0){
-	                $comment_sc = mysql_num_rows(mysql_query($comment_query));
+	                $comment_sc = $mysqli->query($comment_query)->num_rows;
 	                $comment_sites = ceil($comment_sc/$settings['comments_perpage']);    //=Anzahl an Seiten
 	
 	                if(isset($_GET[$names['cpage']]) && $_GET[$names['cpage']] == "last" && $comment_sites > 1){
 	                    $_GET[$names['cpage']] = $comment_sites;
 	                    $commentsstart = $comment_sites*$settings['comments_perpage']-$settings['comments_perpage'];
-	                    $comment_query .= " LIMIT ".mysql_real_escape_string($commentsstart).",".mysql_real_escape_string($settings['comments_perpage'])."";
+	                    $comment_query .= " LIMIT ".$mysqli->escape_string($commentsstart).",".$mysqli->escape_string($settings['comments_perpage'])."";
 	                    $nr = $commentsstart+1;
 	                    }
 	                elseif(isset($_GET[$names['cpage']]) && !empty($_GET[$names['cpage']]) && $_GET[$names['cpage']] <= $comment_sites && $comment_sites > 1){
 	                    $commentsstart = $_GET[$names['cpage']]*$settings['comments_perpage']-$settings['comments_perpage'];
-	                    $comment_query .= " LIMIT ".mysql_real_escape_string($commentsstart).",".mysql_real_escape_string($settings['comments_perpage'])."";
+	                    $comment_query .= " LIMIT ".$mysqli->escape_string($commentsstart).",".$mysqli->escape_string($settings['comments_perpage'])."";
 	                    $nr = $commentsstart+1;
 	                    }
 	                else
-	                    $comment_query .= " LIMIT ".mysql_real_escape_string($settings['comments_perpage'])."";
+	                    $comment_query .= " LIMIT ".$mysqli->escape_string($settings['comments_perpage'])."";
 	                }
 	
-	            $clist = mysql_query($comment_query);
-	            while($crow = mysql_fetch_array($clist)){
+	            $clist = $mysqli->query($comment_query);
+	            while($crow = $clist->fetch_assoc()){
 	
 					// URL
 	                if(!empty($crow['url']) && $crow['url'] != "http://"){
@@ -406,8 +406,8 @@ elseif(is_numeric($galid) && $galid > 0){
 	$system_link_form = $system_link_gal;
 	
 	// Galerie-Infos aus Datenbank holen
-	$list = mysql_query("SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE id = '".mysql_real_escape_string($galid)."' AND hide='0' LIMIT 1");
-	$galinfo = mysql_fetch_assoc($list);
+	$list = $mysqli->query("SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
+	$galinfo = $list->fetch_assoc();
 	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['password'])."/";
 	
 	// Login-Formular abgeschickt?
@@ -433,7 +433,7 @@ elseif(is_numeric($galid) && $galid > 0){
 		    _01gallery_echoGalList($galid);
 		    
 		    // Thumbnails auflisten
-		    $query = "SELECT id,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".mysql_real_escape_string($galid)."' ORDER BY sortorder DESC";
+		    $query = "SELECT id,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC";
 	
 			if($settings['pics_per_line'] == "auto") $class = " class=\"stream\"";
 			else $class = "";
@@ -442,8 +442,8 @@ elseif(is_numeric($galid) && $galid > 0){
 				$_GET[$names['picpage']] = 1;
 			
 			$c = 0; $endul = 0;
-			$list = mysql_query($query);
-			while($pics = mysql_fetch_assoc($list)){
+			$list = $mysqli->query($query);
+			while($pics = $list->fetch_assoc()){
 				if($c == ($_GET[$names['picpage']]*$settings['thumbs_per_page']-$settings['thumbs_per_page']))
 					echo "\n\n<ul class=\"cssgallery\">\n";
 					
@@ -504,18 +504,12 @@ elseif(is_numeric($galid) && $galid > 0){
 
 
 
-
-
-
-
-
 // Display: Auflistung der Galerien
 else{
 
 	_01gallery_echoGalList(0);
 
 	}
-
 
 
 // Main_bottom einfügen
