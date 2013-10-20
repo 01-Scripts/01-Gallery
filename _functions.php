@@ -213,11 +213,12 @@ while($row = $list->fetch_assoc()){
 						An die Funktion wird $row als 1. Parameter übergeben
    $givedeeperparam		Weiterer Parameter, der als 3. Parameter an die in $callfunction angegebene Funktion weitergereicht wird
    $excludebranch		Übergebene ID und alle Subgalerien der ID werden nicht aufgelistet
+   $showhidden			Versteckte Alben auflisten? (Default: TRUE)
 
 RETURN: true
   */
 if(!function_exists("_01gallery_getGallerysRek")){
-function _01gallery_getGallerysRek($parentid,$deep=0,$maxdeep=-1,$callfunction="",$givedeeperparam="",$excludebranch=""){
+function _01gallery_getGallerysRek($parentid,$deep=0,$maxdeep=-1,$callfunction="",$givedeeperparam="",$excludebranch="",$showhidden=TRUE){
 global $mysqli,$mysql_tables;
 
 $return_ids = "";
@@ -230,7 +231,13 @@ if($excludebranch != "" && is_numeric($excludebranch) && $excludebranch > 0)
 else
 	$exclude = "";
 
-$list = $mysqli->query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($parentid)."'".$exclude." ORDER BY sortid DESC");
+// Versteckte Alben auflisten?
+if(!$showhidden)
+	$exclude2 = " AND hide = '0'";
+else
+	$exclude2 = "";
+
+$list = $mysqli->query("SELECT * FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($parentid)."'".$exclude.$exclude2." ORDER BY sortid DESC");
 while($row = $list->fetch_assoc()){
 	if(!empty($callfunction) && function_exists($callfunction) && $callfunction != "echoSubIDs") call_user_func($callfunction,$row,$deep,$givedeeperparam);
 
