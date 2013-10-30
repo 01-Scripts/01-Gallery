@@ -1,12 +1,12 @@
 /*! 
-	01-Gallery V2 - Copyright 2003-2012 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 		
 	Modul:		01gallery
 	Dateiinfo: 	Frontend-BB-Code-JavaScript-Funktion
-	Unkomprimierte Version der Datei: https://gist.github.com/627847/fd7bc0ee379135780b05fbbe55680fb05681007d#file_javas.js
-	#fv.210#
+	Unkomprimierte Version der Datei: https://github.com/01-Scripts/01-Gallery/blob/V2.1.1/01gallery/templates/javas.js
+	#fv.211#
 */
 
 
@@ -64,5 +64,3 @@ function bbcinsert(aTag, eTag) {
     input.value = input.value.substr(0, pos) + aTag + insText + eTag + input.value.substr(pos);
   }
 }
-
-/* 01-Gallery V2 Copyright 2003-2008 by Michael Lorer - 01-Scripts.de */
