@@ -9,7 +9,7 @@
 	<need01acpv>1.2.1</need01acpv>
 	<datum>17.07.2012</datum>
 	<includeinfo><![CDATA[
-Verwenden Sie folgenden PHP-Code um die 01-Gallery in Ihre Seite zu integrieren:<br />
+<p>Verwenden Sie folgenden PHP-Code um die 01-Gallery in Ihre Seite zu integrieren:<br />
 <code>
 &lt;?PHP<br />
 $subfolder		= "01scripts/"; // Unterverzeichnis<br />
@@ -24,7 +24,7 @@ Optionale Parameter sind:<br />
 $flag_nocss     = FALSE; // Setzen Sie $flag_nocss = TRUE; wenn kein CSS eingebunden werden soll<br />
 $flag_breadcrumps = TRUE; // Setzen Sie $flag_breadcrumps = FALSE; wenn keine Albentitel angezeigt werden sollen<br />
 $galid     		= 1; // Geben Sie hier die ID der Galerie an, die direkt angezeigt werden soll.<br />
-</code>
+</code></p>
 	]]></includeinfo>
 	
 	<updates>
