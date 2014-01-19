@@ -111,18 +111,20 @@ else $echo_css = "";
 if(stripos($settings['tb_size'],"x")){
     $thumb = _01gallery_ParseWxH($settings['tb_size']);
     }
-elseif(is_numeric($settings['tb_size']))
+elseif(is_numeric($settings['tb_size'])){
     $thumb['width'] = $settings['tb_size'];
+    $thumb['height'] = $settings['tb_size'];
+    }
 
 	$echo_css .= "\n<style type=\"text/css\">
 .cssgallery li{
 	width:".$settings['pics_per_line'].";
-	height:".($thumb['width']+25)."px;
+	height:".($thumb['height']+15)."px;
 }
 
 .cssgallery li.stream{
 	width:".($thumb['width']+10)."px;
-	height:".($thumb['width']+25)."px;
+	height:".($thumb['height']+15)."px;
 }
 
 .cssgallery li.smallstream{
@@ -138,7 +140,7 @@ elseif(is_numeric($settings['tb_size']))
 	width:".$thumb['width']."px;
 	height:".$thumb['width']."px;
 	position:absolute; top:50%; left:50%; 	/* NICHT VERÄNDERN!!! - position it so that image's top left corner is in the center of the list item */
-	margin:-".round($thumb['width']/2)."px 0 0 -".round($thumb['width']/2)."px; 				/* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
+	margin:-".round((($thumb['height']/2))+5)."px 0 0 -".round($thumb['width']/2)."px; /* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
 }
 
 .cssgallery li.smallstream a:link,
@@ -149,7 +151,7 @@ elseif(is_numeric($settings['tb_size']))
 	width:".$smallstreampicsize."px;
 	height:".$smallstreampicsize."px;
 	position:absolute; top:50%; left:50%; 	/* NICHT VERÄNDERN!!! - position it so that image's top left corner is in the center of the list item */
-	margin:-".round(($smallstreampicsize/2)+10)."px 0 0 -".round($smallstreampicsize/2)."px; 				/* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
+	margin:-".round(($smallstreampicsize/2)+10)."px 0 0 -".round($smallstreampicsize/2)."px; /* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
 }
 
 </style>";
