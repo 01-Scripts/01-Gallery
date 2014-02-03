@@ -174,10 +174,10 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savepicdata
 		else{ $title = "title = '' "; $echotitle = ""; }
 		
 		if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
-	        $beschreibung = "text = '".$mysqli->escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung'])))."' ";
+	        $beschreibung = "pictext = '".$mysqli->escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung'])))."' ";
 	        $echobeschreibung = "<br />".strip_tags($_REQUEST['beschreibung']);
 	        }
-		else{ $beschreibung = "text = '' "; $echobeschreibung = ""; }
+		else{ $beschreibung = "pictext = '' "; $echobeschreibung = ""; }
 	    
 	    $mysqli->query("UPDATE ".$mysql_tables['pics']." SET ".$title.", ".$beschreibung." WHERE id = '".$mysqli->escape_string($_REQUEST['id'])."'");
 	

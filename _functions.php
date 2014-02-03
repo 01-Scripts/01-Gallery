@@ -477,7 +477,7 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 						$mysql_beschreibung = "";
 			
 					//Eintragung in Datenbank vornehmen:
-					$sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,pictimestamp,orgname,filename,title,text,uid) VALUES (
+					$sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,pictimestamp,orgname,filename,title,pictext,uid) VALUES (
 						'".$mysqli->escape_string($galid)."',
 						'".$new_sortid."',
 						'".time()."',

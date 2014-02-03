@@ -202,7 +202,7 @@ if(is_numeric($picid) && $picid > 0){
 	    $lightbox_arels2 = "";
 	    $lightbox_second = false;
 	    $picnr = 1;
-    	$list = $mysqli->query("SELECT id,sortorder,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC");
+    	$list = $mysqli->query("SELECT id,sortorder,filename,title,pictext FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC");
 		while($row = $list->fetch_assoc()){
 			// Download von unverkleinerten Originaldateien?
 			$lightbox_title = htmlentities(stripslashes($row['title']),$htmlent_flags,$htmlent_encoding_acp);
@@ -215,7 +215,7 @@ if(is_numeric($picid) && $picid > 0){
 			if($row['id'] == $picid){
 				$pic['title']	= htmlentities(stripslashes($row['title']),$htmlent_flags,$htmlent_encoding_acp);
 				$pic['lb_title']= $lightbox_title;
-				$pic['text']	= htmlentities(stripslashes($row['text']),$htmlent_flags,$htmlent_encoding_acp);
+				$pic['pictext']	= htmlentities(stripslashes($row['pictext']),$htmlent_flags,$htmlent_encoding_acp);
 				$pic['filename']= $row['filename'];
 				$pic['sortorder']=$row['sortorder'];
 				$pic['id']		= $row['id'];
@@ -226,9 +226,9 @@ if(is_numeric($picid) && $picid > 0){
 			$pics[$picnr]['id']		 = $row['id'];
                 
             if(!$lightbox_second && $settings['use_lightbox'] >= 1)
-				$lightbox_arels1 .= "<a href=\"".$galverz.$row['filename']."?".$row['id']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
+				$lightbox_arels1 .= "<a href=\"".$galverz.$row['filename']."?".$row['id']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['pictext'])."\"></a>";
 			elseif($settings['use_lightbox'] >= 1 && $row['id'] != $picid)
-				$lightbox_arels2 .= "<a href=\"".$galverz.$row['filename']."?".$row['id']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['text'])."\"></a>";
+				$lightbox_arels2 .= "<a href=\"".$galverz.$row['filename']."?".$row['id']."\" rel=\"lightbox-gal".$galid."set\" title=\"".$lightbox_title." - ".stripslashes($row['pictext'])."\"></a>";
 				
 			$picnr++;
 			}
@@ -435,7 +435,7 @@ elseif(is_numeric($galid) && $galid > 0){
 		    _01gallery_echoGalList($galid);
 		    
 		    // Thumbnails auflisten
-		    $query = "SELECT id,filename,title,text FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC";
+		    $query = "SELECT id,filename,title,pictext FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($galid)."' ORDER BY sortorder DESC";
 	
 			if($settings['pics_per_line'] == "auto") $class = " class=\"stream\"";
 			else $class = "";
@@ -455,7 +455,7 @@ elseif(is_numeric($galid) && $galid > 0){
 				else
 					$href = "href=\"".addParameter2Link($system_link_pic,$names['picid']."=".$pics['id'])."\"";
 
-				$echo_text = htmlentities(strip_tags(stripslashes($pics['text'])),$htmlent_flags,$htmlent_encoding_acp);
+				$echo_text = htmlentities(strip_tags(stripslashes($pics['pictext'])),$htmlent_flags,$htmlent_encoding_acp);
 				$lightbox_title = htmlentities(stripslashes($pics['title']),$htmlent_flags,$htmlent_encoding_acp);
 				
 

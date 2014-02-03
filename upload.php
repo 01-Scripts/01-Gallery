@@ -76,7 +76,7 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 							$title = $mysqli->escape_string($file);
 						
 						//Eintragung in Datenbank vornehmen:
-                        $sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,pictimestamp,orgname,filename,title,text,uid) VALUES (
+                        $sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,pictimestamp,orgname,filename,title,pictext,uid) VALUES (
 							'".$mysqli->escape_string($_GET['galid'])."',
 							'".$new_sortid."',
 							'".time()."',

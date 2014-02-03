@@ -116,7 +116,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			$title = ""; 
 
 		if(!empty($_POST['beschreibung_all']))
-	        $beschreibung = "text = '".$mysqli->escape_string($_POST['beschreibung_all'])."'";
+	        $beschreibung = "pictext = '".$mysqli->escape_string($_POST['beschreibung_all'])."'";
 		else
 			$beschreibung = "";
 			
@@ -171,7 +171,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	    </tr>
 <?PHP
 		$sites = 0;
-		$query = "SELECT id,sortorder,pictimestamp,orgname,filename,title,text,uid FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC";
+		$query = "SELECT id,sortorder,pictimestamp,orgname,filename,title,pictext,uid FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC";
 		$query = makepages($query,$sites,"site",ACP_PER_PAGE2);
 	
 		$count = 0;
@@ -179,7 +179,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 		while($row = $list->fetch_assoc()){
 			if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 			
-			if(!empty($row['text'])) $text = "<br />".substr(htmlentities(stripslashes($row['text']),$htmlent_flags,$htmlent_encoding_acp),0,100);
+			if(!empty($row['pictext'])) $text = "<br />".substr(htmlentities(stripslashes($row['pictext']),$htmlent_flags,$htmlent_encoding_acp),0,100);
 			else $text = "";
 			
 			// Coverbild?
