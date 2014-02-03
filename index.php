@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -33,9 +33,9 @@
 	echo "<ul class=\"cssgallerystream\">\n";
     $list = $mysqli->query("SELECT id,galid,filename FROM ".$mysql_tables['pics']." ORDER BY timestamp DESC LIMIT 4");
 	while($row = $list->fetch_assoc()){
-		$listgal = $mysqli->query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($row['galid'])."' LIMIT 1");
+		$listgal = $mysqli->query("SELECT galpassword FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($row['galid'])."' LIMIT 1");
 		$statrow = $listgal->fetch_assoc();
-		$dir = _01gallery_getGalDir($row['galid'],$statrow['password']);
+		$dir = _01gallery_getGalDir($row['galid'],$statrow['galpassword']);
 	
         echo "<li><a href=\"".$modulpath.$galdir.$dir."/".stripslashes($row['filename'])."\" class=\"lightbox\">"._01gallery_getThumb($modulpath.$galdir.$dir."/",stripslashes($row['filename']),"_acptb")."</a></li>\n";
         }

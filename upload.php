@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -15,9 +15,9 @@ if($userdata['uploadpics'] >= 1){
 // Bilder importieren
 if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid']) &&
    isset($_GET['send']) && !empty($_GET['send'])){
-	$list = $mysqli->query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT galpassword,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 	$statrow = $list->fetch_assoc();
-	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
+	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['galpassword']);
 
 	// Zugriffsberechtigung?
 	if($userdata['uploadpics'] == 2 || $userdata['uploadpics'] == 1 && $statrow['uid'] == $userdata['id']){
@@ -146,9 +146,9 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 
 // Neue Bilder hochladen / importieren (Formular)
 elseif(isset($_GET['action']) && $_GET['action'] == "upload_pic" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid'])){
-	$list = $mysqli->query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT galpassword,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 	$row = $list->fetch_assoc();
-	$dir = _01gallery_getGalDir($_GET['galid'],$row['password']);
+	$dir = _01gallery_getGalDir($_GET['galid'],$row['galpassword']);
 
 	// Zugriffsberechtigung?
 	if($userdata['uploadpics'] == 2 || $userdata['uploadpics'] == 1 && $row['uid'] == $userdata['id']){
@@ -311,7 +311,7 @@ if($count == 1){ $class = "tra"; $count--; }else{ $class = "trb"; $count++; }
 	
 	<tr>
 		<td class="tra"></td>
-		<td class="tra" colspan="2"><b>Verzeichnis:</b> <?PHP echo "01scripts/01module/".$modul."/galerien/<b>"._01gallery_getGalDir($_GET['galid'],$row['password'])."</b>/"; ?></td>
+		<td class="tra" colspan="2"><b>Verzeichnis:</b> <?PHP echo "01scripts/01module/".$modul."/galerien/<b>"._01gallery_getGalDir($_GET['galid'],$row['galpassword'])."</b>/"; ?></td>
 	</tr>
 	
 	<tr>

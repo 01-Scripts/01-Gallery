@@ -1,6 +1,6 @@
 <?PHP
 /*
-	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
@@ -177,25 +177,25 @@ if(is_numeric($picid) && $picid > 0){
 		}
 
 	// Galerie-Infos aus Datenbank holen
-	$list = $mysqli->query("SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics,comments FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
+	$list = $mysqli->query("SELECT id,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics,comments FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
 	$galinfo = $list->fetch_assoc();
-	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['password'])."/";
+	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['galpassword'])."/";
 
 	// Login-Formular abgeschickt?
-	if(!empty($galinfo['password']) && isset($_POST['login2gal']) && isset($_POST['galpw']) && !empty($_POST['galpw'])){
-		if($_POST['galpw'] == $galinfo['password'] && !in_array(pwhashing($galinfo['password'].$salt),$pwcookie)){
-			$pwcookie[] = pwhashing($galinfo['password'].$salt);
+	if(!empty($galinfo['galpassword']) && isset($_POST['login2gal']) && isset($_POST['galpw']) && !empty($_POST['galpw'])){
+		if($_POST['galpw'] == $galinfo['galpassword'] && !in_array(pwhashing($galinfo['galpassword'].$salt),$pwcookie)){
+			$pwcookie[] = pwhashing($galinfo['galpassword'].$salt);
 			echo set_a_cookie("c_".$modul."_galpwcookie", implode("|",$pwcookie),time()+60*60*24);
 			}
-		elseif($_POST['galpw'] != $galinfo['password']){
+		elseif($_POST['galpw'] != $galinfo['galpassword']){
 			$errormsg = "<p class=\"errormsg\">Das eingegebene Passwort ist leider falsch.</p>";
 			include_once($tempdir."passwordbox.html");
 			}
 		}
 
 	// Bild-Detailansicht anzeigen (Cookie vorhanden?)
-	if(!empty($galinfo['password']) && isset($pwcookie) && is_array($pwcookie) && in_array(pwhashing($galinfo['password'].$salt),$pwcookie) ||
-	   empty($galinfo['password'])){
+	if(!empty($galinfo['galpassword']) && isset($pwcookie) && is_array($pwcookie) && in_array(pwhashing($galinfo['galpassword'].$salt),$pwcookie) ||
+	   empty($galinfo['galpassword'])){
 
 	    // Detailansicht anzeigen
 	    $lightbox_arels1 = "";
@@ -408,25 +408,25 @@ elseif(is_numeric($galid) && $galid > 0){
 	$system_link_form = $system_link_gal;
 	
 	// Galerie-Infos aus Datenbank holen
-	$list = $mysqli->query("SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
+	$list = $mysqli->query("SELECT id,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
 	$galinfo = $list->fetch_assoc();
-	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['password'])."/";
+	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['galpassword'])."/";
 	
 	// Login-Formular abgeschickt?
-	if(!empty($galinfo['password']) && isset($_POST['login2gal']) && isset($_POST['galpw']) && !empty($_POST['galpw'])){
-		if($_POST['galpw'] == $galinfo['password'] && !in_array(pwhashing($galinfo['password'].$salt),$pwcookie)){
-			$pwcookie[] = pwhashing($galinfo['password'].$salt);
+	if(!empty($galinfo['galpassword']) && isset($_POST['login2gal']) && isset($_POST['galpw']) && !empty($_POST['galpw'])){
+		if($_POST['galpw'] == $galinfo['galpassword'] && !in_array(pwhashing($galinfo['galpassword'].$salt),$pwcookie)){
+			$pwcookie[] = pwhashing($galinfo['galpassword'].$salt);
 			echo set_a_cookie("c_".$modul."_galpwcookie", implode("|",$pwcookie),time()+60*60*24);
 			}
-		elseif($_POST['galpw'] != $galinfo['password']){
+		elseif($_POST['galpw'] != $galinfo['galpassword']){
 			$errormsg = "<p class=\"errormsg\">Das eingegebene Passwort ist leider falsch.</p>";
 			include_once($tempdir."passwordbox.html");
 			}
 		}
 	
 	// Inhalt der Galerie ausgeben (Passwort vorhanden?)
-	if(!empty($galinfo['password']) && isset($pwcookie) && is_array($pwcookie) && in_array(pwhashing($galinfo['password'].$salt),$pwcookie) ||
-	   empty($galinfo['password'])){
+	if(!empty($galinfo['galpassword']) && isset($pwcookie) && is_array($pwcookie) && in_array(pwhashing($galinfo['galpassword'].$salt),$pwcookie) ||
+	   empty($galinfo['galpassword'])){
 	    
 		$accesserror = _01gallery_echoBreadcrumps($galid);
 		if($accesserror == 0){

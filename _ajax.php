@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -20,9 +20,9 @@ if(basename($_SERVER['SCRIPT_FILENAME']) != "_ajaxloader.php") exit;
 
 // Fancy-Upload (Bilder hochladen)
 if(isset($_GET['ajaxaction']) && $_GET['ajaxaction'] == "fancyupload" && isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid'])){
-	$list = $mysqli->query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT galpassword,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 	$row = $list->fetch_assoc();
-	$dir = _01gallery_getGalDir($_GET['galid'],$row['password']);
+	$dir = _01gallery_getGalDir($_GET['galid'],$row['galpassword']);
 
 	// Zugriffsberechtigung?
 	if($userdata['uploadpics'] == 2 || $userdata['uploadpics'] == 1 && $row['uid'] == $userdata['id']){
@@ -202,10 +202,10 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "delpic" &&
 	
 	// Berechtigung abfragen
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $statrow['uid'] == $userdata['id']){
-        $list = $mysqli->query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($statrow['galid'])."' LIMIT 1");
+        $list = $mysqli->query("SELECT galpassword FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($statrow['galid'])."' LIMIT 1");
 	    $galstatrow = $list->fetch_assoc();
 	    
-        $dir = _01gallery_getGalDir($statrow['galid'],stripslashes($galstatrow['password']));
+        $dir = _01gallery_getGalDir($statrow['galid'],stripslashes($galstatrow['galpassword']));
         $split = pathinfo($statrow['filename']);
         
         @unlink($modulpath.$galdir.$dir."/".$statrow['filename']);

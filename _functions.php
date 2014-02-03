@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Artikelsystem V3 - Copyright 2006-2013 by Michael Lorer - 01-Scripts.de
+	01-Artikelsystem V3 - Copyright 2006-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -427,9 +427,9 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 		if(in_array($endung,$supported_pictypes)){
 			// Dateigröße überprüfen
 			if(($settings['galpic_size']*1000) > $_FILES[$filefieldname]['size']){
-				$list = $mysqli->query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
+				$list = $mysqli->query("SELECT galpassword,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
 				$statrow = $list->fetch_assoc();
-				$dir = _01gallery_getGalDir($galid,$statrow['password']);
+				$dir = _01gallery_getGalDir($galid,$statrow['galpassword']);
 				
 				// Temporäre Datei in richtigen Ordner verschieben
 				$newname = _01gallery_makeFilename($_FILES[$filefieldname]['name'],$filefieldname);
@@ -748,7 +748,7 @@ if($settings['gals_listtype'] == 2)
 else
 	include($tempdir."gallist_u_top.html");
 
-$query = "SELECT id,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
+$query = "SELECT id,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
 makepages($query,$sites,$names['galpage'],$settings['gals_per_page']);
 
 $list = $mysqli->query($query);
@@ -756,12 +756,12 @@ while($gal = $list->fetch_assoc()){
 	$anz_subgals = 0;
 	list($anz_subgals) = $mysqli->query("SELECT COUNT(*) FROM ".$mysql_tables['gallery']." WHERE subof ='".$gal['id']."'")->fetch_array(MYSQLI_NUM);
 	
-	if(!empty($gal['password']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['password'].$salt),$pwcookie)))
+	if(!empty($gal['galpassword']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['galpassword'].$salt),$pwcookie)))
 		$gal['pic'] = "<img src=\"".$imagepf."lock.png\" alt=\"Symbol: Schlo&szlig;\" title=\"Diese Galerie ist durch ein Passwort gesch&uuml;tzt\" class=\"noborder\" />";
 	elseif(!empty($gal['galpic'])){
 		$galpiclist = $mysqli->query("SELECT filename FROM ".$mysql_tables['pics']." WHERE id = '".$mysqli->escape_string($gal['galpic'])."' LIMIT 1");
 		$gpic = $galpiclist->fetch_assoc();
-		$gal['pic'] = _01gallery_getThumb($galdir._01gallery_getGalDir($gal['id'],$gal['password'])."/",$gpic['filename'],"_tb");
+		$gal['pic'] = _01gallery_getThumb($galdir._01gallery_getGalDir($gal['id'],$gal['galpassword'])."/",$gpic['filename'],"_tb");
 		}
 	else{
 		$gal['pic'] = _01gallery_collectThumbnail($gal['id']);
@@ -772,7 +772,7 @@ while($gal = $list->fetch_assoc()){
 	$gal['link'] = addParameter2Link($filename,$names['galid']."=".$gal['id']);
 	
 	$gal['galeriename'] = htmlentities(($gal['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
-	if(!empty($gal['password']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['password'].$salt),$pwcookie))) $gal['beschreibung'] = "<p class=\"gal_password\">Zum Betrachten dieses Bilderalbums ben&ouml;tigen Sie ein Passwort.</p>";
+	if(!empty($gal['galpassword']) && (!isset($pwcookie) || isset($pwcookie) && !in_array(pwhashing($gal['galpassword'].$salt),$pwcookie))) $gal['beschreibung'] = "<p class=\"gal_password\">Zum Betrachten dieses Bilderalbums ben&ouml;tigen Sie ein Passwort.</p>";
 	else $gal['beschreibung'] = stripslashes($gal['beschreibung']);
 	
 	if($settings['gals_listtype'] == 2)
@@ -812,22 +812,22 @@ $errorid = 0;
 
 // Alle vorhandenen Galerien in einen Array einlesen
 $gals = array();
-$list = $mysqli->query("SELECT id,subof,password,galeriename FROM ".$mysql_tables['gallery']."");
+$list = $mysqli->query("SELECT id,subof,galpassword,galeriename FROM ".$mysql_tables['gallery']."");
 while($row = $list->fetch_assoc()){
 	$gals[$row['id']]['id']			= $row['id'];
 	$gals[$row['id']]['subof']		= $row['subof'];
 	$gals[$row['id']]['name']		= htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp);
-	if(!empty($row['password']))
-		$gals[$row['id']]['password']	= $row['password'];
+	if(!empty($row['galpassword']))
+		$gals[$row['id']]['galpassword']	= $row['galpassword'];
 	else 
-		$gals[$row['id']]['password']	= "";
+		$gals[$row['id']]['galpassword']	= "";
 	}
 	
 $runid = $aktgalid;
 $crumps = "";
 $c = 0;
 while(!$stop){
-	if(empty($gals[$runid]['password']) || is_array($pwcookie) && in_array(pwhashing($gals[$runid]['password'].$salt),$pwcookie)){
+	if(empty($gals[$runid]['galpassword']) || is_array($pwcookie) && in_array(pwhashing($gals[$runid]['galpassword'].$salt),$pwcookie)){
 		if($c > 0) $crumps = " &raquo; ".$crumps;
 		
 		$crumps = "<a href=\"".addParameter2Link($filename,$names['galid']."=".$runid)."\">".$gals[$runid]['name']."</a>".$crumps;
@@ -935,7 +935,7 @@ function _01gallery_collectThumbnail($galid){
 global $mysqli,$mysql_tables,$galdir;
 
 if(isset($galid) && is_numeric($galid) && !empty($galid)){
-	$gallist = $mysqli->query("SELECT password,galpic FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
+	$gallist = $mysqli->query("SELECT galpassword,galpic FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' LIMIT 1");
 	$gal = $gallist->fetch_assoc();
 	
 	if(isset($gal['galpic']) && is_numeric($gal['galpic']) && $gal['galpic'] > 0)
@@ -947,7 +947,7 @@ if(isset($galid) && is_numeric($galid) && !empty($galid)){
 	if($galpiclist->num_rows == 1){
 		$gpic = $galpiclist->fetch_assoc();
 	
-		return _01gallery_getThumb($galdir._01gallery_getGalDir($galid,$gal['password'])."/",$gpic['filename'],"_tb");
+		return _01gallery_getThumb($galdir._01gallery_getGalDir($galid,$gal['galpassword'])."/",$gpic['filename'],"_tb");
 		}
 	else{
 		// Alle Subgaleries der Reihe nach durchgehen

@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery V2 - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
+	01-Gallery V2 - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -26,7 +26,7 @@ if(isset($_POST['do']) && $_POST['do'] == "add_gal" &&
 	if(!isset($_POST['galeriename']) || isset($_POST['galeriename']) && empty($_POST['galeriename'])) $_POST['galeriename'] = "";
 	
     //Eintragung in Datenbank vornehmen:
-	$sql_insert = "INSERT INTO ".$mysql_tables['gallery']." (subof,sortid,timestamp,password,galeriename,beschreibung,galpic,anzahl_pics,uid,comments,hide) VALUES (
+	$sql_insert = "INSERT INTO ".$mysql_tables['gallery']." (subof,sortid,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics,uid,comments,hide) VALUES (
 				'".$mysqli->escape_string($_POST['subof'])."',
 				'".$new_sortid."',
 				'".time()."',
@@ -78,9 +78,9 @@ if(isset($_POST['do']) && $_POST['do'] == "do_edit" &&
    isset($_POST['galid']) && !empty($_POST['galid']) && is_numeric($_POST['galid']) && 
    isset($_POST['galeriename']) && !empty($_POST['galeriename']) && $userdata['editgal'] > 0){
 	// Zugriffsberechtigung und ggf. Passwortänderung überprüfen
-	$list = $mysqli->query("SELECT password,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_POST['galid'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT galpassword,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_POST['galid'])."' LIMIT 1");
 	$row = $list->fetch_assoc();
-	$oldpassword = stripslashes($row['password']);
+	$oldpassword = stripslashes($row['galpassword']);
 	
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $row['uid'] == $userdata['id']){
 		if(isset($_POST['comments']) && $_POST['comments'] == 1) $comments = 0;
@@ -94,20 +94,20 @@ if(isset($_POST['do']) && $_POST['do'] == "do_edit" &&
 		
 		$flag_renameok = true;
 		// Passwort geändert?
-		if(isset($_POST['password']) && !empty($_POST['password']) && $_POST['password'] != stripslashes($row['password'])){
-			$oldgaldir = _01gallery_getGalDir($_POST['galid'],stripslashes($row['password']));
+		if(isset($_POST['password']) && !empty($_POST['password']) && $_POST['password'] != stripslashes($row['galpassword'])){
+			$oldgaldir = _01gallery_getGalDir($_POST['galid'],stripslashes($row['galpassword']));
 			$newgaldir = _01gallery_getGalDir($_POST['galid'],$_POST['password']);
 			$flag_renameok = rename($modulpath.$galdir.$oldgaldir,$modulpath.$galdir.$newgaldir);
 			
-			$changepw = "password = '".$mysqli->escape_string($_POST['password'])."',";
+			$changepw = "galpassword = '".$mysqli->escape_string($_POST['password'])."',";
 			}
 		// Kein Passwort mehr
 		elseif((isset($_POST['password']) && empty($_POST['password']) || !isset($_POST['password'])) && !empty($oldpassword)){
-			$oldgaldir = _01gallery_getGalDir($_POST['galid'],stripslashes($row['password']));
+			$oldgaldir = _01gallery_getGalDir($_POST['galid'],stripslashes($row['galpassword']));
 			$newgaldir = _01gallery_getGalDir($_POST['galid']);
 			$flag_renameok = rename($modulpath.$galdir.$oldgaldir,$modulpath.$galdir.$newgaldir);
 			
-			$changepw = "password = '',";
+			$changepw = "galpassword = '',";
 			}
 		// Keine Änderung
 		else{
@@ -171,7 +171,7 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == "new_gal" && $userdata['
 									"do"				=> "do_edit",
 									"galname"			=> htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp),
 									"beschreibung"		=> stripslashes($row['beschreibung']),
-									"password"			=> stripslashes($row['password']),
+									"password"			=> stripslashes($row['galpassword']),
 									"uid"				=> $row['uid'],
 									"comments"			=> $row['comments'],
 									"hide"				=> $row['hide'],
@@ -332,10 +332,10 @@ else
 			// Galerie-Verzeichnisinhalte löschen
 			
 			// Passwort holen
-			$list = $mysqli->query("SELECT password FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+			$list = $mysqli->query("SELECT galpassword FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 			$row = $list->fetch_assoc();
 			
-			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($row['password']));
+			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($row['galpassword']));
 			$verz = opendir($modulpath.$galdir.$dir);
 
 			$flag_error = false;
@@ -498,11 +498,11 @@ else
 		else
 			$showsort = $row['sortid'];
 		
-		if(stripslashes($row['password']) != "" && ($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $row['uid'] == $userdata['id'])){
+		if(stripslashes($row['galpassword']) != "" && ($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $row['uid'] == $userdata['id'])){
 			$pwicon = "<img src=\"images/icons/icon_gesperrt.gif\" alt=\"gif: Schlo&szlig;\" title=\"Passwort anzeigen\" onclick=\"fade_element('showpw_".$row['id']."')\" style=\"cursor: pointer;\" /> ";
-			$pwtext = "<div class=\"moo_inlinehide\" id=\"showpw_".$row['id']."\"> <i>Passwort: ".stripslashes($row['password'])."</i></div>";
+			$pwtext = "<div class=\"moo_inlinehide\" id=\"showpw_".$row['id']."\"> <i>Passwort: ".stripslashes($row['galpassword'])."</i></div>";
 			}
-		elseif(stripslashes($row['password']) != ""){
+		elseif(stripslashes($row['galpassword']) != ""){
 			$pwicon = "<img src=\"images/icons/icon_gesperrt.gif\" alt=\"gif: Schlo&szlig;\" title=\"Passwort anzeigen\" onclick=\"fade_element('showpw_".$row['id']."')\" style=\"cursor: pointer;\" /> ";
 			$pwtext = "<div class=\"moo_inlinehide\" id=\"showpw_".$row['id']."\"> <i>Passwort: *****</i></div>";
 			}

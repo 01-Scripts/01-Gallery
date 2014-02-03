@@ -1,6 +1,6 @@
 <?PHP
 /* 
-	01-Gallery - Copyright 2003-2013 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
@@ -15,11 +15,11 @@
 if(isset($_GET['action']) && $_GET['action'] == "sort_pics" &&
     isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid']) && $userdata['editgal'] > 0){
 	// Zugriffsberechtigung und ggf. Passwortänderung überprüfen
-	$list = $mysqli->query("SELECT password,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT galpassword,galeriename,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 	$statrow = $list->fetch_assoc();
 
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $statrow['uid'] == $userdata['id']){
-	   $dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
+	   $dir = _01gallery_getGalDir($_GET['galid'],$statrow['galpassword']);
 ?>
         <h2><?PHP echo stripslashes($statrow['galeriename']); ?> &raquo; Bilder sortieren</h2>
 
@@ -95,12 +95,12 @@ if(isset($_GET['action']) && $_GET['action'] == "sort_pics" &&
 elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
     isset($_GET['galid']) && !empty($_GET['galid']) && is_numeric($_GET['galid']) && $userdata['editgal'] > 0){
 	// Zugriffsberechtigung und ggf. Passwortänderung überprüfen
-	$list = $mysqli->query("SELECT password,galeriename,galpic,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
+	$list = $mysqli->query("SELECT galpassword,galeriename,galpic,uid FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($_GET['galid'])."' LIMIT 1");
 	$statrow = $list->fetch_assoc();
 	
 	if($userdata['editgal'] == 2 || $userdata['editgal'] == 1 && $statrow['uid'] == $userdata['id']){
 	
-	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['password']);
+	$dir = _01gallery_getGalDir($_GET['galid'],$statrow['galpassword']);
 	$artuserdata = getUserdatafields_Queryless("username");
 	
 	if(!isset($_POST['title_all'])) $_POST['title_all'] = "";
@@ -136,7 +136,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 		$list = $mysqli->query("SELECT id,filename FROM ".$mysql_tables['pics']." WHERE id IN (".$mysqli->escape_string(implode(",",$_POST['selectids'])).")");
 		while($drow = $list->fetch_assoc()){
 			
-			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($statrow['password']));
+			$dir = _01gallery_getGalDir($_GET['galid'],stripslashes($statrow['galpassword']));
 	        $split = pathinfo($drow['filename']);
 	
 	        @unlink($modulpath.$galdir.$dir."/".$drow['filename']);
