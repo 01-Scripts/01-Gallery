@@ -26,7 +26,7 @@ if(isset($_POST['do']) && $_POST['do'] == "add_gal" &&
 	if(!isset($_POST['galeriename']) || isset($_POST['galeriename']) && empty($_POST['galeriename'])) $_POST['galeriename'] = "";
 	
     //Eintragung in Datenbank vornehmen:
-	$sql_insert = "INSERT INTO ".$mysql_tables['gallery']." (subof,sortid,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics,uid,comments,hide) VALUES (
+	$sql_insert = "INSERT INTO ".$mysql_tables['gallery']." (subof,sortid,galtimestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics,uid,comments,hide) VALUES (
 				'".$mysqli->escape_string($_POST['subof'])."',
 				'".$new_sortid."',
 				'".time()."',
@@ -399,7 +399,7 @@ else
 	    $orderby = "sortid";
 	  break;
 	  case "timestamp":
-	    $orderby = "timestamp";
+	    $orderby = "galtimestamp";
 	  break;
 	  case "titel":
 	    $orderby = "galeriename";
@@ -514,7 +514,7 @@ else
 		echo "    <tr>
 		<td class=\"".$class."\" align=\"center\">".$showsort."</td>
 		<td class=\"".$class."\" align=\"center\">".$row['id']."</td>
-		<td class=\"".$class."\">".date("d.m.Y - G:i",$row['timestamp'])."</td>
+		<td class=\"".$class."\">".date("d.m.Y - G:i",$row['galtimestamp'])."</td>
 		<td class=\"".$class."\">".$pwicon."<a href=\"_loader.php?modul=".$modul."&amp;loadpage=showpics&amp;action=show_pics&amp;galid=".$row['id']."\">".htmlentities(stripslashes($row['galeriename']),$htmlent_flags,$htmlent_encoding_acp)."</a> (".$row['anzahl_pics'].")".$pwtext.$showsubtext."</td>
 		<td class=\"".$class."\">".$artuserdata[$row['uid']]['username']."</td>";
 		

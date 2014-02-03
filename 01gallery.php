@@ -177,7 +177,7 @@ if(is_numeric($picid) && $picid > 0){
 		}
 
 	// Galerie-Infos aus Datenbank holen
-	$list = $mysqli->query("SELECT id,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics,comments FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
+	$list = $mysqli->query("SELECT id,galtimestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics,comments FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
 	$galinfo = $list->fetch_assoc();
 	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['galpassword'])."/";
 
@@ -408,7 +408,7 @@ elseif(is_numeric($galid) && $galid > 0){
 	$system_link_form = $system_link_gal;
 	
 	// Galerie-Infos aus Datenbank holen
-	$list = $mysqli->query("SELECT id,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
+	$list = $mysqli->query("SELECT id,galtimestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($galid)."' AND hide='0' LIMIT 1");
 	$galinfo = $list->fetch_assoc();
 	$galverz = $galdir._01gallery_getGalDir($galinfo['id'],$galinfo['galpassword'])."/";
 	

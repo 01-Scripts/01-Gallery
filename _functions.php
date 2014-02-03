@@ -477,7 +477,7 @@ if(isset($galid) && !empty($galid) && is_numeric($galid)){
 						$mysql_beschreibung = "";
 			
 					//Eintragung in Datenbank vornehmen:
-					$sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,timestamp,orgname,filename,title,text,uid) VALUES (
+					$sql_insert = "INSERT INTO ".$mysql_tables['pics']." (galid,sortorder,pictimestamp,orgname,filename,title,text,uid) VALUES (
 						'".$mysqli->escape_string($galid)."',
 						'".$new_sortid."',
 						'".time()."',
@@ -748,7 +748,7 @@ if($settings['gals_listtype'] == 2)
 else
 	include($tempdir."gallist_u_top.html");
 
-$query = "SELECT id,timestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
+$query = "SELECT id,galtimestamp,galpassword,galeriename,beschreibung,galpic,anzahl_pics FROM ".$mysql_tables['gallery']." WHERE subof = '".$mysqli->escape_string($fgalid)."' AND hide='0' ORDER BY sortid DESC";
 makepages($query,$sites,$names['galpage'],$settings['gals_per_page']);
 
 $list = $mysqli->query($query);

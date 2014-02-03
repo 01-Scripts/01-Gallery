@@ -124,11 +124,11 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "saveautosor
 		  break;
 		  case "timeup":
 			$mysqli->query("SET @pos=0");
-			$mysqli->query($query." ORDER BY timestamp");
+			$mysqli->query($query." ORDER BY pictimestamp");
 		  break;
 		  case "timedown":
 			$mysqli->query("SET @pos=0");
-			$mysqli->query($query." ORDER BY timestamp DESC");
+			$mysqli->query($query." ORDER BY pictimestamp DESC");
 		  break;
 		  }
 		echo "

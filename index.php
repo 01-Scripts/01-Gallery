@@ -31,7 +31,7 @@
 
 	<?PHP
 	echo "<ul class=\"cssgallerystream\">\n";
-    $list = $mysqli->query("SELECT id,galid,filename FROM ".$mysql_tables['pics']." ORDER BY timestamp DESC LIMIT 4");
+    $list = $mysqli->query("SELECT id,galid,filename FROM ".$mysql_tables['pics']." ORDER BY pictimestamp DESC LIMIT 4");
 	while($row = $list->fetch_assoc()){
 		$listgal = $mysqli->query("SELECT galpassword FROM ".$mysql_tables['gallery']." WHERE id = '".$mysqli->escape_string($row['galid'])."' LIMIT 1");
 		$statrow = $listgal->fetch_assoc();

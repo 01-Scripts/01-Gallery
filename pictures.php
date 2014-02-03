@@ -171,7 +171,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 	    </tr>
 <?PHP
 		$sites = 0;
-		$query = "SELECT id,sortorder,timestamp,orgname,filename,title,text,uid FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC";
+		$query = "SELECT id,sortorder,pictimestamp,orgname,filename,title,text,uid FROM ".$mysql_tables['pics']." WHERE galid = '".$mysqli->escape_string($_GET['galid'])."' ORDER BY sortorder DESC";
 		$query = makepages($query,$sites,"site",ACP_PER_PAGE2);
 	
 		$count = 0;
@@ -196,7 +196,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
 			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"selectids[]\" value=\"".$row['id']."\" class=\"dcb\" /></td>
 			<td class=\"".$class."\" align=\"center\"><input type=\"radio\" name=\"cover\" value=\"".$row['id']."\"".$checked." onclick=\"AjaxRequest.send('modul=".$modul."&ajaxaction=setnewcover&id=".$row['id']."&galid=".$_GET['galid']."');\" /></td>
             <td class=\"".$class."\" align=\"center\"><a href=\"".$modulpath.$galdir.$dir."/".stripslashes($row['filename'])."\" class=\"lightbox\">"._01gallery_getThumb($modulpath.$galdir.$dir."/",stripslashes($row['filename']),"_acptb")."</a></td>
-			<td class=\"".$class."\">".date("d.m.Y - G:i",$row['timestamp'])."</td>
+			<td class=\"".$class."\">".date("d.m.Y - G:i",$row['pictimestamp'])."</td>
 			<td class=\"".$class."\">
             <div style=\"float:right;\">
                 <a href=\"javascript:hide_unhide('hide_show_".$row['id']."'); hide_unhide('hide_edit_".$row['id']."');\"><img src=\"images/icons/icon_edit.gif\" alt=\"Bearbeiten - Stift\" title=\"Bild bearbeiten\" /></a>
