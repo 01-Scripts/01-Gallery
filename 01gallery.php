@@ -323,7 +323,7 @@ if(is_numeric($picid) && $picid > 0){
 	                $comment_id = $crow['id'];
 	
 	                // BB-Code & Smilies
-	                $comment = stripslashes($crow['comment']);
+	                $comment = stripslashes($crow['message']);
 	                if($crow['bbc'] == 1 && $settings['comments_bbc'] == 1 && $crow['smilies'] == 1 && $settings['comments_smilies'] == 1)
 						$comment = bb_code_comment($comment,1,1,1);
 					elseif($crow['bbc'] == 1 && $settings['comments_bbc'] == 1 && ($crow['smilies'] == 0 || $settings['comments_smilies'] == 0))
