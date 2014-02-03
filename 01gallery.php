@@ -283,7 +283,7 @@ if(is_numeric($picid) && $picid > 0){
 	
 	            // KOMMENTARE AUSGEBEN
 	            $nr = 1;
-	            $comment_query = "SELECT * FROM ".$mysql_tables['comments']." WHERE modul='".$modul."' AND postid='".$galid."' AND subpostid='".$picid."' AND frei='1' ORDER BY timestamp ".$mysqli->escape_string($comment_desc)."";
+	            $comment_query = "SELECT * FROM ".$mysql_tables['comments']." WHERE modul='".$modul."' AND postid='".$galid."' AND subpostid='".$picid."' AND frei='1' ORDER BY utimestamp ".$mysqli->escape_string($comment_desc)."";
 	
 				// Seiten-Funktion
 	            if($settings['comments_perpage'] > 0){
@@ -318,7 +318,7 @@ if(is_numeric($picid) && $picid > 0){
 	                else $url = "";
 	
 	                // Weitere Variablen für die Template-Ausgabe aufbereiten
-	                $datum = date("d.m.y - G:i",$crow['timestamp']);
+	                $datum = date("d.m.y - G:i",$crow['utimestamp']);
 	                $autorenname = stripslashes($crow['autor']);
 	                $comment_id = $crow['id'];
 	
