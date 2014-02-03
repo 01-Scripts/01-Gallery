@@ -84,13 +84,13 @@ UPDATE `01prefix_user` SET `#modul_idname#_uploadpics` = '2' WHERE `01prefix_use
 
 CREATE TABLE IF NOT EXISTS `01modulprefix_galerien` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `subof` int(10) DEFAULT NULL,
+  `subof` int(10) NULL DEFAULT NULL,
   `sortid` int(10) NOT NULL DEFAULT '0',
-  `timestamp` int(15) NOT NULL DEFAULT '0',
-  `password` varchar(32) DEFAULT NULL,
+  `galtimestamp` int(15) NOT NULL DEFAULT '0',
+  `galpassword` varchar(40) NULL DEFAULT NULL,
   `galeriename` varchar(255) NOT NULL DEFAULT '0',
-  `beschreibung` text DEFAULT NULL,
-  `galpic` int(10) DEFAULT NULL,
+  `beschreibung` text NULL DEFAULT NULL,
+  `galpic` int(10) NULL DEFAULT NULL,
   `anzahl_pics` int(5) NOT NULL DEFAULT '0',
   `uid` int(10) NOT NULL DEFAULT '0',
   `comments` tinyint(1) NOT NULL DEFAULT '0',
@@ -109,11 +109,11 @@ CREATE TABLE IF NOT EXISTS `01modulprefix_pictures` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `galid` int(10) NOT NULL DEFAULT '0',
   `sortorder` int(5) NOT NULL DEFAULT '0',
-  `timestamp` int(15) NOT NULL DEFAULT '0',
+  `pictimestamp` int(15) NOT NULL DEFAULT '0',
   `orgname` varchar(100) NOT NULL DEFAULT '0',
   `filename` varchar(25) NOT NULL DEFAULT '0',
-  `title` varchar(100) DEFAULT NULL,
-  `text` text DEFAULT NULL,
+  `title` varchar(100) NULL DEFAULT NULL,
+  `pictext` text NULL DEFAULT NULL,
   `uid` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
