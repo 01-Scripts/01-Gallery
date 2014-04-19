@@ -1,4 +1,60 @@
 <?PHP
+// 2.1.0 --> 2.1.1
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
+
+	// Update CSS-Code in settings
+	$list = $mysqli->query("SELECT id,wert FROM ".$mysql_tables['settings']." WHERE modul = '01gallery' AND idname = 'csscode'");
+	while($row = $list->fetch_assoc()){
+		$wert = str_replace(".cssgallery{",".cssgallery{\r\n    margin-top: 10px !important;",stripslashes($wert));
+
+		$mysqli->query("UPDATE ".$mysql_tables['settings']." SET `wert` = '".$mysqli->escape_string($wert)."' WHERE `id` = '".$row['id']."' LIMIT 1");
+	}
+
+	// Spaltenname 'password' umbenennen:
+	$mysqli->query("ALTER TABLE ".$mysql_tables['gallery']." CHANGE `password` `galpassword` VARCHAR( 40 ) NULL DEFAULT NULL");
+	// Spaltenname 'timestamp' umbenennen:
+	$mysqli->query("ALTER TABLE ".$mysql_tables['gallery']." CHANGE `timestamp` `galtimestamp` INT( 15 ) NULL DEFAULT NULL");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['pics']." CHANGE `timestamp` `pictimestamp` INT( 15 ) NULL DEFAULT NULL");
+	// Spaltenname 'text' umbenennen:
+	$mysqli->query("ALTER TABLE ".$mysql_tables['pics']." CHANGE `text` `pictext` TEXT NULL DEFAULT NULL");
+
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '2.1.1' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 2.1.0 nach 2.1.1</h2>
+
+<p class="meldung_erfolg">
+	Das Update von Version 2.1.0 auf Version 2.1.1 wurde erfolgreich durchgef&uuml;hrt.
+</p>
+
+<p class="meldung_hinweis">
+	<b>Achtung: &Uuml;berarbeitung von CSS-Eigenschaften:</b><br />
+	Mit diesem Update wurde eine &Auml;nderungen am CSS-Code vorgenommen.
+	Sollten Sie den CSS-Code in eine externe .css-Datei ausgelagert haben, m&uuml;ssen Sie folgende
+	<b>Folgende CSS-Klasse bitte manuell aktualisieren</b>:<br />
+	<br />
+<code>
+.cssgallery{<br />
+	margin:0; padding:0;					/* NICHT VERÄNDERN!!! */<br />
+    margin-top:10px;<br />
+    overflow:hidden; 						/* NICHT VERÄNDERN!!! - Clears the floats */<br />
+	width:100%; 							/* NICHT VERÄNDERN!!! - IE and older Opera fix for clearing, they need a dimension */<br />
+	list-style:none;						/* NICHT VERÄNDERN!!! */<br />
+}<br />
+</code><br /><br />
+</p>
+
+<div class="meldung_erfolg">
+	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<ul>
+		<li>Sch&ouml;nere Thumbnail-Auflistung mit schmaleren Abst&auml;nden</li>
+		<li>Direkte Verwendung von Bildern aus der Galerie innerhalb des <a href="http://www.01-scripts.de/01article.php" target="_blank">01-Artikelsystems</a> möglich.</li>
+		<li>Diverse weitere Bugfixes. Siehe <a href="http://www.01-scripts.de/down/01gallery_changelog.txt" target="_blank">changelog.txt</a></li>
+	</ul>
+	<p><a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a></p>
+</div>
+<?PHP
+}
 if(isset($_REQUEST['update']) && $_REQUEST['update'] == "2001_zu_210"){
 	// Neue Settings hinzufügen
 	$sql_insert = "INSERT INTO ".$mysql_tables['settings']." (modul,is_cat,catid,sortid,idname,name,exp,formename,formwerte,input_exp,standardwert,wert,nodelete,hide) VALUES
