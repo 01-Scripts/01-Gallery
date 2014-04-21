@@ -5,7 +5,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
 	// Update CSS-Code in settings
 	$list = $mysqli->query("SELECT id,wert FROM ".$mysql_tables['settings']." WHERE modul = '01gallery' AND idname = 'csscode'");
 	while($row = $list->fetch_assoc()){
-		$wert = str_replace(".cssgallery{",".cssgallery{\r\n    margin-top: 10px !important;",stripslashes($wert));
+		$wert = str_replace(".cssgallery{",".cssgallery{\r\n    margin-top: 10px !important;",stripslashes($row['wert']));
 
 		$mysqli->query("UPDATE ".$mysql_tables['settings']." SET `wert` = '".$mysqli->escape_string($wert)."' WHERE `id` = '".$row['id']."' LIMIT 1");
 	}
@@ -13,8 +13,8 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
 	// Spaltenname 'password' umbenennen:
 	$mysqli->query("ALTER TABLE ".$mysql_tables['gallery']." CHANGE `password` `galpassword` VARCHAR( 40 ) NULL DEFAULT NULL");
 	// Spaltenname 'timestamp' umbenennen:
-	$mysqli->query("ALTER TABLE ".$mysql_tables['gallery']." CHANGE `timestamp` `galtimestamp` INT( 15 ) NULL DEFAULT NULL");
-	$mysqli->query("ALTER TABLE ".$mysql_tables['pics']." CHANGE `timestamp` `pictimestamp` INT( 15 ) NULL DEFAULT NULL");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['gallery']." CHANGE `timestamp` `galtimestamp` INT( 15 ) NOT NULL DEFAULT '0'");
+	$mysqli->query("ALTER TABLE ".$mysql_tables['pics']." CHANGE `timestamp` `pictimestamp` INT( 15 ) NOT NULL DEFAULT '0'");
 	// Spaltenname 'text' umbenennen:
 	$mysqli->query("ALTER TABLE ".$mysql_tables['pics']." CHANGE `text` `pictext` TEXT NULL DEFAULT NULL");
 

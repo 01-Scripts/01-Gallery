@@ -84,11 +84,11 @@ UPDATE `01prefix_user` SET `#modul_idname#_uploadpics` = '2' WHERE `01prefix_use
 
 CREATE TABLE IF NOT EXISTS `01modulprefix_galerien` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `subof` int(10) NULL DEFAULT NULL,
+  `subof` int(10) NOT NULL DEFAULT '0',
   `sortid` int(10) NOT NULL DEFAULT '0',
   `galtimestamp` int(15) NOT NULL DEFAULT '0',
   `galpassword` varchar(40) NULL DEFAULT NULL,
-  `galeriename` varchar(255) NOT NULL DEFAULT '0',
+  `galeriename` varchar(255) DEFAULT NULL,
   `beschreibung` text NULL DEFAULT NULL,
   `galpic` int(10) NULL DEFAULT NULL,
   `anzahl_pics` int(5) NOT NULL DEFAULT '0',
