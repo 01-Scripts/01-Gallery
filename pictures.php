@@ -191,6 +191,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
             if(file_exists($modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1])) $big_link = "<a href=\"".$modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1]."\" title=\"Unkomprimierte Original-Datei\" target=\"_blank\">".stripslashes($row['orgname'])."</a>";
             else $big_link = stripslashes($row['orgname']);
 			
+			if(!isset($row['text'])) $row['text'] = "";
 			echo "
 		<tr id=\"id".$row['id']."\">
 			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"selectids[]\" value=\"".$row['id']."\" class=\"dcb\" /></td>
