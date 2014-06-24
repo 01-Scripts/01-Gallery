@@ -41,7 +41,7 @@
 .cssgallery li{
 	float:left;
 	display:inline; 						/* For IE so it doesn't double the 1% left margin */
-	width:15.0%;							/* 23,8% == 4/row		15,0 = 6/row */
+	width:15%;								/* 23,8% == 4/row		15,0 = 6/row */
 	margin:0 0 10px 1%; padding:10px 0;
 	height:83px; 							/* Height of img (75) + 2 times 3px padding + 2 times 1px border = 83px */
 	position:relative; 						/* This is the key */
