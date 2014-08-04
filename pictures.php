@@ -6,7 +6,7 @@
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bilder einer Galerie auflisten, bearbeiten und sortieren
-	#fv.211#
+	#fv.212#
 */
 
 
@@ -191,7 +191,6 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
             if(file_exists($modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1])) $big_link = "<a href=\"".$modulpath.$galdir.$dir."/".$split[0]."_big.".$split[1]."\" title=\"Unkomprimierte Original-Datei\" target=\"_blank\">".stripslashes($row['orgname'])."</a>";
             else $big_link = stripslashes($row['orgname']);
 			
-			if(!isset($row['text'])) $row['text'] = "";
 			echo "
 		<tr id=\"id".$row['id']."\">
 			<td class=\"".$class."\" align=\"center\"><input type=\"checkbox\" name=\"selectids[]\" value=\"".$row['id']."\" class=\"dcb\" /></td>
@@ -208,7 +207,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == "show_pics" &&
             </div>
 			<div id=\"hide_edit_".$row['id']."\" style=\"display:none;\">
                 <input type=\"text\" size=\"26\" name=\"title_".$row['id']."\" id=\"title_".$row['id']."\" value=\"".stripslashes($row['title'])."\" class=\"pic_title\" /><br />
-                <textarea name=\"beschreibung_".$row['id']."\" id=\"beschreibung_".$row['id']."\" cols=\"25\" rows=\"3\" class=\"input_textarea pic_descr\">".stripslashes($row['text'])."</textarea><br />
+                <textarea name=\"beschreibung_".$row['id']."\" id=\"beschreibung_".$row['id']."\" cols=\"25\" rows=\"3\" class=\"input_textarea pic_descr\">".stripslashes($row['pictext'])."</textarea><br />
                 <button type=\"button\" class=\"input\" onclick=\"SendPicFormData('".$row['id']."','modul=".$modul."&ajaxaction=savepicdata&id=".$row['id']."&title='+document.id('title_".$row['id']."').get('value')+'&beschreibung='+document.id('beschreibung_".$row['id']."').get('value'));\">Speichern</button>
             </div>
 
