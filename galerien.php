@@ -6,7 +6,7 @@
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bildergalerie ACP-Startseite = Galerien-Übersicht & Galerien anlegen
-	#fv.211#
+	#fv.212#
 */
 
 
@@ -304,7 +304,7 @@ else
 	// Sortieren
 	if(isset($_POST['sort']) && !empty($_POST['sort'])){
 	$list = $mysqli->query("SELECT id,sortid FROM ".$mysql_tables['gallery']."");
-	while($row = mysql_fetch_array($list)){
+	while($row = $list->fetch_assoc()){
 		if(isset($_POST['sortid_'.$row['id']]) && !empty($_POST['sortid_'.$row['id']]) && is_numeric($_POST['sortid_'.$row['id']]))
 			$mysqli->query("UPDATE ".$mysql_tables['gallery']." SET sortid='".$mysqli->escape_string($_POST['sortid_'.$row['id']])."' WHERE id='".$row['id']."' LIMIT 1");
 		}
