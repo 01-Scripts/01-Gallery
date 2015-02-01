@@ -1,0 +1,32 @@
+h1. 01-Gallery
+
+Mit der "_01-Gallery_":http://www.01-scripts.de/01gallery.php können aus dem 01ACP als Administrationsbereich heraus Bilderalben komfortabel verwaltet werden.
+Die Web-Verwaltung der Bildergalerien ermöglicht den Upload und die Verkleinerung von Bildern direkt aus dem Browser heraus (Upload ganzer Verzeichnisse mit nur einem Klick möglich). Ein FTP-Import für große Datenmengen steht ebenfalls zur Verfügung.
+ Nach dem Upload oder Import von Bildern werden die passenden Thumbnails automatisch generiert und gespeichert. Anschließend können alle Bilder bequem online sortiert und individuelle Bildunterschriften und -titel erfasst werden.
+"Weitere Informationen...":http://www.01-scripts.de/01gallery.php
+
+h2. Download
+
+Die jeweils aktuellste Version der 01-Gallery kann unter
+"http://www.01-scripts.de/01gallery.php":http://www.01-scripts.de/01gallery.php
+heruntergeladen werden.
+
+Einzelne Update-Pakete für alle veröffentlichten Updates sind hier zu finden:
+"http://www.01-scripts.de/01gallery.php?updates":http://www.01-scripts.de/01gallery.php?updates
+
+h2. Repository
+
+Das vorliegende Github-Repository enthält den aktuellen Entwicklungsstand des Moduls.
+
+h2. Lizenz
+
+Die 01-Gallery ist unter "CC BY-NC-SA":http://www.01-scripts.de/lizenz.php -Lizenz veröffentlicht:
+
+*Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland*
+
+* Alle PHP-Scripte von "01-Scripts.de":http://www.01-scripts.de können für den privaten, nicht-kommerziellen Einsatz kostenlos genutzt werden. 
+* Für die kommerzielle Nutzung (darunter fällt auch der Einsatz auf Firmenseiten!) können Sie eine Lizenz zur kommerziellen Nutzung erwerben.
+* Wenn Sie den sichtbaren Urheberrechtshinweis entfernen möchten, erwerben Sie bitte eine Non-Copyright-Lizenz.
+
+Lizenzen können hier erworben werden:
+"http://www.01-scripts.de/shop.php":http://www.01-scripts.de/shop.php
