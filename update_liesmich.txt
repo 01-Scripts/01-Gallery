@@ -1,0 +1,45 @@
+01ACP - Copyright 2008-2014 by Michael Lorer - 01-Scripts.de
+Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
+=========================================================
+
+Neuinstallation:
+================
+Informationen zur Neuinstallation der 01-Gallery in beiliegender Installationsanleitung.pdf oder online:
+http://www.01-scripts.de/01gallery.php?install
+
+
+Update:	01-Gallery V 2.1.0 nach V 2.1.1
+=======================================
+
+!!! ACHTUNG !!!
+Voraussetzung für dieses Update ist die Version 1.3.0 oder größer des 01ACP!
+Sie können diese Version hier herunterladen: http://www.01-scripts.de/01acp.php
+!!! ACHTUNG !!!
+
+- Legen Sie ein Backup ihrer Datenbank an!
+- Legen Sie ein Backup ihrer Daten via FTP-Programm an!
+
+- Löschen Sie die Datei 01module/01gallery/galerien/showpics.php
+
+- Markieren Sie alle im Verzeichnis 01gallery/ enthaltenen Dateien und Unterverzeichnisse und
+  laden Sie sie per FTP-Programm in das entsprechende Modul-Verzeichnis (01scripts/01module/.....) auf Ihren Webspace hoch.
+  Überschreiben Sie dabei alle bereits existierende Dateien.
+
+- Loggen Sie sich in den Administrationsbereich ein und wählen Sie auf der Startseite im linken Menü
+  den Punkt "Module verwalten".
+  Starten Sie den Update-Vorgang für die 01-Gallery durch einen Klick auf das Zahnrad-Symbol.
+
+- Wenn Sie die Erweiterung "Die letzten X Bilder an anderer Stelle ausgeben" verwenden, müssen Sie auch diese
+  Erweiterung nun aktualisieren.
+
+
+
+Changelog 01-Gallery - 2.1.1
+============================
+- 0000691: [Global] 	Der Spaltenname 'password', 'text' und 'timestamp ist ein reserviertes MySQL-Schlüsselwort
+- 0000641: [Frontend] 	Original CSS-Code bei Neuinstallation überprüfen
+- 0000657: [Frontend] 	Standard Thumbnail-Größe anpassen und Abstand bei Auflistung verkleinern
+- 0000613: [Backend] 	Javascript-Datei-Handling
+- 0000666: [Global] 	Replace all deprecated mysql_-functions
+- 0000663: [Backend] 	Probleme mit €-Zeichen bei Ajax-Requests
