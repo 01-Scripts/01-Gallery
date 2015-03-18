@@ -8,6 +8,7 @@
     "templates/slimbox.js"
   ],
   "Files2Delete": [
+    "galerien/.gitignore",
     "readme.textile",
     "_build.json",
     "update_liesmich.txt"
