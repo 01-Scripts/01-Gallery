@@ -1,6 +1,6 @@
 {
-  "Version": "2.1.1",
-  "PrevVersion": "2.1.0",
+  "Version": "2.1.2",
+  "PrevVersion": "2.1.1",
   "Files2Minimize": [
     "modul.css",
     "modul.js",
@@ -14,20 +14,7 @@
     "update_liesmich.txt"
   ],
   "Files4Update": [
-    "images/",
-    "templates/",
-    "01gallery.php",
-    "_ajax.php",
-    "_functions.php",
-    "_headinclude.php",
-    "_info.xml",
-    "_popup.php",
-    "_updates.php",
-    "galerien.php",
-    "index.php",
-    "modul.css",
-    "modul.js",
-    "pictures.php",
-    "upload.php"
+    "templates/comments_add.html",
+    "01gallery.php"
   ]
 }

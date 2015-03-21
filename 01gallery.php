@@ -1,12 +1,12 @@
 <?PHP
 /*
-	01-Gallery - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2015 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 
 	Modul:		01gallery
 	Dateiinfo: 	Frontend-Ausgabe
-	#fv.211#
+	#fv.212#
 */
 
 //Hinweis zum Einbinden des Artikelsystems per include();
@@ -61,6 +61,7 @@ if(!isset($_REQUEST[$names['picpage']]))$_REQUEST[$names['picpage']]= "";
 if(!isset($_REQUEST[$names['action']])) $_REQUEST[$names['action']]	= "";
 if(!isset($_POST['deaktiv_bbc']))		$_POST['deaktiv_bbc']		= 0;
 else $_POST['deaktiv_bbc']				= strip_tags($_POST['deaktiv_bbc']);
+if(!isset($_POST['antispam']))          $_POST['antispam'] = "";
 
 if(isset($galid) && !empty($galid)){
     $gals_allids = "";
@@ -279,7 +280,7 @@ if(is_numeric($picid) && $picid > 0){
 	            // Neuen Kommentar hinzufügen
 	            if(isset($_POST['send_comment']) && $_POST['send_comment'] == 1 &&
 				   isset($_POST['modul_comment']) && $_POST['modul_comment'] == $modul)
-					$message = insert_Comment($_POST['autor'],$_POST['email'],$_POST['url'],$_POST['comment'],$_POST['antispam'],$_POST['deaktiv_bbc'],$galid,$_POST['uid'],$picid);
+					$message = insert_Comment($_POST['autor'],$_POST['email'],$_POST['url'],$_POST['comment'],$_POST['antispam'],$_POST['deaktiv_bbc'],$galid,$_POST['uid'],$picid,$_POST['link'],$_POST['time']);
 	
 	            // KOMMENTARE AUSGEBEN
 	            $nr = 1;
