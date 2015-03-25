@@ -1,18 +1,18 @@
 <?PHP
 /* 
-	01-Gallery - Copyright 2003-2014 by Michael Lorer - 01-Scripts.de
+	01-Gallery - Copyright 2003-2015 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Bearbeitung von eingehenden Ajax-Requests:
-	               - Bild-Upload (using Fancy-Upload9
+	               - Bild-Upload (using Fancy-Upload)
 	               - Bilder in Galerien neu zählen
 	               - Bilder-Sortierung speichern
 	               - Coverbild speichern
 	               - Bilddaten speichern
 	               - Einzelbild löschen
-	#fv.211#
+	#fv.212#
 */
 
 // Security: Only allow calls from _ajaxloader.php!
@@ -168,14 +168,15 @@ elseif(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajaxaction'] == "savepicdata
 
 	if(_01gallery_checkUserright($_REQUEST['id'])){
 		if(isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
-	        $title = "title = '".$mysqli->escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['title'])))."' ";
-	        $echotitle = strip_tags($_REQUEST['title']);
+	        $echotitle = iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['title']));
+	        $title = "title = '".$mysqli->escape_string($echotitle)."' ";
 	        }
 		else{ $title = "title = '' "; $echotitle = ""; }
 		
 		if(isset($_REQUEST['beschreibung']) && !empty($_REQUEST['beschreibung'])){
-	        $beschreibung = "pictext = '".$mysqli->escape_string(iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung'])))."' ";
-	        $echobeschreibung = "<br />".strip_tags($_REQUEST['beschreibung']);
+	        $echobeschreibung = iconv("UTF-8", "ISO-8859-1//TRANSLIT", strip_tags($_REQUEST['beschreibung']));
+	        $beschreibung = "pictext = '".$mysqli->escape_string($echobeschreibung)."' ";
+	        $echobeschreibung = "<br />".$echobeschreibung;
 	        }
 		else{ $beschreibung = "pictext = '' "; $echobeschreibung = ""; }
 	    
