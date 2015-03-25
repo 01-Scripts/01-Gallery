@@ -15,6 +15,7 @@
   ],
   "Files4Update": [
     "templates/comments_add.html",
+    "_functions.php",
     "01gallery.php"
   ]
 }

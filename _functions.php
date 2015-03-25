@@ -1,12 +1,12 @@
 <?PHP
 /* 
-	01-Artikelsystem V3 - Copyright 2006-2014 by Michael Lorer - 01-Scripts.de
+	01-Artikelsystem V3 - Copyright 2006-2015 by Michael Lorer - 01-Scripts.de
 	Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 	Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 	
 	Modul:		01gallery
 	Dateiinfo: 	Modulspezifische Funktionen
-	#fv.211#
+	#fv.212#
 */
 
 /* SYNTAKTISCHER AUFBAU VON FUNKTIONSNAMEN BEACHTEN!!!
@@ -16,8 +16,6 @@
 		_example_TolleFunktion($parameter){ ... }
 		}
 */
-
-// Globale Funktionen - nötig!
 
 // Funktion wird zentral aufgerufen, wenn ein Benutzer gelöscht wird.
 /*$userid			UserID des gelöschten Benutzers
@@ -61,13 +59,6 @@ return TRUE;
 }
 
 
-
-
-
-
-
-
-
 // String der Galerie, dem der übergebene IdentifizierungsID zugeordnet ist
 /*$postid			Beitrags-ID
 
@@ -84,13 +75,6 @@ while($row = $list->fetch_assoc()){
 }
 }
 
-
-
-
-
-
-
-
 // String des Bildes, dem der übergebene IdentifizierungsID zugeordnet ist
 /*$postid			Beitrags-ID
 
@@ -106,11 +90,6 @@ while($row = $list->fetch_assoc()){
 	}
 }
 }
-
-
-
-
-
 
 
 // Userstatistiken holen
@@ -144,12 +123,6 @@ else
 }
 
 
-
-
-
-
-
-
 // Zugriffsberechtigung eines Benutzers auf eine Galerie überprüfen
 /*$galid			ID der Galerie
 
@@ -172,12 +145,6 @@ else return false;
 }
 
 
-
-
-
-
-
-
 // Vorhandene Galerien für Drop-Down auflisten
 /*$selected			Vorausgewählter Wert
 
@@ -194,15 +161,6 @@ while($row = $list->fetch_assoc()){
 
 }
 }
-
-
-
-
-
-
-
-
-
 
 
 // Rekursiv alle Galerien auflisten
@@ -259,13 +217,6 @@ else
 }
 
 
-
-
-
-
-
-
-
 // Ausgabe der Galeriedaten (Aufruf über Rekursive Funktion) für SELECT-Felder
 /*$row				Array mit allen MySQL-Feldern aus der Galerie-Tabelle zur entsprechenden Galerie-ID
   $deep				Aktuelle "Tiefe"
@@ -294,13 +245,6 @@ echo $return;
 }
 
 
-
-
-
-
-
-
-
 // Liefert den Verzeichnisnamen zu einer übergebenen GalerieID zurück
 /*$galid			Galerie-ID für die das Verzeichnis zurückgeliefert werden soll
   $passw			Ggf. das Passwort der Galerie (es erfolgt keine Überprüfung ob das Passwort korrekt ist)
@@ -321,13 +265,6 @@ if(!empty($passw)){
 return $galdir;
 }
 }
-
-
-
-
-
-
-
 
 
 // Funktion erstellt einen neuen, eindeutigen Dateinamen
@@ -360,13 +297,6 @@ return $filename;
 }
 
 
-
-
-
-
-
-
-
 // Aktualisiert die Bildanzahl in Bildergalerien
 /*$galid			GalerieID
 
@@ -388,13 +318,6 @@ else return 0;
 
 }
 }
-
-
-
-
-
-
-
 
 
 // Bilder in eine Galerie hochladen
@@ -504,13 +427,6 @@ else $return['error'] = "Fehler beim Upload: Keine Galerie gew&auml;hlt.";
 return $return;
 }
 }
-
-
-
-
-
-
-
 
 
 // Thumbnail generieren
@@ -634,13 +550,6 @@ else
 }
 
 
-
-
-
-
-
-
-
 // Thumbnail ausgeben und davor, wenn nötig generieren
 /*$path						Pfad zum entsprechenden Galerieordner
   $sourcefilename			Dateiname (des normalen Bildes)
@@ -650,9 +559,8 @@ else
 RETURN: fertigen HTML <img>-Tag
   */
 if(!function_exists("_01gallery_getThumb")){
-function _01gallery_getThumb($path,$sourcefilename,$suffix="_tb",$smallstream=false){
+function _01gallery_getThumb($path,$sourcefilename,$suffix="_tb",$smallstream=FALSE,$alt="Bild-Thumbnail"){
 global $settings,$picuploaddir,$smallstreampicsize;
-
 
 
 $split = explode('.',$sourcefilename);
@@ -685,11 +593,11 @@ if($endung == "gif" && file_exists($path.$sourcefilename)){
 	}
 else{
 	if(file_exists($path.$filename.$suffix.".".$endung))
-		return "<img src=\"".$path.$filename.$suffix.".".$endung."\" alt=\"Bild-Thumbnail\" />";
+		return "<img src=\"".$path.$filename.$suffix.".".$endung."\" alt=\"".$alt."\" />";
 	else{
 		$img = _01gallery_makeThumbs($path,$sourcefilename,false,$suffix,$w,$tb_type);
 		if(isset($img) && !empty($img))
-			return "<img src=\"".$img."\" alt=\"Bild-Thumbnail\"".$style." />";
+			return "<img src=\"".$img."\" alt=\"".$alt."\"".$style." />";
 		else
 			return "<img src=\"".$picuploaddir.FILE_NO_THUMBS."\" alt=\"Keine Thumbnails vorhanden\"".$style." />";
 		}
@@ -697,13 +605,6 @@ else{
 
 }
 }
-
-
-
-
-
-
-
 
 
 // Aktualisiert die Bildanzahl in Bildergalerien
@@ -724,13 +625,6 @@ return "<p>
 
 }
 }
-
-
-
-
-
-
-
 
 
 // Frontend: Galerien auflisten (Untereinander / Nebeneinander)
@@ -791,13 +685,6 @@ echo echopages($sites,"",$names['galpage'],$names['galid']."=".$galid,"galpagest
 }
 
 
-
-
-
-
-
-
-
 // Gibt Breadcumps auf dem Frontpanel aus und überprüft gleichzeitig ob ggf. ein Passwort vorhanden ist
 /*$aktgalid			Aktuelle GalerieID von der aus die Breadcurmps ausgegeben werden sollen
 
@@ -852,13 +739,6 @@ return $errorid;
 }
 
 
-
-
-
-
-
-
-
 // Überprüfen ob für das Bild beim Upload ein Resize vorgenommen werden soll/muss
 /*$source_properties		Array(0=width,1=height) des Ausgangsbildes
   $max_properties			Array(0=width,1=height) mit den maximalen Größenangaben
@@ -885,13 +765,6 @@ return false;
 }
 
 
-
-
-
-
-
-
-
 // Extrahiert Breite und Höhe aus einer mit x getrennten Größenangabe
 /*$string       String, der eine mit x (oder X) getrennte Größenangabe enthält
 
@@ -916,13 +789,6 @@ return $rez_size;
 
 }
 }
-
-
-
-
-
-
-
 
 
 // Sucht das passende Thumbnail für die Galerie (auch aus beliebig vielen Sub-Galerien)
