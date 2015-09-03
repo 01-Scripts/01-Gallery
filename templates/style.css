@@ -220,7 +220,18 @@ div.picstream ul.cssgallery li.stream {
     padding:8px;
     }
 
+/* Aussehen der Hinweisbox für die Ausgabe von Meldungen */
+.meldungen_01 {
+    line-height:16pt;
+    text-align: left;
+    font-size:12px;
+    background-color: #DDDDDD;
 
+    margin: 20px 0;
+    padding: 5px 20px 5px 20px;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    }
 
 
 
