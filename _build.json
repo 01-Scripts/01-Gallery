@@ -15,8 +15,11 @@
   ],
   "Files4Update": [
     "templates/comments_add.html",
+    "templates/style.css",
     "_ajax.php",
     "_functions.php",
+    "_info.xml",
+    "_updates.php",
     "01gallery.php"
   ]
 }

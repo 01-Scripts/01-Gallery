@@ -1,6 +1,17 @@
 <?PHP
+// 2.1.1 --> 2.1.2
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "211_zu_212"){
+	// 01gallery #730 - CSS-Code aus Datenbank/Settings in Datei auslagern
+	$mysqli->query("UPDATE ".$mysql_tables['settings']." SET 
+	`exp` = 'Geben Sie einen absoluten Pfad inkl. <b>http://</b> zu einer externen CSS-Datei an.\nIst dieses Feld leer, wird die Datei templates/style.css aus dem Modulverzeichnis verwendet.'
+	WHERE `modul` = '".$mysqli->escape_string($modul)."' AND `idname` = 'extern_css' LIMIT 1");
+	$mysqli->query("DELETE FROM ".$mysql_tables['settings']." WHERE `modul` = '".$mysqli->escape_string($modul)."' AND `idname` = 'csscode' LIMIT 1");
+
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '2.1.2' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+}
 // 2.1.0 --> 2.1.1
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
 
 	// Update CSS-Code in settings
 	$list = $mysqli->query("SELECT id,wert FROM ".$mysql_tables['settings']." WHERE modul = '01gallery' AND idname = 'csscode'");

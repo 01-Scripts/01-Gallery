@@ -98,16 +98,13 @@ if(isset($_GET[$names['picfilename']]) && !empty($_GET[$names['picfilename']])){
 	}
 
 
-
-
-// externe CSS-Datei / CSS-Eigenschaften?
-if(isset($settings['extern_css']) && !empty($settings['extern_css']) && $settings['extern_css'] != "http://" && !$flag_nocss)
+// CSS-Datei einbinden
+if(isset($settings['extern_css']) && !empty($settings['extern_css']) && filter_var($settings['extern_css'], FILTER_VALIDATE_URL) !== FALSE && !$flag_nocss)
 	$echo_css = "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$settings['extern_css']."\" />";
-elseif(isset($settings['csscode']) && !empty($settings['csscode']) && !$flag_nocss)
-	$echo_css = "<style type=\"text/css\">
-".$settings['csscode']."
-</style>";
+elseif(!$flag_nocss)
+	$echo_css = "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$tempdir."style.css\" />";
 else $echo_css = "";
+
 
 if(stripos($settings['tb_size'],"x")){
     $thumb = _01gallery_ParseWxH($settings['tb_size']);
@@ -140,8 +137,8 @@ elseif(is_numeric($settings['tb_size'])){
 .cssgallery a:active{
 	width:".$thumb['width']."px;
 	height:".$thumb['width']."px;
-	position:absolute; top:50%; left:50%; 	/* NICHT VERÄNDERN!!! - position it so that image's top left corner is in the center of the list item */
-	margin:-".round((($thumb['height']/2))+5)."px 0 0 -".round($thumb['width']/2)."px; /* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
+	position:absolute; top:50%; left:50%;
+	margin:-".round((($thumb['height']/2))+5)."px 0 0 -".round($thumb['width']/2)."px;
 }
 
 .cssgallery li.smallstream a:link,
@@ -151,8 +148,8 @@ elseif(is_numeric($settings['tb_size'])){
 .cssgallery li.smallstream a:active{
 	width:".$smallstreampicsize."px;
 	height:".$smallstreampicsize."px;
-	position:absolute; top:50%; left:50%; 	/* NICHT VERÄNDERN!!! - position it so that image's top left corner is in the center of the list item */
-	margin:-".round(($smallstreampicsize/2)+10)."px 0 0 -".round($smallstreampicsize/2)."px; /* NICHT VERÄNDERN!!! - Pull the image into position with negative margins (margins value is half of the width of the image) */
+	position:absolute; top:50%; left:50%;
+	margin:-".round(($smallstreampicsize/2)+10)."px 0 0 -".round($smallstreampicsize/2)."px;
 }
 
 </style>";
