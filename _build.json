@@ -9,6 +9,7 @@
   ],
   "Files2Delete": [
     "galerien/.gitignore",
+    ".gitattributes",
     "readme.textile",
     "_build.json",
     "update_liesmich.txt"
