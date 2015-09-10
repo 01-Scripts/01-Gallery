@@ -3,11 +3,11 @@
 <modul>
 	<name>01gallery</name>
 	<titel>01-Gallery</titel>
-	<beschreibung>Dynamische Bildergalerie mit beliebig vielen Bilderalben und Bildern anlegen und verwalten.</beschreibung>
+	<beschreibung>PHP-Bildergalerie mit Bilderalben, Lightbox, Kommentarsystem und Passwortschutz.</beschreibung>
 	<icon>images/gallery.gif</icon>
 	<version>2.1.2</version>
 	<need01acpv>1.3.1</need01acpv>
-	<datum>03.09.2015</datum>
+	<datum>10.09.2015</datum>
 	<includeinfo><![CDATA[
 <p>Verwenden Sie folgenden PHP-Code um die 01-Gallery in Ihre Seite zu integrieren:<br />
 <code>
