@@ -3,11 +3,6 @@ Lizenz: Creative-Commons: Namensnennung-Keine kommerzielle Nutzung-Weitergabe un
 Weitere Lizenzinformationen unter: http://www.01-scripts.de/lizenz.php
 =========================================================
 
-Neuinstallation:
-================
-Informationen zur Neuinstallation der 01-Gallery in beiliegender Installationsanleitung.pdf oder online:
-http://www.01-scripts.de/01gallery.php?install
-
 
 Update:	01-Gallery V 2.1.1 nach V 2.1.2
 =======================================

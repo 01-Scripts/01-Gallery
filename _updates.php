@@ -9,7 +9,6 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "211_zu_212"){
 
 	// Versionsnummer aktualisieren
 	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '2.1.2' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
-}
 ?>
 <h2>Update Version 2.1.1 nach 2.1.2</h2>
 
@@ -31,6 +30,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "211_zu_212"){
 	<p><a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a></p>
 </div>
 <?PHP
+}
 // 2.1.0 --> 2.1.1
 elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
 
