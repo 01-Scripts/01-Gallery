@@ -24,7 +24,7 @@ if(isset($_REQUEST['update']) && $_REQUEST['update'] == "211_zu_212"){
 
 	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
 	<ul>
-		<li>Verwendung von <a href="https://www.google.com/recaptcha/admin" target="_blank">reCAPTCHA</a> als Spamschutz-Alternative</li>
+		<li>Verwendung von <a href="https://www.google.com/recaptcha/admin" target="_blank">reCAPTCHA</a> als Spamschutz-Alternative (<a href="http://www.01-scripts.de/forum/index.php?page=Thread&amp;threadID=1846" target="_blank">Anleitung</a>)</li>
 		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01gallery_changelog.txt" target="_blank">changelog.txt</a></li>
 	</ul>
 	<p><a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a></p>
