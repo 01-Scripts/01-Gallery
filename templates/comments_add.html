@@ -1,20 +1,18 @@
 <a name="01jumpcomments_add"></a>
 
 <?php if (isset($message) && $message >= 1): ?>
-<p align="center" class="page_text"><b class="highlight">
+<p class="meldungen_01">
 	<?php if (isset($message) && $message == 1): ?>
-	Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt und wird so schnell wie m&ouml;glich freigeschaltet.<br />
-	Bitte klicken Sie <a href="<?PHP echo $system_link_form; ?>&amp;<?php echo $names['cpage']; ?>=<?PHP echo $jumpto_csite; ?>#<?PHP echo $jumpto; ?>">hier</a>.
+	Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt und wird so schnell wie m&ouml;glich freigeschaltet.
 	<?php elseif (isset($message) && $message == 2): ?>
-	Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt.<br />
-	Bitte klicken Sie <a href="<?PHP echo $system_link_form; ?>&amp;<?php echo $names['cpage']; ?>=<?PHP echo $jumpto_csite; ?>#<?PHP echo $jumpto; ?>">hier</a>.
+	Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt.
 	<?php elseif (isset($message) && $message == 3): ?>
-	Sie haben vor kurzem bereits einen Kommentar abgegeben. Bitte klicken Sie <a href="<?PHP echo $system_link; ?>#01jumpcomments_add">hier</a>
+	Sie haben vor kurzem bereits einen Kommentar abgegeben. Bitte warten Sie einen moment.
 	<?php elseif (isset($message) && $message == 4): ?>
 	Sie haben nicht alle ben&ouml;tigten Felder (Name, Kommentar, Spamschutz) ausgef&uuml;llt,<br />
-	oder Ihr Kommentar wurde vom Anti-Spam-System blockiert!
+	oder ihr Kommentar wurde vom Anti-Spam-System blockiert!
 	<?php endif; ?>
-</b></p>
+</p>
 <?php endif; ?>
 
 <form action="<?PHP echo $system_link_form; ?>" method="post" name="post">
@@ -81,15 +79,28 @@
 <?php endif; ?>
     <tr>
         <td colspan="2">
+            <?php /* Folgende beiden Eingabefelder stellen eine Anti-Spam-Maßnahme dar. Das Feld 'link' wird nach dem Absenden darauf überprüft, ob es weiterhin leer ist.
+                        Damit soll Bots abgehalten werden, die standardmäßig alle Formularfelder einer Seite ausfüllen.
+                     Das 2. Feld 'time' wird überprüft ob mindestens X Sekunden seit der Anzeige des Formulars vergangen sind. Da die meisten Bots
+                        Formulare im Bruchteil einer Sekunde ausfüllen und abschicken sollen auch diese Bots dadurch abgehalten werden.
+                        Die Wartezeit ist in der Datei 01acp/system/headinclude.php in define('MIN_COMMENT_TIME', 5); definiert*/ ?>
+            <input type="hidden" name="link" value="<?php if(isset($_POST['comment']) && !empty($_POST['comment']) && isset($_POST['link']) && !empty($_POST['link'])) echo $_POST['link']; ?>" />
+            <input type="hidden" name="time" value="<?php echo time(); ?>" />
             <textarea name="comment" rows="8" cols="60"><?php if(isset($message) && $message > 2) echo stripslashes($_POST['comment']); ?></textarea>
 <?php if ($settings['comments_smilies'] == 1 || $settings['comments_bbc'] == 1): ?>
             <br /><input type="checkbox" name="deaktiv_bbc" value="1" id="input_bbc" /> <label for="input_bbc">Smilies &amp; BB-Code <b>de</b>aktivieren?</label>
 <?php endif; ?>
         </td>
     </tr>
-<?php if ($settings['spamschutz'] == 1): ?>
+<?php if ($settings['spamschutz'] >= 1): ?>
     <tr>
-        <td><?php echo create_Captcha(); ?> <input type="text" name="antispam" id="input_captcha" size="10" class="input_field" /> <b><label for="input_captcha">Spamschutz*</label></b></td>
+        <td>
+            <?php if ($settings['spamschutz'] == 2 && !empty($settings['ReCaptcha_PubKey']) &&  !empty($settings['ReCaptcha_PrivKey'])): ?>
+                <?php echo create_Captcha($settings['spamschutz']); ?>
+            <?php else: ?>
+                <?php echo create_Captcha(); ?> <input type="text" name="antispam" id="input_captcha" size="10" class="input_field" /> <b><label for="input_captcha">Spamschutz*</label></b>
+            <?php endif; ?>
+        </td>
 		<td>
             <input type="hidden" name="send_comment" value="1" />
 			<input type="hidden" name="modul_comment" value="<?PHP echo $modul; ?>" />

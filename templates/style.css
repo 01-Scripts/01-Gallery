@@ -1,0 +1,397 @@
+/* Äußere Box für den gesamten Bildergalerie-Bereich - DIV selber (id = _01gallery) */
+#_01gallery{
+    text-align:left;
+    }
+
+.box_out{
+    width: 100%;
+    margin: 0 auto;
+    color:#000;
+    text-align:left;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size:10pt;
+    }
+
+/* Link-Definitionen (box_out) */
+.box_out a:link,.box_out a:visited  {
+    text-decoration: underline;
+    color: #000;
+}
+.box_out a:hover  {
+    text-decoration: none;
+    color: #000;
+}
+
+/* Textattribute für Fehlermeldungen */
+p.errormsg {
+    color:red;
+}
+
+/* Formatierung der Bilderalben Breadcrumps */
+h2.breadcrumps {
+    font-size:21px;
+}
+
+
+
+
+
+
+
+
+
+
+/* Galerie-Auflistung */
+/* Allgemeine Formatierung des Beschreibungstextes */
+.gallist_u_beschreibung p {
+    margin:0;
+    margin-top:5px;
+}
+
+/* Aussehen der Passwort-Box, die angezeigt wird, wenn eine Galerie mit einem Passwort geschützt ist */
+.galpwbox {
+    width:400px;
+    height:125px;
+    margin: 0 auto;
+
+    padding:5px;
+    border:1px solid #eee;
+
+    text-align:center;
+}
+
+
+/* Auflistung untereinander */
+/* Formatierung des Galerienamens */
+h3.gal_title {
+    margin-top:0;
+    margin-bottom:5px;
+    font-weight:normal;
+}
+
+/* Formatierung des Hinweistextes, wenn ein Bilderalbum mit einem Passwort geschützt wrde */
+.gallist_u_beschreibung p.gal_password {
+    font-size:8pt;
+}
+
+/* Rahmen für die Tabellenzellen */
+td.gallist_u_beschreibung {
+    border-bottom:0px solid #000;
+}
+
+/* Rahmen für Galerie-Thubnails */
+td.gallist_u_thumbnail img {
+    border:1px solid #000;
+    padding:5px;
+}
+
+/* Bildergalerien auflisten (nebeneinander), DIV-Box */
+div.gallistbox {
+    height: 140px;                                  /* Höhe der Box, ggf. an Thumbnail-Größe anpassen */
+    float:left;
+    margin:4px;
+    padding:3px;
+    width:180px;
+    text-align:center;
+    }
+
+
+
+
+
+
+
+/* CSS-Definitionen für die Thumbnail-Auflistung */
+/* CSS-Gallery by dnevnikeklektika.com
+-   http://web.archive.org/web/20070410114605/http://dnevnikeklektika.com/en/css-gallery-layout-en
+-   http://dnevnikeklektika.com/en/css-gallery-layout-en
+*/
+.cssgallery{
+    margin:0; padding:0;                    /* NICHT VERÄNDERN!!! */
+    margin-top:10px;
+    overflow:hidden;                        /* NICHT VERÄNDERN!!! - Clears the floats */
+    width:100%;                             /* NICHT VERÄNDERN!!! - IE and older Opera fix for clearing, they need a dimension */
+    list-style:none;                        /* NICHT VERÄNDERN!!! */
+}
+
+.cssgallery li{
+    float:left;                             /* NICHT VERÄNDERN!!! */
+    display:inline;                         /* NICHT VERÄNDERN!!! - For IE so it does not double the 1% left margin */
+    margin:0 0 0 1%; padding:0 0;   /* Bestimmt den Abstand der einzelnen Bilder zueinander */
+    position:relative;                      /* NICHT VERÄNDERN!!! - This is the key */
+    text-align:center;
+}
+
+.cssgallery a{
+    display:block;
+    margin:0 auto;
+}
+
+.cssgallery img{                    /* Hier kann ein Rahmen um die Thumbnails angelegt werden */
+    padding:3px;
+    border:1px solid #000;
+}
+
+a img{ border:none; }                       /* NICHT VERÄNDERN!!! - A small fix */
+
+
+
+
+
+
+
+
+
+/* DIV für die Detailansicht eines einzelnen Bildes */
+div.picdetailview {
+    width:95%;
+    margin:0 auto;
+    padding:10px;
+
+    text-align:center;
+}
+
+/* CSS-Classe des Detailbildes */
+img.picdetailimg {
+    width:auto !important;
+    width:100%;
+    max-width:100%;
+    border:0;
+}
+
+/* CSS-Classe für Bildtitel in der Detailansicht */
+h3.picdetailh3 {
+    margin-top:5px;
+    margin-bottom:10px;
+}
+
+/* Beschreibungstext in der Detailansicht */
+div.picdetailview p {
+
+}
+
+/* DIV-Box für die Thumbnails unterhalb der Detailansicht (Smallstream) */
+div.picstream {
+    clear: both;
+    float: left;
+    width: 100%;
+    overflow: hidden;
+}
+div.picstream ul.cssgallery {
+    width: auto;
+    float: left;
+    position: relative;
+    left: 50%;
+    margin: 0 auto;
+    padding: 0;
+    list-style-type: none;
+    overflow: visible;
+}
+div.picstream ul.cssgallery li.stream {
+    float: left;
+    position: relative;
+    margin:0;
+    right: 50%;
+}
+
+
+
+
+
+/* Definition für Kommentar-Box (Anzeige von Kommentaren) */
+.commentbitbox {
+    width:80%;
+    text-align:left;
+    border: 1px dotted #999;
+    padding:8px;
+    margin:0 auto;
+    }
+
+.comment_text {
+    font-size:12px;
+    text-decoration:none;
+    }
+
+/* Definition für Kommentar-Hinzufügen-Tabelle */
+.commentaddbox {
+    width:82%;                  /* 2% größer als width von .commentbitbox wählen */
+    text-align:left;
+    border: 1px dotted #999;
+    padding:8px;
+    }
+
+/* Aussehen der Hinweisbox für die Ausgabe von Meldungen */
+.meldungen_01 {
+    line-height:16pt;
+    text-align: left;
+    font-size:12px;
+    background-color: #DDDDDD;
+
+    margin: 20px 0;
+    padding: 5px 20px 5px 20px;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    }
+
+
+
+
+
+
+
+
+/* Formatierung der Tabelle mit Weiter- und Zurück-Links bei mehrseitigen Auflistungen */
+.galpagestable,
+.picpagestable {
+    width:100%;
+    margin-top:25px;
+}
+
+
+
+
+
+/* Aussehen von kleinem Text */
+.small01acp, .small01acp a:link,.small01acp a:visited {
+    font-size:10px;
+    text-decoration:none;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif;
+    }
+.small01acp a:link,.small01acp a:visited {
+    text-decoration:underline;
+    }
+.box_out a:hover  {
+    text-decoration: none;
+}
+
+/* Hervorgehobener, wichtiger Text */
+.highlight {
+    font-weight:bold;
+    color:red;
+    }
+
+
+
+
+
+
+
+/* Formular-Elemente */
+/* Normales Textfeld */
+.input_field {
+
+    }
+
+/* CSS-Klasse für Mehrzeilige Eingabefelder (textareas) */
+.textareafeld {
+    font-size: 10pt;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* Formular-Buttons */
+.input_button {
+
+    }
+
+/* Dropdown-Boxen */
+.input_selectfield {
+
+    }
+
+
+
+
+
+
+
+
+/* SLIMBOX */
+
+#lbOverlay {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;             /* Overlay-Hintergrundfarbe der Lightbox-Abdunklung */
+    cursor: pointer;
+}
+
+#lbCenter, #lbBottomContainer {
+    position: absolute;
+    z-index: 9999;
+    overflow: hidden;
+    background-color: #fff;             /* Hintergrundfarbe des Untertitel-Bereichs */
+}
+
+#lbImage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 10px solid #fff;            /* Bildrahmenfarbe um das in der Lightbox geöffnete Bild herum */
+    background-repeat: no-repeat;
+}
+
+#lbPrevLink, #lbNextLink {
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 50%;
+    outline: none;
+}
+
+#lbPrevLink {
+    left: 0;
+}
+#lbNextLink {
+    right: 0;
+}
+
+/* Untertitel-Textdefinition */
+#lbBottom {
+    font-family: Verdana, Arial, Geneva, Helvetica, sans-serif;
+    font-size: 10px;
+    color: #666;
+    line-height: 1.4em;
+    text-align: left;
+    border: 10px solid #fff;
+    border-top-style: none;
+}
+
+#lbCloseLink {
+    display: block;
+    float: right;
+    width: 66px;
+    height: 22px;
+    margin: 5px 0;
+    outline: none;
+}
+
+#lbCaption, #lbNumber {
+    margin-right: 71px;
+}
+#lbCaption {
+    font-weight: bold;
+}
+
+
+
+/* Rahmen um Bilder standardmäßig entfernen */
+img *,
+img.noborder,
+td.gallist_u_thumbnail img.noborder {
+    border:0;
+}
+
+
+
+
+/* Copyright-Hinweis */
+/* Sichtbare Hinweis darf ohne eine entsprechende Lizenz NICHT entfernt werden! */
+.copyright {
+    padding-top:15px;
+    font-size:11px;
+    text-decoration:none;
+    }

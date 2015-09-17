@@ -1,6 +1,38 @@
 <?PHP
+// 2.1.1 --> 2.1.2
+if(isset($_REQUEST['update']) && $_REQUEST['update'] == "211_zu_212"){
+	// 01gallery #730 - CSS-Code aus Datenbank/Settings in Datei auslagern
+	$mysqli->query("UPDATE ".$mysql_tables['settings']." SET 
+	`exp` = 'Geben Sie einen absoluten Pfad inkl. <b>http://</b> zu einer externen CSS-Datei an.\nIst dieses Feld leer, wird die Datei templates/style.css aus dem Modulverzeichnis verwendet.'
+	WHERE `modul` = '".$mysqli->escape_string($modul)."' AND `idname` = 'extern_css' LIMIT 1");
+	$mysqli->query("DELETE FROM ".$mysql_tables['settings']." WHERE `modul` = '".$mysqli->escape_string($modul)."' AND `idname` = 'csscode' LIMIT 1");
+
+	// Versionsnummer aktualisieren
+	$mysqli->query("UPDATE ".$mysql_tables['module']." SET version = '2.1.2' WHERE idname = '".$mysqli->escape_string($modul)."' LIMIT 1");
+?>
+<h2>Update Version 2.1.1 nach 2.1.2</h2>
+
+<div class="meldung_erfolg">
+	Das Update von Version 2.1.1 auf Version 2.1.2 wurde erfolgreich durchgef&uuml;hrt.<br />
+	<br />
+	<b>Achtung:</b><br />
+	Mit diesem Update wurde der CSS-Code zur Gestaltung der 01-Gallery in eine separate Datei ausgelagert
+	und kann nicht mehr im 01ACP in den Einstellungen direkt bearbeitet werden.<br />
+	Der CSS-Code befindet sich nun in der Datei <i>01module/01gallery/templates/style.css</i> und kann
+	dort ggf. bearbeitet werden.<br />
+	<br />
+
+	<b>Mit dem Update wurde unter anderem folgendes verbessert:</b>
+	<ul>
+		<li>Verwendung von <a href="https://www.google.com/recaptcha/admin" target="_blank">reCAPTCHA</a> als Spamschutz-Alternative (<a href="http://www.01-scripts.de/forum/index.php?page=Thread&amp;threadID=1846" target="_blank">Anleitung</a>)</li>
+		<li>Diverse Fehler behoben. Siehe <a href="http://www.01-scripts.de/down/01gallery_changelog.txt" target="_blank">changelog.txt</a></li>
+	</ul>
+	<p><a href="module.php">Zur&uuml;ck zur Modul-&Uuml;bersicht &raquo;</a></p>
+</div>
+<?PHP
+}
 // 2.1.0 --> 2.1.1
-if(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
+elseif(isset($_REQUEST['update']) && $_REQUEST['update'] == "210_zu_211"){
 
 	// Update CSS-Code in settings
 	$list = $mysqli->query("SELECT id,wert FROM ".$mysql_tables['settings']." WHERE modul = '01gallery' AND idname = 'csscode'");

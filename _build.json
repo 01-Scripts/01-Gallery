@@ -1,6 +1,6 @@
 {
-  "Version": "2.1.1",
-  "PrevVersion": "2.1.0",
+  "Version": "2.1.2",
+  "PrevVersion": "2.1.1",
   "Files2Minimize": [
     "modul.css",
     "modul.js",
@@ -9,25 +9,18 @@
   ],
   "Files2Delete": [
     "galerien/.gitignore",
+    ".gitattributes",
     "readme.textile",
     "_build.json",
     "update_liesmich.txt"
   ],
   "Files4Update": [
-    "images/",
-    "templates/",
-    "01gallery.php",
+    "templates/comments_add.html",
+    "templates/style.css",
     "_ajax.php",
     "_functions.php",
-    "_headinclude.php",
     "_info.xml",
-    "_popup.php",
     "_updates.php",
-    "galerien.php",
-    "index.php",
-    "modul.css",
-    "modul.js",
-    "pictures.php",
-    "upload.php"
+    "01gallery.php"
   ]
 }
