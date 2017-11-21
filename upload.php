@@ -86,7 +86,7 @@ if(isset($_GET['action']) && $_GET['action'] == "import" && isset($_GET['galid']
 							'', 
 							'".$userdata['id']."'
 							)";
-						$mysqli->query($sql_insert) OR die(mysql_error());
+						$mysqli->query($sql_insert) OR die($mysqli->error);
 						$cup++;
 						$new_sortid++;
 						
