@@ -8,9 +8,12 @@
     "templates/slimbox.js"
   ],
   "Files2Delete": [
+    "dok/01acp_dropdown.gif",
+    "dok/01acp_module.gif",
+    "dok/01acp_moduleinstellungen.gif",
     "galerien/.gitignore",
     ".gitattributes",
-    "readme.textile",
+    "readme.md",
     "_build.json",
     "update_liesmich.txt"
   ],
