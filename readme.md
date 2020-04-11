@@ -89,7 +89,7 @@ Die Startseite des Moduls rufen sie über die Drop-Down-Box oben rechts im 01ACP
 
 ### 01-Gallery per PHP einbinden
 
-Das 01-Artikelsystem ist darauf ausgelegt per PHP mit dem include()-Befehl in eine bestehende Seite eingebunden zu werden. Es wird dringend empfohlen diese Methode zu verwenden! Der Befehl dafür lautet folgendermaßen:
+Die 01-Gallery ist darauf ausgelegt per PHP mit dem include()-Befehl in eine bestehende Seite eingebunden zu werden. Es wird dringend empfohlen diese Methode zu verwenden! Der Befehl dafür lautet folgendermaßen:
 
 ```php
 <?PHP
