@@ -75,7 +75,7 @@ if(!isset($picid) || empty($picid) || isset($_REQUEST[$names['picid']]) && !empt
 	$picid	=	$_REQUEST[$names['picid']];
 $picpage=	$_REQUEST[$names['picpage']];
 
-$filename = $_SERVER['PHP_SELF'];
+$filename = $_SERVER['SCRIPT_NAME'];
 $system_link_gal = parse_cleanerlinks(addParameter2Link($filename,$names['galid']."=".$galid."&amp;".$names['galpage']."=".$galpage));
 $system_link_pic = parse_cleanerlinks(addParameter2Link($system_link_gal,$names['picpage']."=".$picpage));
 
